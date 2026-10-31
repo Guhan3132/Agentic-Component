@@ -85,7 +85,7 @@ export function CopyMenu({ slug, title, code, usage, children }: Props) {
       <div className="flex">
         <button
           onClick={() => copy("prompt", prompt())}
-          className="inline-flex items-center gap-2 rounded-l-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          className="inline-flex items-center gap-2 rounded-l-lg bg-primary px-4 py-2.5 pointer-coarse:min-h-11 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
           <Swap on={done === "prompt"} on_={<Check size={15} />} off={<PromptIcon />} />
           {done === "prompt" ? "Copied" : "Copy prompt"}
@@ -96,7 +96,7 @@ export function CopyMenu({ slug, title, code, usage, children }: Props) {
           aria-haspopup="menu"
           aria-expanded={open}
           onClick={toggle}
-          className="rounded-r-lg border-l border-primary-foreground/20 bg-primary px-2.5 text-primary-foreground hover:bg-primary/90"
+          className="rounded-r-lg border-l border-primary-foreground/20 bg-primary px-2.5 pointer-coarse:min-h-11 pointer-coarse:px-3.5 text-primary-foreground hover:bg-primary/90"
         >
           <ChevronDown size={16} className={cn("transition-transform duration-200", open && "rotate-180")} />
         </button>
@@ -106,7 +106,7 @@ export function CopyMenu({ slug, title, code, usage, children }: Props) {
 
       <button
         onClick={() => copy("cli", cli())}
-        className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
+        className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3.5 py-2.5 pointer-coarse:min-h-11 text-sm font-medium text-foreground hover:bg-muted"
       >
         <Swap on={done === "cli"} on_={<Check size={15} />} off={<Terminal size={15} />} />
         {done === "cli" ? "Copied" : "CLI"}

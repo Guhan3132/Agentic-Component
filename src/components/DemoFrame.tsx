@@ -86,6 +86,26 @@ export function DemoFrame({ scenarios, scenarioId, onScenario, onReplay, fit = "
     };
   }, [open, close]);
 
+  // Play once, the first time at least half the preview is on screen, so it never opens blank.
+  // Skipped for reduced motion; Replay and the scenario tabs still work.
+  const replayRef = useRef(onReplay);
+  replayRef.current = onReplay;
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el || !replayRef.current || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        io.disconnect();
+        replayRef.current?.();
+      },
+      { threshold: 0.5 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // Reset returns the demo to its idle state: scenario demos reset their simulator, others remount.
   const reset = () => {
     if (scenarioId) onScenario?.(scenarioId);
@@ -179,7 +199,7 @@ export function DemoFrame({ scenarios, scenarioId, onScenario, onReplay, fit = "
                     aria-selected={s.id === scenarioId}
                     onClick={() => onScenario?.(s.id)}
                     className={cn(
-                      "rounded-full px-3.5 py-2 text-sm sm:px-3 sm:py-1",
+                      "rounded-full px-3 py-1 text-sm pointer-coarse:min-h-11 pointer-coarse:px-4",
                       s.id === scenarioId ? "bg-primary font-medium text-primary-foreground" : "bg-muted text-foreground/80 hover:bg-accent",
                     )}
                   >
@@ -189,7 +209,7 @@ export function DemoFrame({ scenarios, scenarioId, onScenario, onReplay, fit = "
               </div>
             )}
             {onReplay && (
-              <button onClick={onReplay} className="ml-auto flex items-center gap-1.5 rounded-full bg-muted px-3.5 py-2 text-sm text-foreground hover:bg-accent sm:px-3 sm:py-1">
+              <button onClick={onReplay} className="ml-auto flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-sm text-foreground hover:bg-accent pointer-coarse:min-h-11 pointer-coarse:px-4">
                 <RotateCw size={14} /> Replay
               </button>
             )}
@@ -233,7 +253,7 @@ function IconBtn({
       aria-pressed={pressed}
       title={label}
       onClick={onClick}
-      className={cn("rounded-md p-2.5 hover:bg-muted hover:text-foreground sm:p-1.5", pressed ? "bg-muted text-foreground" : "text-muted-foreground")}
+      className={cn("grid place-items-center rounded-md p-1.5 pointer-coarse:size-11 hover:bg-muted hover:text-foreground", pressed ? "bg-muted text-foreground" : "text-muted-foreground")}
     >
       {children}
     </button>

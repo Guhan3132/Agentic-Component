@@ -7,7 +7,7 @@ import { categories, patterns } from "@/registry";
 export default function Home() {
   return (
     <main>
-      <section className="mx-auto max-w-6xl px-5 pb-20 pt-12 sm:pt-16">
+      <section className="mx-auto max-w-6xl px-5 pb-14 pt-10 sm:pb-20 sm:pt-16">
         <span className="inline-flex items-center gap-2 rounded-md border border-zinc-200 bg-white py-1 pl-1 pr-3 text-xs font-medium text-zinc-700">
           <span className="grid h-5 w-5 place-items-center rounded bg-orange-500 text-[10px] font-semibold text-white">A</span>
           {patterns.length} patterns, MIT licensed
@@ -29,7 +29,7 @@ export default function Home() {
         </div>
 
         {/* Banner with a live composer. Only the background is clipped, so the menus of the composer can open freely. */}
-        <div className="relative mt-12 h-[32rem] sm:h-[36rem]">
+        <div className="relative mt-12 h-[24rem] sm:h-[36rem]">
           <div className="absolute inset-0 overflow-hidden rounded-2xl">
             <PixelField className="h-full w-full" />
             <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-white/25 via-transparent to-transparent" />

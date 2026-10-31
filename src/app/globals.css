@@ -193,3 +193,16 @@ button:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Syntax highlighting for code blocks (sugar-high reads these variables). */
+:root {
+  --sh-class: #2d5e9d;
+  --sh-identifier: #354150;
+  --sh-sign: #8996a3;
+  --sh-property: #0550ae;
+  --sh-entity: #249a97;
+  --sh-jsxliterals: #6266d1;
+  --sh-string: #0a7d6e;
+  --sh-keyword: #d6336c;
+  --sh-comment: #8b8b94;
+}

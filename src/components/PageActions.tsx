@@ -38,7 +38,7 @@ export function SaveButton({ slug }: { slug: string }) {
       onClick={toggle}
       aria-pressed={saved}
       className={cn(
-        "inline-flex items-center gap-2 rounded-lg border border-border px-3.5 py-2.5 text-sm font-medium hover:bg-muted",
+        "inline-flex items-center gap-2 rounded-lg border border-border px-3.5 py-2.5 pointer-coarse:min-h-11 text-sm font-medium hover:bg-muted",
         saved ? "bg-muted text-foreground" : "bg-card text-foreground",
       )}
     >
@@ -67,7 +67,7 @@ export function RemixButton({ slug, title, code, usage }: { slug: string; title:
     <button
       onClick={copy}
       title="Copies a prompt that asks your AI to adapt this component to your project"
-      className="inline-flex items-center gap-2 rounded-lg bg-muted px-3.5 py-2.5 text-sm font-medium text-foreground hover:bg-accent"
+      className="inline-flex items-center gap-2 rounded-lg bg-muted px-3.5 py-2.5 pointer-coarse:min-h-11 text-sm font-medium text-foreground hover:bg-accent"
     >
       {done ? <Check size={15} /> : <Sparkles size={15} />}
       {done ? "Copied" : "Remix"}
