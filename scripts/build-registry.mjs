@@ -32,7 +32,8 @@ for (const slug of slugs) {
   }
 
   // shadcn projects keep `cn` in @/lib/utils, so point the copied file there.
-  const content = source.replaceAll('"@/lib/cn"', '"@/lib/utils"');
+  // Always LF, so the output is identical on Windows and Linux (CI checks that it is up to date).
+  const content = source.replaceAll("\r\n", "\n").replaceAll('"@/lib/cn"', '"@/lib/utils"');
   const dependencies = ["lucide-react"];
   if (source.includes("motion/react")) dependencies.push("motion");
 
