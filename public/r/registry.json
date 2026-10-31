@@ -1,0 +1,144 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "agentic-ui",
+  "homepage": "/",
+  "items": [
+    {
+      "name": "approval-step",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/approval-step.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "chat-thread",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/chat-thread.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "confidence-badge",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/confidence-badge.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "feedback-thumbs",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/feedback-thumbs.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "interrupt-steer",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/interrupt-steer.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "plan-preview",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/plan-preview.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "prompt-composer",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/prompt-composer.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "streaming-response",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/streaming-response.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "tool-timeline",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/tool-timeline.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "why-this-answer",
+      "type": "registry:component",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "components/agentic-ui/why-this-answer.tsx",
+          "type": "registry:component"
+        }
+      ]
+    }
+  ]
+}

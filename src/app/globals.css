@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+/* Dark mode is scoped: any element with the `dark` class (and its children) switches theme. */
+@custom-variant dark (&:is(.dark, .dark *));
+
+/* shadcn-style semantic tokens, so the copied components work in any shadcn project. */
+:root {
+  --background: #fafafa;
+  --foreground: #111113;
+  --card: #ffffff;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #e4e4e7;
+  --border: #e4e4e7;
+  --input: #d4d4d8;
+  --ring: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  --card: #111114;
+  --muted: #1c1c20;
+  --muted-foreground: #a1a1aa;
+  --accent: #2a2a2f;
+  --border: #27272a;
+  --input: #3f3f46;
+  --ring: #d4d4d8;
+  --primary: #f4f4f5;
+  --primary-foreground: #18181b;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+}
+
+/* Size-specific tracking: tight on display text, neutral on body. */
+h1 {
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+h2,
+h3 {
+  letter-spacing: -0.015em;
+}
+
+/* Feedback on press, not release. */
+button:not(:disabled):active {
+  transform: scale(0.97);
+}
+button {
+  transition-property: transform, background-color, color, border-color, opacity;
+  transition-duration: 120ms;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Materials: translucent surfaces that separate from content without an opaque slab. */
+.material-pop {
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  /* bright top edge: light catching the material */
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 45%, transparent),
+    0 24px 48px -12px rgb(0 0 0 / 0.22);
+}
+.dark .material-pop {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 10%, transparent),
+    0 24px 48px -12px rgb(0 0 0 / 0.6);
+}
+
+/* Header material fades out at its lower edge instead of ending in a hard line. */
+.material-bar {
+  background: color-mix(in srgb, var(--background) 72%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent);
+}
+
+/* Expanded preview: a centred modal over a dimmed, blurred page. Exit mirrors entry, only faster. */
+.demo-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgb(0 0 0 / 0.42);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: demo-fade-in 0.25s ease both;
+}
+.demo-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 50;
+  width: min(72rem, calc(100vw - 1.5rem));
+  height: min(46rem, calc(100dvh - 1.5rem));
+  transform: translate(-50%, -50%);
+  animation: demo-modal-in 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.demo-backdrop[data-closing] {
+  animation: demo-fade-out 0.14s ease-in both;
+}
+.demo-modal[data-closing] {
+  animation: demo-modal-out 0.14s ease-in both;
+}
+@keyframes demo-fade-in {
+  from { opacity: 0; }
+}
+@keyframes demo-fade-out {
+  to { opacity: 0; }
+}
+@keyframes demo-modal-in {
+  from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+}
+@keyframes demo-modal-out {
+  to { opacity: 0; transform: translate(-50%, -49%) scale(0.97); }
+}
+
+/* Theme switch eases colours for a moment instead of jumping brightness. */
+.theme-anim,
+.theme-anim * {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow !important;
+  transition-duration: 320ms !important;
+  transition-timing-function: ease !important;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material-pop,
+  .material-bar {
+    background: var(--card);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .material-pop,
+  .material-bar {
+    background: var(--card);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .material-pop {
+    border-color: var(--foreground);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
