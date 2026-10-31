@@ -79,7 +79,7 @@ export default function About() {
 
         <H2>Roadmap</H2>
         <ul className="mt-4 list-disc space-y-2 pl-5 text-zinc-600">
-          <li>More patterns: error recovery, memory, citations, hand-off to a human</li>
+          <li>More patterns: tool permissions, multi-agent status, voice input</li>
           <li>Versioned registry so you can pin a pattern</li>
           <li>An npm package for people who prefer installing to copying</li>
           <li>Community pattern submissions</li>
