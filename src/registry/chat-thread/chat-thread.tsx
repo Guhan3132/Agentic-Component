@@ -107,7 +107,8 @@ export function ChatThread({ messages, typing = false, busy, agentName = "AI Age
   const turns = arrange(messages, agentName);
   const tail = turns[turns.length - 1];
   const working = busy ?? (typing || last?.status === "streaming");
-  const jumpTip = useTip<HTMLButtonElement>("Jump to latest");
+  const [jumpTipEl, setJumpTipEl] = useState<HTMLButtonElement | null>(null);
+  const jumpTip = useTip(jumpTipEl, "Jump to latest");
   const typingNeedsName = !(tail?.kind === "turn" && tail.role === "agent");
 
   const toBottom = (smooth: boolean) => {
@@ -180,7 +181,7 @@ export function ChatThread({ messages, typing = false, busy, agentName = "AI Age
         <AnimatePresence>
           {away && (
             <motion.button
-              ref={jumpTip.ref}
+              ref={setJumpTipEl}
               {...jumpTip.bind}
               type="button"
               aria-label={unseen > 0 ? `Jump to latest, ${unseen} new` : "Jump to latest"}
@@ -300,10 +301,11 @@ function AgentMessage({ m, fresh }: { m: ChatMessage; fresh: boolean }) {
 
 /** Icon button in the row under a response, with a tooltip for mouse and keyboard users. */
 function Action({ children, label, tip, pressed, onClick }: { children: ReactNode; label: string; tip?: string; pressed?: boolean; onClick: () => void }) {
-  const t = useTip<HTMLButtonElement>(tip ?? label);
+  const [tEl, setTEl] = useState<HTMLButtonElement | null>(null);
+  const t = useTip(tEl, tip ?? label);
   return (
     <button
-      ref={t.ref}
+      ref={setTEl}
       {...t.bind}
       type="button"
       aria-label={label}
@@ -468,11 +470,9 @@ function Avatar({ name, src }: { name: string; src?: string }) {
 }
 
 /** Hover and keyboard-focus label for icon-only buttons. It is fixed-position, so no scrolling or clipping parent can cut it off. */
-function useTip<T extends HTMLElement>(label: string) {
-  const ref = useRef<T>(null);
+function useTip(el: HTMLElement | null, label: string) {
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const show = (viaFocus: boolean) => {
-    const el = ref.current;
     if (!el) return;
     // Mouse tooltips only with a real pointer; keyboard tooltips only when focus is visible.
     if (viaFocus ? !el.matches(":focus-visible") : !window.matchMedia("(pointer: fine)").matches) return;
@@ -481,7 +481,6 @@ function useTip<T extends HTMLElement>(label: string) {
   };
   const hide = () => setPos(null);
   return {
-    ref,
     bind: { onMouseEnter: () => show(false), onMouseLeave: hide, onFocus: () => show(true), onBlur: hide },
     tip: pos ? (
       <span

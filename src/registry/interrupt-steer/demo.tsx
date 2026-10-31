@@ -33,7 +33,9 @@ export default function Demo() {
   const script = useMemo(() => (steer ? continuation(steer) : scenarios[0].script), [steer]);
   const sim = useAgentSimulator(script, speed);
   const live = useRef(textOf(sim.events));
-  live.current = textOf(sim.events);
+  useEffect(() => {
+    live.current = textOf(sim.events);
+  });
 
   // Run the continuation once its script is in place.
   useEffect(() => {

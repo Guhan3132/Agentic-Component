@@ -1,7 +1,7 @@
 "use client";
 
 import { Send, Square } from "lucide-react";
-import { useRef, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export type Segment = { role: "agent" | "user"; text: string };
@@ -87,10 +87,11 @@ export function InterruptSteer({ segments, running, onSteer, onStop, suggestions
 }
 
 function SendButton({ disabled }: { disabled: boolean }) {
-  const t = useTip<HTMLButtonElement>("Send");
+  const [tEl, setTEl] = useState<HTMLButtonElement | null>(null);
+  const t = useTip(tEl, "Send");
   return (
     <button
-      ref={t.ref}
+      ref={setTEl}
       {...t.bind}
       type="submit"
       aria-label="Send"
@@ -104,11 +105,9 @@ function SendButton({ disabled }: { disabled: boolean }) {
 }
 
 /** Hover and keyboard-focus label for icon-only buttons. It is fixed-position, so no scrolling or clipping parent can cut it off. */
-function useTip<T extends HTMLElement>(label: string) {
-  const ref = useRef<T>(null);
+function useTip(el: HTMLElement | null, label: string) {
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const show = (viaFocus: boolean) => {
-    const el = ref.current;
     if (!el) return;
     // Mouse tooltips only with a real pointer; keyboard tooltips only when focus is visible.
     if (viaFocus ? !el.matches(":focus-visible") : !window.matchMedia("(pointer: fine)").matches) return;
@@ -117,7 +116,6 @@ function useTip<T extends HTMLElement>(label: string) {
   };
   const hide = () => setPos(null);
   return {
-    ref,
     bind: { onMouseEnter: () => show(false), onMouseLeave: hide, onFocus: () => show(true), onBlur: hide },
     tip: pos ? (
       <span

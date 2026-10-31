@@ -160,10 +160,11 @@ function PlaygroundChat() {
 
   // Keep the editable plan in step with the plan the agent proposes.
   const planEvent = sim.events.find((e) => e.type === "plan");
-  useEffect(() => {
+  const [seenPlan, setSeenPlan] = useState(planEvent);
+  if (planEvent !== seenPlan) {
+    setSeenPlan(planEvent);
     if (planEvent?.type === "plan") setItems(planEvent.steps.map((t, i) => ({ id: `${flow?.turn}-p${i}`, text: t })));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planEvent]);
+  }
 
   const blocks = toBlocks(sim.events);
   const tools = toolsOf(sim.events);

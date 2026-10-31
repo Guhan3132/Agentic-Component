@@ -2,7 +2,7 @@
 
 import { ArrowUp, Check, ChevronDown, ChevronLeft, ChevronRight, Mic, Plus, Search, Square, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export type Effort = "Low" | "Medium" | "High" | "Max";
@@ -115,6 +115,8 @@ function useObjectUrls(files: File[]) {
   const [urls, setUrls] = useState<(string | null)[]>([]);
   useEffect(() => {
     const next = files.map((f) => (f.type.startsWith("image/") ? URL.createObjectURL(f) : null));
+    // Object URLs are an external resource that has to be created and released with the files.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrls(next);
     return () => next.forEach((u) => u && URL.revokeObjectURL(u));
   }, [files]);
@@ -161,12 +163,18 @@ export function PromptComposer({
   const [dismissed, setDismissed] = useState(false);
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
-  const [canRecord, setCanRecord] = useState(false);
+  // False on the server and during hydration, then the real answer, with no effect and no flash of the wrong state.
+  const canRecord = useSyncExternalStore(
+    () => () => {},
+    () => !!getRecognizer(),
+    () => false,
+  );
 
   const root = useRef<HTMLDivElement>(null);
   const form = useRef<HTMLFormElement>(null);
   const area = useRef<HTMLTextAreaElement>(null);
   const picker = useRef<HTMLInputElement>(null);
+  const openPicker = useCallback(() => picker.current?.click(), []);
   const pop = useRef<HTMLDivElement>(null);
   const modeBtn = useRef<HTMLButtonElement>(null);
   const modelBtn = useRef<HTMLButtonElement>(null);
@@ -213,11 +221,13 @@ export function PromptComposer({
           { name: "model", hint: "Choose a model and effort", run: () => openMenu("model") },
         ]
       : []),
-    { name: "attach", hint: "Add files or images", run: () => picker.current?.click() },
+    { name: "attach", hint: "Add files or images", run: openPicker },
     { name: "clear", hint: "Clear message and files", run: () => setFiles([]) },
     ...extraCommands,
   ];
 
+  // Filtering only reads each command's name. The "attach" command touches the file input's ref, but only when it is run from an event.
+  // eslint-disable-next-line react-hooks/refs
   const slashRows = slash ? commands.filter((c) => c.name.startsWith(slash[1].toLowerCase())) : [];
   const mentionRows = useMemo(
     () => (mention ? contextOptions.filter((o) => o.tag.toLowerCase().startsWith(`@${mention[2].toLowerCase()}`)) : []),
@@ -273,8 +283,6 @@ export function PromptComposer({
       clearTimeout(id);
     };
   }, [menu, view]);
-
-  useEffect(() => setCanRecord(!!getRecognizer()), []);
 
   useEffect(() => {
     if (!recording) return;
@@ -759,11 +767,9 @@ export function PromptComposer({
 }
 
 /** Hover and keyboard-focus label for icon-only buttons. It is fixed-position, so no scrolling or clipping parent can cut it off. */
-function useTip<T extends HTMLElement>(label: string) {
-  const ref = useRef<T>(null);
+function useTip(el: HTMLElement | null, label: string) {
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const show = (viaFocus: boolean) => {
-    const el = ref.current;
     if (!el) return;
     // Mouse tooltips only with a real pointer; keyboard tooltips only when focus is visible.
     if (viaFocus ? !el.matches(":focus-visible") : !window.matchMedia("(pointer: fine)").matches) return;
@@ -772,7 +778,6 @@ function useTip<T extends HTMLElement>(label: string) {
   };
   const hide = () => setPos(null);
   return {
-    ref,
     bind: { onMouseEnter: () => show(false), onMouseLeave: hide, onFocus: () => show(true), onBlur: hide },
     tip: pos ? (
       <span
@@ -788,9 +793,10 @@ function useTip<T extends HTMLElement>(label: string) {
 
 /** A button that shows a label on hover and keyboard focus. */
 function TipButton({ tip, children, ...rest }: { tip: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
-  const t = useTip<HTMLButtonElement>(tip);
+  const [tEl, setTEl] = useState<HTMLButtonElement | null>(null);
+  const t = useTip(tEl, tip);
   return (
-    <button ref={t.ref} {...t.bind} {...rest}>
+    <button ref={setTEl} {...t.bind} {...rest}>
       {children}
       {t.tip}
     </button>

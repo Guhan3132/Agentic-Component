@@ -15,7 +15,9 @@ export function useAgentSimulator(script: Step[], speed = 1) {
   const runId = useRef(0);
   const resolver = useRef<((d: "approved" | "rejected") => void) | null>(null);
   const speedRef = useRef(speed);
-  speedRef.current = speed;
+  useEffect(() => {
+    speedRef.current = speed;
+  });
 
   const stop = useCallback(() => {
     runId.current++;

@@ -57,17 +57,22 @@ export function ErrorRecovery({
   const [paused, setPaused] = useState(false);
   const [open, setOpen] = useState(false);
   const retryRef = useRef(onRetry);
-  retryRef.current = onRetry;
+  useEffect(() => {
+    retryRef.current = onRetry;
+  });
 
   const exhausted = attempt >= maxAttempts;
   const counting = !!retryAfter && !paused && !retrying && !exhausted && left > 0;
   const Icon = KIND[kind].icon;
 
-  // A new error (or a new wait) restarts the countdown.
-  useEffect(() => {
+  // A new error (or a new wait) restarts the countdown. Done while rendering, so there is no extra pass.
+  const key = `${retryAfter}-${attempt}`;
+  const [prevKey, setPrevKey] = useState(key);
+  if (key !== prevKey) {
+    setPrevKey(key);
     setLeft(retryAfter ?? 0);
     setPaused(false);
-  }, [retryAfter, attempt]);
+  }
 
   useEffect(() => {
     if (!counting) return;

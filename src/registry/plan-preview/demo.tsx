@@ -45,9 +45,11 @@ export default function Demo() {
   const proposed = sim.events.find((e) => e.type === "plan");
   const text = useMemo(() => textOf(sim.events), [sim.events]);
 
-  useEffect(() => {
+  const [seen, setSeen] = useState(proposed);
+  if (proposed !== seen) {
+    setSeen(proposed);
     if (proposed?.type === "plan") setItems(proposed.steps.map((t, i) => ({ id: `${proposed.id}-${i}`, text: t })));
-  }, [proposed]);
+  }
 
   // Execute the user's edited plan, one step at a time.
   useEffect(() => {

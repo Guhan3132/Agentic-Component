@@ -89,7 +89,9 @@ export function DemoFrame({ scenarios, scenarioId, onScenario, onReplay, fit = "
   // Play once, the first time at least half the preview is on screen, so it never opens blank.
   // Skipped for reduced motion; Replay and the scenario tabs still work.
   const replayRef = useRef(onReplay);
-  replayRef.current = onReplay;
+  useEffect(() => {
+    replayRef.current = onReplay;
+  });
   useEffect(() => {
     const el = wrap.current;
     if (!el || !replayRef.current || typeof IntersectionObserver === "undefined") return;

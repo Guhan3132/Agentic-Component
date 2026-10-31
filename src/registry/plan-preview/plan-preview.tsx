@@ -2,7 +2,7 @@
 
 import { ArrowDown, ArrowUp, Ellipsis, Play, Plus, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/cn";
 
 export type PlanItem = { id: string; text: string };
@@ -190,11 +190,9 @@ export function PlanPreview({ steps, onChange, onConfirm, onCancel, disabled, cl
 type Action = { label: string; run: () => void; off?: boolean; tip?: string; danger?: boolean };
 
 /** Hover and keyboard-focus label for icon-only buttons. It is fixed-position, so no scrolling or clipping parent can cut it off. */
-function useTip<T extends HTMLElement>(label: string) {
-  const ref = useRef<T>(null);
+function useTip(el: HTMLElement | null, label: string) {
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const show = (viaFocus: boolean) => {
-    const el = ref.current;
     if (!el) return;
     // Mouse tooltips only with a real pointer; keyboard tooltips only when focus is visible.
     if (viaFocus ? !el.matches(":focus-visible") : !window.matchMedia("(pointer: fine)").matches) return;
@@ -203,7 +201,6 @@ function useTip<T extends HTMLElement>(label: string) {
   };
   const hide = () => setPos(null);
   return {
-    ref,
     bind: { onMouseEnter: () => show(false), onMouseLeave: hide, onFocus: () => show(true), onBlur: hide },
     tip: pos ? (
       <span
@@ -219,10 +216,11 @@ function useTip<T extends HTMLElement>(label: string) {
 
 /** Compact icon button for wide layouts. Delete uses the error colour so it reads as destructive. */
 function IconBtn({ children, label, run, off, tip, danger }: Action & { children: React.ReactNode }) {
-  const t = useTip<HTMLButtonElement>(tip ?? label);
+  const [tEl, setTEl] = useState<HTMLButtonElement | null>(null);
+  const t = useTip(tEl, tip ?? label);
   return (
     <button
-      ref={t.ref}
+      ref={setTEl}
       {...t.bind}
       type="button"
       aria-label={label}

@@ -1,35 +1,49 @@
 "use client";
 
 import { Bookmark, Check, Sparkles } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { cn } from "@/lib/cn";
 import { buildRemixPrompt } from "@/lib/prompts";
 import { track } from "@/lib/track";
 
 const KEY = "agentic-ui:saved";
 
+const EVENT = "agentic-ui:saved-change";
+let memory: string[] = [];
+
 const read = (): string[] => {
   try {
     return JSON.parse(localStorage.getItem(KEY) ?? "[]");
   } catch {
-    return [];
+    return memory;
   }
+};
+
+const write = (next: string[]) => {
+  memory = next;
+  try {
+    localStorage.setItem(KEY, JSON.stringify(next));
+  } catch {
+    /* storage blocked: the in-memory copy keeps the toggle working for this visit */
+  }
+  window.dispatchEvent(new Event(EVENT));
+};
+
+const subscribe = (notify: () => void) => {
+  window.addEventListener(EVENT, notify);
+  window.addEventListener("storage", notify);
+  return () => {
+    window.removeEventListener(EVENT, notify);
+    window.removeEventListener("storage", notify);
+  };
 };
 
 /** Bookmark a pattern in this browser. Stored locally; nothing is sent anywhere. */
 export function SaveButton({ slug }: { slug: string }) {
-  const [saved, setSaved] = useState(false);
-
-  useEffect(() => setSaved(read().includes(slug)), [slug]);
+  const saved = useSyncExternalStore(subscribe, () => read().includes(slug), () => false);
 
   const toggle = () => {
-    const next = saved ? read().filter((s) => s !== slug) : [...read(), slug];
-    try {
-      localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* storage blocked: the toggle still works for this visit */
-    }
-    setSaved(!saved);
+    write(saved ? read().filter((s) => s !== slug) : [...read(), slug]);
     if (!saved) track("save", { slug });
   };
 
