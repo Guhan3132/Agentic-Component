@@ -2,6 +2,32 @@
   "name": "agentic-ui",
   "version": "0.1.0",
   "private": true,
+  "description": "Live, copyable UX patterns for AI agents: React components you can feel before you build them.",
+  "keywords": [
+    "ai",
+    "agent",
+    "ui",
+    "react",
+    "shadcn",
+    "components",
+    "tailwind",
+    "nextjs",
+    "chat",
+    "llm"
+  ],
+  "homepage": "https://agentic-component.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Guhan3132/Agentic-Component.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Guhan3132/Agentic-Component/issues"
+  },
+  "license": "MIT",
+  "author": "Guhan3132",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,6 +37,7 @@
     "prebuild": "node scripts/build-registry.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.65.0",
     "motion": "^14.9.0",

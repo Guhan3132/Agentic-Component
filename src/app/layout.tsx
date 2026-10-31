@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
@@ -14,9 +15,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const description = "Live, copyable UX patterns for AI agents: streaming, trust, approval, planning, chat and input. React, Tailwind, shadcn-ready.";
+
 export const metadata: Metadata = {
-  title: "Agentic UI",
-  description: "Agent UX patterns you can feel: live, breakable, copyable.",
+  metadataBase: new URL("https://agentic-component.vercel.app"),
+  title: { default: "Agentic UI: UX patterns for AI agents", template: "%s · Agentic UI" },
+  description,
+  keywords: ["AI agent UI", "chat UI components", "shadcn", "React", "Tailwind", "human in the loop", "streaming UI"],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Agentic UI",
+    title: "Agentic UI: UX patterns for AI agents",
+    description,
+    url: "/",
+  },
+  twitter: { card: "summary_large_image", title: "Agentic UI: UX patterns for AI agents", description },
 };
 
 export default function RootLayout({
@@ -33,6 +47,7 @@ export default function RootLayout({
           <Header />
           {children}
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

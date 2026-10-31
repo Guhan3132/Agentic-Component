@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { toolIcons } from "@/components/ToolIcons";
 import { cn } from "@/lib/cn";
+import { track } from "@/lib/track";
 import { buildPrompt, cliCommand, shippedCode, tools, type Tool } from "@/lib/prompts";
 
 type Props = { slug: string; title: string; code: string; usage: string; children?: ReactNode };
@@ -67,6 +68,7 @@ export function CopyMenu({ slug, title, code, usage, children }: Props) {
   const copy = async (id: string, text: string) => {
     try {
       await navigator.clipboard.writeText(text);
+      track("copy", { slug, kind: id });
       setDone(id);
       setOpen(false);
       setTimeout(() => setDone((d) => (d === id ? null : d)), 1600);

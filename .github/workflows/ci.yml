@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - name: Registry is up to date
+        run: git diff --exit-code -- public/r
+      - name: Registry items are valid JSON with files
+        run: |
+          node -e '
+          const fs = require("fs");
+          const files = fs.readdirSync("public/r").filter((f) => f.endsWith(".json") && f !== "registry.json");
+          if (!files.length) throw new Error("no registry items");
+          for (const f of files) {
+            const j = JSON.parse(fs.readFileSync("public/r/" + f, "utf8"));
+            if (!j.name || !j.files?.length || !j.files[0].content) throw new Error(f + " is incomplete");
+          }
+          console.log(files.length + " registry items ok");
+          '

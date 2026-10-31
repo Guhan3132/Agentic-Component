@@ -19,7 +19,15 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const p = getPattern((await params).slug);
-  return { title: p ? `${p.title} · Agentic UI` : "Agentic UI", description: p?.summary };
+  if (!p) return {};
+  const url = `/components/${p.slug}`;
+  return {
+    title: p.title,
+    description: p.summary,
+    alternates: { canonical: url },
+    openGraph: { type: "article", title: `${p.title} · Agentic UI`, description: p.summary, url },
+    twitter: { card: "summary_large_image", title: `${p.title} · Agentic UI`, description: p.summary },
+  };
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {

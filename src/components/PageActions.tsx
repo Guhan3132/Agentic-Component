@@ -4,6 +4,7 @@ import { Bookmark, Check, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { buildRemixPrompt } from "@/lib/prompts";
+import { track } from "@/lib/track";
 
 const KEY = "agentic-ui:saved";
 
@@ -29,6 +30,7 @@ export function SaveButton({ slug }: { slug: string }) {
       /* storage blocked: the toggle still works for this visit */
     }
     setSaved(!saved);
+    if (!saved) track("save", { slug });
   };
 
   return (
@@ -53,6 +55,7 @@ export function RemixButton({ slug, title, code, usage }: { slug: string; title:
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(buildRemixPrompt({ slug, title, code, usage }));
+      track("copy", { slug, kind: "remix" });
       setDone(true);
       setTimeout(() => setDone(false), 1600);
     } catch {
