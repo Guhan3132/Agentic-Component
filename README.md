@@ -2,6 +2,8 @@
 
 React components for the screens of an AI agent: streaming, trust, approval, planning, chat and input. Every pattern runs as a **live, scripted simulation**, so you can click it, break it and copy it, with no API key.
 
+**Live demo: [agentic-component.vercel.app](https://agentic-component.vercel.app)**
+
 It is meant to show how a good agent interface behaves, not only how it looks. Each pattern ships with its scenarios (for example "fails mid-stream" or "destructive action"), the reasoning behind it, do and don't lists, props, accessibility notes and the source.
 
 ## The patterns
@@ -54,10 +56,10 @@ Each component is a single file that depends only on React, [`lucide-react`](htt
 
 **Requirements:** Tailwind CSS v4, TypeScript, and the shadcn theme tokens (`background`, `foreground`, `card`, `muted`, `muted-foreground`, `accent`, `border`, `input`, `ring`, `primary`, `primary-foreground`) with a `.dark` class for dark mode. Put `cn` in `@/lib/utils`.
 
-**With the shadcn CLI** (once the site is deployed, use your own domain):
+**With the shadcn CLI** (every pattern is served from the live site):
 
 ```bash
-npx shadcn@latest add "https://YOUR-DOMAIN/r/approval-step.json"
+npx shadcn@latest add "https://agentic-component.vercel.app/r/approval-step.json"
 ```
 
 **Or by hand:** open a pattern page, use **Copy code** or **Copy prompt**, and paste it into `components/ui/`.

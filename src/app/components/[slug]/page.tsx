@@ -122,7 +122,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
               and a <code className="text-zinc-800">cn</code> helper.
             </p>
             <div className="space-y-4">
-              <CodeBlock code={`npx shadcn@latest add "https://your-domain.com/r/${slug}.json"`} file="terminal" />
+              <CodeBlock code={`npx shadcn@latest add "https://agentic-component.vercel.app/r/${slug}.json"`} file="terminal" />
               <CodeBlock code={usage[slug]} file="Usage.tsx" />
               <CodeBlock code={code.replaceAll('"@/lib/cn"', '"@/lib/utils"')} file={file} />
             </div>
