@@ -21,6 +21,9 @@ It is meant to show how a good agent interface behaves, not only how it looks. E
 | Prompt composer | Control | Modes, model and effort, `/` commands, `@` context, image paste, voice |
 | Feedback thumbs | Learn | One-tap rating that asks for a reason only after a thumbs-down |
 | Error recovery | Respond | What failed, what survived, auto-retry with a countdown, and a way forward when retrying stops helping |
+| Citations | Trust | Inline numbered sources that open the exact quote, with a visible flag on uncited claims |
+| Agent memory | Control | What the agent remembers: editable, forgettable with undo, and switchable off |
+| Human hand-off | Control | Pass a chat to a person with context, a real queue position and an email fallback |
 
 The **Playground** (`/playground`) puts them together in one full-screen chat: pick a starter and watch a plan, tool calls, an approval, confidence and sources arrive in the thread. It has dark mode, reset and a desktop/mobile switch.
 

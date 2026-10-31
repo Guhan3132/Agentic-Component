@@ -4,7 +4,10 @@ import type { ReactNode } from "react";
 import { ApprovalStep } from "@/registry/approval-step/approval-step";
 import { ChatThread } from "@/registry/chat-thread/chat-thread";
 import { ConfidenceBadge } from "@/registry/confidence-badge/confidence-badge";
+import { AgentMemory } from "@/registry/agent-memory/agent-memory";
+import { Citations } from "@/registry/citations/citations";
 import { ErrorRecovery } from "@/registry/error-recovery/error-recovery";
+import { HumanHandoff } from "@/registry/human-handoff/human-handoff";
 import { FeedbackThumbs } from "@/registry/feedback-thumbs/feedback-thumbs";
 import { InterruptSteer } from "@/registry/interrupt-steer/interrupt-steer";
 import { PlanPreview } from "@/registry/plan-preview/plan-preview";
@@ -38,6 +41,32 @@ const previews: Record<string, ReactNode> = {
     />
   ),
   "feedback-thumbs": <FeedbackThumbs />,
+  citations: (
+    <Citations
+      text="A two-day offsite for 8 people costs $2,400 to $3,100 [1]. Prices rise in peak season [?]."
+      sources={[{ id: 1, title: "Offsite budgets, explained", url: "https://example.com", publisher: "Event Weekly", quote: "A two-day offsite averages $2,400 to $3,100." }]}
+    />
+  ),
+  "agent-memory": (
+    <AgentMemory
+      items={[
+        { id: "1", text: "You prefer window seats", source: "From your chat on 12 Nov" },
+        { id: "2", text: "Your team has 8 people", source: "From your chat on 3 Nov" },
+      ]}
+      onEdit={() => {}}
+      onForget={() => {}}
+    />
+  ),
+  "human-handoff": (
+    <HumanHandoff
+      state="waiting"
+      summary={["Your refund question for order #4821", "What I already tried"]}
+      position={2}
+      etaMinutes={3}
+      onCancel={() => {}}
+      onFallback={() => {}}
+    />
+  ),
   "error-recovery": (
     <ErrorRecovery
       kind="rate-limit"

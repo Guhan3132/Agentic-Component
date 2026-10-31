@@ -165,6 +165,61 @@ export default function Demo() {
     />
   )
 }`,
+  citations: `import { Citations } from "@/components/ui/citations"
+
+export default function Demo() {
+  return (
+    <Citations
+      text="A two-day offsite for 8 people costs $2,400 to $3,100 [1]. Prices rise in peak season [?]."
+      sources={[
+        {
+          id: 1,
+          title: "Offsite budgets, explained",
+          url: "https://example.com/offsite-budgets",
+          quote: "A two-day offsite for 8 people averages $2,400 to $3,100.",
+        },
+      ]}
+    />
+  )
+}`,
+  "agent-memory": `"use client"
+
+import { useState } from "react"
+import { AgentMemory, type MemoryItem } from "@/components/ui/agent-memory"
+
+export default function Demo() {
+  const [items, setItems] = useState<MemoryItem[]>([
+    { id: "1", text: "You prefer window seats", source: "From your chat on 12 Nov" },
+  ])
+  return (
+    <AgentMemory
+      items={items}
+      onEdit={(id, text) => setItems(items.map((m) => (m.id === id ? { ...m, text } : m)))}
+      onForget={(id) => setItems(items.filter((m) => m.id !== id))}
+      onRestore={(item) => setItems([...items, item])}
+    />
+  )
+}`,
+  "human-handoff": `"use client"
+
+import { useState } from "react"
+import { HumanHandoff, type HandoffState } from "@/components/ui/human-handoff"
+
+export default function Demo() {
+  const [state, setState] = useState<HandoffState>("offer")
+  return (
+    <HumanHandoff
+      state={state}
+      summary={["Your refund question for order #4821", "What I already tried"]}
+      position={2}
+      etaMinutes={3}
+      onRequest={() => setState("waiting")}
+      onCancel={() => setState("offer")}
+      onDecline={() => console.log("keep chatting")}
+      onFallback={() => console.log("email instead")}
+    />
+  )
+}`,
 };
 
 export const tags: Record<string, string[]> = {
@@ -179,4 +234,7 @@ export const tags: Record<string, string[]> = {
   "prompt-composer": ["Input", "Chat", "Mobile", "Attachments"],
   "chat-thread": ["Chat", "Conversation", "Agents", "Streaming"],
   "error-recovery": ["Error handling", "Retry", "Resilience", "Accessibility"],
+  citations: ["Trust", "Sources", "Verification", "Disclosure"],
+  "agent-memory": ["Memory", "Privacy", "Personalisation", "Undo"],
+  "human-handoff": ["Support", "Escalation", "Queue", "Context"],
 };

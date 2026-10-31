@@ -4,6 +4,21 @@
   "homepage": "/",
   "items": [
     {
+      "name": "agent-memory",
+      "type": "registry:ui",
+      "title": "Agent memory",
+      "description": "What the agent remembers about you, in plain sentences you can edit, forget, undo or switch off.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/agent-memory.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "approval-step",
       "type": "registry:ui",
       "title": "Approval step",
@@ -31,6 +46,21 @@
       "files": [
         {
           "path": "registry/agentic-ui/chat-thread.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "citations",
+      "type": "registry:ui",
+      "title": "Citations",
+      "description": "Inline numbered sources that open the exact quote, and a visible flag on any claim that has none.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/citations.tsx",
           "type": "registry:ui"
         }
       ]
@@ -77,6 +107,21 @@
       "files": [
         {
           "path": "registry/agentic-ui/feedback-thumbs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "human-handoff",
+      "type": "registry:ui",
+      "title": "Human hand-off",
+      "description": "Passes a chat to a person with the context attached, a real queue position, and a way out when no one is there.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/human-handoff.tsx",
           "type": "registry:ui"
         }
       ]
