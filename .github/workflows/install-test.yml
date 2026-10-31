@@ -1,0 +1,33 @@
+name: Install test
+
+# Installs the published registry into a brand-new shadcn project and type-checks it,
+# so a broken registry item is caught before users hit it.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Create a fresh Next.js app
+        run: npx --yes create-next-app@latest consumer --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes
+      - name: shadcn init
+        working-directory: consumer
+        run: npx --yes shadcn@latest init -d -y
+      - name: Add every pattern from the live registry
+        working-directory: consumer
+        run: |
+          for s in $(curl -fsS https://agentic-component.vercel.app/r/registry.json | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>console.log(JSON.parse(d).items.map(i=>i.name).join(" ")))'); do
+            npx --yes shadcn@latest add "https://agentic-component.vercel.app/r/$s.json" -y -o
+          done
+      - name: Type-check
+        working-directory: consumer
+        run: npx tsc --noEmit

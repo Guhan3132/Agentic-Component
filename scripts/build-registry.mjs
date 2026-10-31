@@ -12,6 +12,14 @@ const slugs = readdirSync(registryDir, { withFileTypes: true })
   .filter((d) => d.isDirectory())
   .map((d) => d.name);
 
+// Titles and summaries live in the TypeScript registry; read them without a TS loader.
+const meta = {};
+const indexSrc = readFileSync(join(registryDir, "index.ts"), "utf8");
+const entry = /slug: "([^"]+)",\s*title: "([^"]+)",\s*category: "([^"]+)",\s*summary: "((?:[^"\\]|\\.)*)"/g;
+for (const m of indexSrc.matchAll(entry)) {
+  meta[m[1]] = { title: m[2], category: m[3], summary: JSON.parse(`"${m[4]}"`) };
+}
+
 const index = [];
 
 for (const slug of slugs) {
@@ -31,13 +39,23 @@ for (const slug of slugs) {
   const item = {
     $schema: "https://ui.shadcn.com/schema/registry-item.json",
     name: slug,
-    type: "registry:component",
+    type: "registry:ui",
+    title: meta[slug]?.title ?? slug,
+    description: meta[slug]?.summary ?? "",
+    author: "Agentic UI <https://agentic-component.vercel.app>",
+    categories: meta[slug] ? [meta[slug].category.toLowerCase(), "agent"] : ["agent"],
     dependencies,
-    files: [{ path: `components/agentic-ui/${slug}.tsx`, type: "registry:component", content }],
+    registryDependencies: [],
+    files: [{ path: `registry/agentic-ui/${slug}.tsx`, type: "registry:ui", content }],
+    docs: [
+      `Preview and docs: https://agentic-component.vercel.app/components/${slug}`,
+      "Needs the shadcn theme tokens (background, foreground, card, muted, accent, border, primary) and cn in @/lib/utils.",
+      'Run "npx shadcn@latest init" first if you have not.',
+    ].join("\n"),
   };
 
   writeFileSync(join(outDir, `${slug}.json`), JSON.stringify(item, null, 2));
-  index.push({ name: slug, type: item.type, dependencies, files: [{ path: item.files[0].path, type: item.files[0].type }] });
+  index.push({ name: slug, type: item.type, title: item.title, description: item.description, dependencies, files: [{ path: item.files[0].path, type: item.files[0].type }] });
 }
 
 writeFileSync(

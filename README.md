@@ -56,6 +56,8 @@ Each component is a single file that depends only on React, [`lucide-react`](htt
 
 **Requirements:** Tailwind CSS v4, TypeScript, and the shadcn theme tokens (`background`, `foreground`, `card`, `muted`, `muted-foreground`, `accent`, `border`, `input`, `ring`, `primary`, `primary-foreground`) with a `.dark` class for dark mode. Put `cn` in `@/lib/utils`.
 
+**New here? See [Get started](https://agentic-component.vercel.app/get-started).**
+
 **With the shadcn CLI** (every pattern is served from the live site):
 
 ```bash

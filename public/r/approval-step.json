@@ -1,16 +1,25 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "approval-step",
-  "type": "registry:component",
+  "type": "registry:ui",
+  "title": "Approval step",
+  "description": "A human-in-the-loop gate that scales friction with the risk of the action.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "control",
+    "agent"
+  ],
   "dependencies": [
     "lucide-react",
     "motion"
   ],
+  "registryDependencies": [],
   "files": [
     {
-      "path": "components/agentic-ui/approval-step.tsx",
-      "type": "registry:component",
+      "path": "registry/agentic-ui/approval-step.tsx",
+      "type": "registry:ui",
       "content": "\"use client\";\n\nimport { Check, ShieldAlert, X } from \"lucide-react\";\nimport { motion } from \"motion/react\";\nimport { useEffect, useRef, useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type Risk = \"low\" | \"medium\" | \"high\";\n\ntype Props = {\n  title: string;\n  description: string;\n  risk: Risk;\n  details?: string[];\n  /** pending shows the buttons; the other two show the outcome. */\n  state: \"pending\" | \"approved\" | \"rejected\";\n  onApprove: () => void;\n  onReject: () => void;\n  /** Move focus into the card when it appears. Turn off for static previews. */\n  autoFocus?: boolean;\n  className?: string;\n};\n\nconst RISK = {\n  low: { label: \"Low risk\", style: \"text-emerald-700 dark:text-emerald-300 bg-emerald-500/10\" },\n  medium: { label: \"Needs review\", style: \"text-amber-700 dark:text-amber-300 bg-amber-500/10\" },\n  high: { label: \"Hard to undo\", style: \"text-rose-700 dark:text-rose-300 bg-rose-500/10\" },\n};\n\n/**\n * Human-in-the-loop gate. High-risk actions require an explicit acknowledgement and put\n * initial focus on the safe option (Reject), so a stray Enter never approves.\n */\nexport function ApprovalStep({ title, description, risk, details = [], state, onApprove, onReject, autoFocus = true, className }: Props) {\n  const [ack, setAck] = useState(false);\n  const safeRef = useRef<HTMLButtonElement>(null);\n  const approveRef = useRef<HTMLButtonElement>(null);\n\n  useEffect(() => {\n    if (autoFocus && state === \"pending\") (risk === \"high\" ? safeRef : approveRef).current?.focus();\n  }, [state, risk, autoFocus]);\n\n  const canApprove = risk !== \"high\" || ack;\n\n  return (\n    <motion.section\n      initial={{ opacity: 0, scale: 0.98, y: 6 }}\n      animate={{ opacity: 1, scale: 1, y: 0 }}\n      transition={{ type: \"spring\", bounce: 0, duration: 0.3 }}\n      aria-labelledby=\"approval-title\"\n      className={cn(\n        \"rounded-xl border bg-card p-4\",\n        state === \"pending\" ? \"border-amber-400/50\" : \"border-border\",\n        className,\n      )}\n    >\n      <div className=\"flex items-start justify-between gap-3\">\n        <div>\n          <h3 id=\"approval-title\" className=\"flex items-center gap-2 font-medium text-foreground\">\n            <ShieldAlert size={16} className=\"text-amber-700 dark:text-amber-300\" aria-hidden /> {title}\n          </h3>\n          <p className=\"mt-1 text-sm text-muted-foreground\">{description}</p>\n        </div>\n        <span className={cn(\"shrink-0 rounded-full px-2.5 py-1 text-xs\", RISK[risk].style)}>{RISK[risk].label}</span>\n      </div>\n\n      {details.length > 0 && (\n        <ul className=\"mt-3 space-y-1 rounded-lg bg-muted/50 p-3 font-mono text-xs text-foreground/80\">\n          {details.map((d) => (\n            <li key={d}>{d}</li>\n          ))}\n        </ul>\n      )}\n\n      {state === \"pending\" ? (\n        <div className=\"mt-4 space-y-3\">\n          {risk === \"high\" && (\n            <label className=\"flex items-center gap-2 text-sm text-foreground/80\">\n              <input type=\"checkbox\" checked={ack} onChange={(e) => setAck(e.target.checked)} className=\"accent-primary\" />\n              I understand this cannot be undone\n            </label>\n          )}\n          <div className=\"flex gap-2\">\n            <button\n              ref={approveRef}\n              onClick={onApprove}\n              disabled={!canApprove}\n              className=\"inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 pointer-coarse:py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40\"\n            >\n              <Check size={14} /> Approve\n            </button>\n            <button\n              ref={safeRef}\n              onClick={onReject}\n              className=\"inline-flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 pointer-coarse:py-2.5 text-sm text-foreground hover:bg-accent\"\n            >\n              <X size={14} /> Reject\n            </button>\n          </div>\n        </div>\n      ) : (\n        <p role=\"status\" className={cn(\"mt-4 text-sm\", state === \"approved\" ? \"text-emerald-700 dark:text-emerald-300\" : \"text-muted-foreground\")}>\n          {state === \"approved\" ? \"Approved. The agent is continuing.\" : \"Rejected. The agent stopped and changed nothing.\"}\n        </p>\n      )}\n    </motion.section>\n  );\n}\n"
     }
-  ]
+  ],
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/approval-step\nNeeds the shadcn theme tokens (background, foreground, card, muted, accent, border, primary) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
 }

@@ -3,7 +3,7 @@
 ## Unreleased
 
 - Security headers (CSP, HSTS, Permissions-Policy) and a patched `sharp`
-- Anonymous usage analytics
+- Anonymous page-view analytics, a Get started page, and richer registry metadata
 - Sitemap, robots, social image and per-page metadata
 - CI, issue and pull request templates, contributing and security docs
 

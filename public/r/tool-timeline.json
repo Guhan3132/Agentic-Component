@@ -1,16 +1,25 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "tool-timeline",
-  "type": "registry:component",
+  "type": "registry:ui",
+  "title": "Tool-call timeline",
+  "description": "A step-by-step record of what the agent did, with real outcomes, including failures.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "act",
+    "agent"
+  ],
   "dependencies": [
     "lucide-react",
     "motion"
   ],
+  "registryDependencies": [],
   "files": [
     {
-      "path": "components/agentic-ui/tool-timeline.tsx",
-      "type": "registry:component",
+      "path": "registry/agentic-ui/tool-timeline.tsx",
+      "type": "registry:ui",
       "content": "\"use client\";\n\nimport { Circle, CircleCheck, CircleX, Loader2 } from \"lucide-react\";\nimport { motion } from \"motion/react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type ToolStep = {\n  id: string;\n  name: string;\n  args: string;\n  status: \"pending\" | \"running\" | \"ok\" | \"failed\";\n  summary?: string;\n};\n\ntype Props = {\n  steps: ToolStep[];\n  className?: string;\n};\n\n/** Every action the agent takes, in order, with its real outcome. Failures are shown, never hidden. */\nexport function ToolTimeline({ steps, className }: Props) {\n  if (steps.length === 0) return null;\n  return (\n    <ol aria-label=\"Agent actions\" className={cn(\"space-y-0\", className)}>\n      {steps.map((s, i) => (\n        <motion.li\n          key={s.id}\n          initial={{ opacity: 0, y: 8 }}\n          animate={{ opacity: 1, y: 0 }}\n          transition={{ type: \"spring\", bounce: 0, duration: 0.3 }}\n          className=\"relative flex gap-3 pb-4 last:pb-0\"\n        >\n          {i < steps.length - 1 && <span aria-hidden className=\"absolute left-[9px] top-6 h-[calc(100%-1.25rem)] w-px bg-border\" />}\n          <span className=\"mt-0.5 shrink-0\">\n            {s.status === \"pending\" && <Circle size={20} className=\"text-muted-foreground/40\" aria-label=\"Waiting\" />}\n            {s.status === \"running\" && <Loader2 size={20} className=\"animate-spin text-muted-foreground/60\" aria-label=\"Running\" />}\n            {s.status === \"ok\" && <CircleCheck size={20} className=\"text-emerald-600 dark:text-emerald-400\" aria-label=\"Done\" />}\n            {s.status === \"failed\" && <CircleX size={20} className=\"text-rose-600 dark:text-rose-400\" aria-label=\"Failed\" />}\n          </span>\n          <div className=\"min-w-0 text-sm\">\n            <p className=\"flex flex-wrap items-baseline gap-x-2\">\n              <span className=\"font-medium text-foreground\">{s.name}</span>\n              {s.args && <code className=\"truncate font-mono text-xs text-muted-foreground\">{s.args}</code>}\n            </p>\n            {s.summary && (\n              <p className={cn(\"mt-0.5\", s.status === \"failed\" ? \"text-rose-700 dark:text-rose-300\" : \"text-muted-foreground\")}>{s.summary}</p>\n            )}\n          </div>\n        </motion.li>\n      ))}\n    </ol>\n  );\n}\n"
     }
-  ]
+  ],
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/tool-timeline\nNeeds the shadcn theme tokens (background, foreground, card, muted, accent, border, primary) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
 }

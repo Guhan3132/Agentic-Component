@@ -5,138 +5,158 @@
   "items": [
     {
       "name": "approval-step",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Approval step",
+      "description": "A human-in-the-loop gate that scales friction with the risk of the action.",
       "dependencies": [
         "lucide-react",
         "motion"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/approval-step.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/approval-step.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "chat-thread",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Chat thread",
+      "description": "A flat, readable conversation between a person and an agent, with references, files, hand-offs and unread markers.",
       "dependencies": [
         "lucide-react",
         "motion"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/chat-thread.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/chat-thread.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "confidence-badge",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Confidence badge",
+      "description": "A plain-language signal for how sure the agent is, with a reason and a next step.",
       "dependencies": [
         "lucide-react"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/confidence-badge.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/confidence-badge.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "feedback-thumbs",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Feedback thumbs",
+      "description": "One-tap rating that asks for a reason only after a thumbs-down.",
       "dependencies": [
         "lucide-react",
         "motion"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/feedback-thumbs.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/feedback-thumbs.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "interrupt-steer",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Interrupt and steer",
+      "description": "A composer that stays live while the agent works, so you redirect it mid-run.",
       "dependencies": [
         "lucide-react"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/interrupt-steer.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/interrupt-steer.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "plan-preview",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Plan preview",
+      "description": "The agent proposes steps. You edit, reorder or remove them before it runs.",
       "dependencies": [
         "lucide-react",
         "motion"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/plan-preview.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/plan-preview.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "prompt-composer",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Prompt composer",
+      "description": "A chat-style message box for agents: / commands, @ context, image paste, voice, and mode and model in a row under the box. Built for phones as well as desktops.",
       "dependencies": [
         "lucide-react",
         "motion"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/prompt-composer.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/prompt-composer.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "streaming-response",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Streaming response",
+      "description": "Text that arrives as it is written, with stop, retry and a clear failure state.",
       "dependencies": [
         "lucide-react"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/streaming-response.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/streaming-response.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "tool-timeline",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Tool-call timeline",
+      "description": "A step-by-step record of what the agent did, with real outcomes, including failures.",
       "dependencies": [
         "lucide-react",
         "motion"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/tool-timeline.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/tool-timeline.tsx",
+          "type": "registry:ui"
         }
       ]
     },
     {
       "name": "why-this-answer",
-      "type": "registry:component",
+      "type": "registry:ui",
+      "title": "Why this answer",
+      "description": "An expandable panel with reasoning steps and quotable sources.",
       "dependencies": [
         "lucide-react",
         "motion"
       ],
       "files": [
         {
-          "path": "components/agentic-ui/why-this-answer.tsx",
-          "type": "registry:component"
+          "path": "registry/agentic-ui/why-this-answer.tsx",
+          "type": "registry:ui"
         }
       ]
     }
