@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local tooling (agent skills and preview config)
 /.claude/
+
+.vercel
+.env*
