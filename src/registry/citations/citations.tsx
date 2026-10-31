@@ -50,7 +50,8 @@ export function Citations({ text, sources, className }: Props) {
                 aria-controls={panelId}
                 onClick={() => setActive(on ? null : id)}
                 className={cn(
-                  "mx-0.5 inline-grid h-[1.15rem] min-w-[1.15rem] place-items-center rounded-full px-1 align-[0.15em] text-[0.68rem] font-medium leading-none pointer-coarse:h-6 pointer-coarse:min-w-6",
+                  // On touch the visible dot grows to 24px and an invisible ring takes the hit area to 44px.
+                  "relative mx-0.5 inline-grid h-[1.15rem] min-w-[1.15rem] place-items-center rounded-full px-1 align-[0.15em] text-[0.68rem] font-medium leading-none pointer-coarse:h-6 pointer-coarse:min-w-6 pointer-coarse:before:absolute pointer-coarse:before:-inset-2.5 pointer-coarse:before:content-['']",
                   on ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground",
                 )}
               >
@@ -83,7 +84,7 @@ export function Citations({ text, sources, className }: Props) {
                 href={current.url}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 text-foreground underline-offset-2 hover:underline"
+                className="inline-flex items-center gap-1 text-foreground underline-offset-2 hover:underline pointer-coarse:min-h-11"
               >
                 Open source <ExternalLink size={11} aria-hidden />
               </a>

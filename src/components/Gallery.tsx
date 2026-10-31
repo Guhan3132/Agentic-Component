@@ -5,13 +5,14 @@ import { useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { PatternCard } from "@/components/PatternCard";
 import type { Category, Pattern } from "@/registry";
+import { tags } from "@/registry/usage";
 
 export function Gallery({ patterns, categories }: { patterns: Pattern[]; categories: Category[] }) {
   const [cat, setCat] = useState<Category | "All">("All");
   const [q, setQ] = useState("");
   const input = useRef<HTMLInputElement>(null);
   const shown = patterns.filter(
-    (p) => (cat === "All" || p.category === cat) && (p.title + p.summary).toLowerCase().includes(q.trim().toLowerCase()),
+    (p) => (cat === "All" || p.category === cat) && [p.title, p.summary, ...(tags[p.slug] ?? [])].join(" ").toLowerCase().includes(q.trim().toLowerCase()),
   );
 
   const clear = () => {
@@ -22,7 +23,7 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
   return (
     <section id="patterns" className="mx-auto max-w-6xl px-5 pb-24">
       <h2 className="text-lg font-semibold tracking-tight">
-        All patterns <span className="text-sm font-normal text-zinc-400">({shown.length})</span>
+        {cat === "All" ? "All patterns" : cat} <span className="text-sm font-normal text-zinc-400">({shown.length})</span>
       </h2>
 
       {/* Filters on the left, search at the right end */}
@@ -34,11 +35,11 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
               aria-pressed={cat === c}
               onClick={() => setCat(c)}
               className={cn(
-                "rounded-full border px-3 py-1.5 text-sm sm:py-1",
+                "rounded-full border px-3 py-1 text-sm pointer-coarse:min-h-11 pointer-coarse:px-4",
                 cat === c ? "border-zinc-900 bg-zinc-900 text-white" : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400",
               )}
             >
-              {c}
+              {c} <span className={cn("text-xs", cat === c ? "text-white/70" : "text-zinc-400")}>{c === "All" ? patterns.length : patterns.filter((p) => p.category === c).length}</span>
             </button>
           ))}
         </div>

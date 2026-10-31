@@ -66,7 +66,8 @@ export function AgentMemory({ items, suggestion, enabled = true, onToggle, onAcc
               aria-label="Remember things about me"
               onClick={() => onToggle(!enabled)}
               className={cn(
-                "relative h-5 w-9 rounded-full transition-colors pointer-coarse:h-7 pointer-coarse:w-12",
+                // On touch the switch grows, and an invisible band above and below takes the hit area to 44px.
+                "relative h-5 w-9 rounded-full transition-colors pointer-coarse:h-7 pointer-coarse:w-12 pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-2 pointer-coarse:before:content-['']",
                 enabled ? "bg-primary" : "bg-muted-foreground/30",
               )}
             >

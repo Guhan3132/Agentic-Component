@@ -20,6 +20,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+      - run: npm test
       - name: Registry is up to date
         run: git diff --exit-code -- public/r
       - name: Registry items are valid JSON with files
