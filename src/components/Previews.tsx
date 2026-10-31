@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ApprovalStep } from "@/registry/approval-step/approval-step";
 import { ChatThread } from "@/registry/chat-thread/chat-thread";
 import { ConfidenceBadge } from "@/registry/confidence-badge/confidence-badge";
+import { ErrorRecovery } from "@/registry/error-recovery/error-recovery";
 import { FeedbackThumbs } from "@/registry/feedback-thumbs/feedback-thumbs";
 import { InterruptSteer } from "@/registry/interrupt-steer/interrupt-steer";
 import { PlanPreview } from "@/registry/plan-preview/plan-preview";
@@ -37,6 +38,16 @@ const previews: Record<string, ReactNode> = {
     />
   ),
   "feedback-thumbs": <FeedbackThumbs />,
+  "error-recovery": (
+    <ErrorRecovery
+      kind="rate-limit"
+      title="Too many requests right now"
+      message="This usually clears within a few seconds."
+      kept={["Your question", "Everything found so far"]}
+      onRetry={() => {}}
+      alternative={{ label: "Keep what I have", onClick: () => {} }}
+    />
+  ),
   "tool-timeline": (
     <div className="rounded-xl border border-border bg-card p-4">
       <ToolTimeline

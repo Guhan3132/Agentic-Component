@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import ApprovalDemo from "./approval-step/demo";
 import ConfidenceDemo from "./confidence-badge/demo";
+import ErrorRecoveryDemo from "./error-recovery/demo";
 import FeedbackDemo from "./feedback-thumbs/demo";
 import StreamingDemo from "./streaming-response/demo";
 import InterruptDemo from "./interrupt-steer/demo";
@@ -21,4 +22,5 @@ export const demos: Record<string, ComponentType> = {
   "interrupt-steer": InterruptDemo,
   "prompt-composer": ComposerDemo,
   "chat-thread": ChatDemo,
+  "error-recovery": ErrorRecoveryDemo,
 };

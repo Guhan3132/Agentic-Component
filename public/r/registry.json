@@ -51,6 +51,21 @@
       ]
     },
     {
+      "name": "error-recovery",
+      "type": "registry:ui",
+      "title": "Error recovery",
+      "description": "Says what failed, what survived and what to do next, with a visible auto-retry and a way forward when retrying stops helping.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/error-recovery.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "feedback-thumbs",
       "type": "registry:ui",
       "title": "Feedback thumbs",

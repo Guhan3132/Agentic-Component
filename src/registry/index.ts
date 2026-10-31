@@ -171,6 +171,26 @@ export const patterns: Pattern[] = [
       { name: "className", type: "string", desc: "Set a height such as h-[28rem]; the messages scroll inside it" },
     ],
   },
+  {
+    slug: "error-recovery",
+    title: "Error recovery",
+    category: "Respond",
+    summary: "Says what failed, what survived and what to do next, with a visible auto-retry and a way forward when retrying stops helping.",
+    why: "Every agent fails: connections drop, services rate-limit, tools time out, requests get declined. A red banner that says \"Something went wrong\" leaves people guessing whether their work is gone. This pattern names the problem in plain words, lists what was kept, retries transient errors on its own with a countdown you can cancel, and after the last attempt puts the real alternative first, because a fourth retry rarely helps. Declined requests get no Retry at all.",
+    dos: ["Say what happened and what was kept", "Retry transient errors automatically, with a visible countdown and a Cancel", "Lead with the alternative once retries run out", "Keep technical detail one click away"],
+    donts: ["Show \"Something went wrong\" and nothing else", "Retry silently or forever", "Offer Retry on a refusal", "Throw away the partial answer"],
+    a11y: ["The card is role=alert, so the failure is announced once", "The countdown is hidden from screen readers and replaced by one sentence, so it is not read every second", "Technical details use aria-expanded", "Buttons are 44px on touch screens"],
+    props: [
+      { name: "kind", type: "network | rate-limit | tool | refusal", desc: "Sets the icon and tone. refusal hides Retry" },
+      { name: "title / message", type: "string", desc: "What happened, and what the user can do about it" },
+      { name: "kept", type: "string[]", desc: "Work that survived, shown as a checklist" },
+      { name: "retryAfter", type: "number (seconds)", desc: "Starts an automatic retry countdown. Omit to retry only on request" },
+      { name: "retrying / attempt / maxAttempts", type: "boolean / number / number", desc: "Drive the spinner and the retries-exhausted state" },
+      { name: "onRetry", type: "() => void", desc: "Called by Retry and when the countdown reaches zero" },
+      { name: "alternative", type: "{ label, onClick }", desc: "A different way forward. Becomes the main action after the last attempt" },
+      { name: "details", type: "string", desc: "Technical detail for support, behind a toggle" },
+    ],
+  },
 ];
 
 export const getPattern = (slug: string) => patterns.find((p) => p.slug === slug);

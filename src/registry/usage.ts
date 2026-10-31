@@ -145,6 +145,26 @@ export default function Demo() {
     />
   )
 }`,
+  "error-recovery": `"use client"
+
+import { useState } from "react"
+import { ErrorRecovery } from "@/components/ui/error-recovery"
+
+export default function Demo() {
+  const [attempt, setAttempt] = useState(1)
+  return (
+    <ErrorRecovery
+      kind="rate-limit"
+      title="Too many requests right now"
+      message="This usually clears within a few seconds."
+      kept={["Your question", "Everything found so far"]}
+      retryAfter={6}
+      attempt={attempt}
+      onRetry={() => setAttempt(attempt + 1)}
+      alternative={{ label: "Keep what I have", onClick: () => console.log("kept") }}
+    />
+  )
+}`,
 };
 
 export const tags: Record<string, string[]> = {
@@ -158,4 +178,5 @@ export const tags: Record<string, string[]> = {
   "interrupt-steer": ["Agents", "Chat", "Steering", "Composer"],
   "prompt-composer": ["Input", "Chat", "Mobile", "Attachments"],
   "chat-thread": ["Chat", "Conversation", "Agents", "Streaming"],
+  "error-recovery": ["Error handling", "Retry", "Resilience", "Accessibility"],
 };
