@@ -733,7 +733,7 @@ export function PromptComposer({
           aria-label={`Mode: ${mode}`}
           title="Change with /plan, /ask or /build"
           onClick={() => openMenu("mode")}
-          className="inline-flex h-11 items-center gap-1.5 rounded-full border border-border bg-card/90 px-3.5 text-sm font-medium text-foreground shadow-sm backdrop-blur hover:bg-card focus-visible:outline-2 focus-visible:outline-ring @md:h-9"
+          className="inline-flex h-11 items-center gap-1.5 rounded-full border border-border bg-card px-3.5 text-sm font-medium text-foreground shadow-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring @md:h-9"
         >
           {mode}
           <ChevronDown size={14} className="text-muted-foreground" />
@@ -745,7 +745,7 @@ export function PromptComposer({
           aria-haspopup="true"
           aria-expanded={menu === "model"}
           onClick={() => openMenu("model")}
-          className="inline-flex h-11 min-w-0 items-center gap-1.5 rounded-full border border-border bg-card/90 px-3.5 text-sm text-muted-foreground shadow-sm backdrop-blur hover:bg-card hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring @md:h-9"
+          className="inline-flex h-11 min-w-0 items-center gap-1.5 rounded-full border border-border bg-card px-3.5 text-sm text-muted-foreground shadow-sm hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring @md:h-9"
         >
           {!auto && <ModelDot id={model.id} small />}
           <span className="truncate font-medium text-foreground">{auto ? "Auto" : model.name}</span>
@@ -842,7 +842,7 @@ function Popover({
       animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
       exit={{ opacity: 0, scale: 0.97, y: 4, filter: "blur(3px)", transition: { duration: 0.12, ease: [0.4, 0, 1, 1] } }}
       transition={{ type: "spring", bounce: 0, duration: 0.28 }}
-      className={cn("absolute bottom-full z-30 mb-2 rounded-2xl border border-border bg-card/90 p-1.5 shadow-xl backdrop-blur-xl backdrop-saturate-150", className)}
+      className={cn("absolute bottom-full z-30 mb-2 rounded-2xl border border-border bg-card p-1.5 shadow-xl", className)}
     >
       {children}
     </motion.div>

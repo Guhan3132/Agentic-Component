@@ -228,7 +228,7 @@ function Toolbar({ children, className, label }: { children: React.ReactNode; cl
     <div
       role={label ? "group" : undefined}
       aria-label={label}
-      className={cn("absolute z-10 flex items-center gap-0.5 rounded-lg border border-border bg-card/90 p-0.5 shadow-sm backdrop-blur", className)}
+      className={cn("absolute z-10 flex items-center gap-0.5 rounded-lg border border-border bg-card p-0.5 shadow-sm", className)}
     >
       {children}
     </div>

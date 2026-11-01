@@ -89,12 +89,10 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Materials: translucent surfaces that separate from content without an opaque slab. */
+/* Popovers and menus are solid: nothing shows through them, so the text on top is always easy to read. */
 .material-pop {
-  background: color-mix(in srgb, var(--card) 82%, transparent);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  /* bright top edge: light catching the material */
+  background: var(--card);
+  /* bright top edge: light catching the surface */
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 45%, transparent),
     0 24px 48px -12px rgb(0 0 0 / 0.22);
