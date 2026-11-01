@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { PatternCard } from "@/components/PatternCard";
 import type { Category, Pattern } from "@/registry";
@@ -14,6 +14,18 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
   const shown = patterns.filter(
     (p) => (cat === "All" || p.category === cat) && [p.title, p.summary, ...(tags[p.slug] ?? [])].join(" ").toLowerCase().includes(q.trim().toLowerCase()),
   );
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      e.preventDefault();
+      input.current?.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const clear = () => {
     setQ("");
@@ -57,10 +69,16 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
               }
             }}
             placeholder="Search patterns"
+            aria-keyshortcuts="/"
             aria-label="Search patterns"
             autoComplete="off"
             className="h-11 w-full bg-transparent pl-9 pr-10 text-base text-zinc-900 outline-none placeholder:text-zinc-400 sm:h-9 sm:text-sm"
           />
+          {!q && (
+            <kbd aria-hidden className="pointer-events-none absolute right-3 hidden rounded border border-zinc-200 bg-zinc-50 px-1.5 text-xs text-zinc-400 pointer-fine:block">
+              /
+            </kbd>
+          )}
           {q && (
             <button
               type="button"

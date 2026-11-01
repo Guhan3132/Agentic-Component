@@ -44,9 +44,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <a
+          href="#content"
+          className="fixed left-3 top-3 z-50 -translate-y-20 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-lg focus:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900"
+        >
+          Skip to content
+        </a>
         <Providers>
           <Header />
-          {children}
+          <div id="content" tabIndex={-1} className="outline-none">
+            {children}
+          </div>
           <Footer />
         </Providers>
         <Analytics />

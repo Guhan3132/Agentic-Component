@@ -37,7 +37,14 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const Demo = demos[slug];
   const file = `${slug}.tsx`;
   const code = readFileSync(join(process.cwd(), "src/registry", slug, file), "utf8");
-  const more = patterns.filter((p) => p.slug !== slug).slice(0, 3);
+  const mine = new Set(tags[slug] ?? []);
+  const score = (p: (typeof patterns)[number]) => (p.category === pattern.category ? 10 : 0) + (tags[p.slug] ?? []).filter((t) => mine.has(t)).length;
+  const more = patterns
+    .filter((p) => p.slug !== slug)
+    .map((p, i) => ({ p, s: score(p), i }))
+    .sort((a, b) => b.s - a.s || a.i - b.i)
+    .slice(0, 3)
+    .map((x) => x.p);
 
   return (
     <main className="pb-24 pt-8">
@@ -191,12 +198,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           </Meta>
           <Meta title="Author">Agentic UI</Meta>
           <Meta title="Category">{pattern.category}</Meta>
+          <Meta title="Added in">v{pattern.since ?? "0.1.0"}</Meta>
           <Meta title="License">MIT License</Meta>
         </aside>
       </div>
 
       <section className="mt-20">
-        <h2 className="mb-5 text-xl font-semibold tracking-tight">More patterns</h2>
+        <h2 className="mb-5 text-xl font-semibold tracking-tight">Related patterns</h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {more.map((p) => (
             <PatternCard key={p.slug} pattern={p} />

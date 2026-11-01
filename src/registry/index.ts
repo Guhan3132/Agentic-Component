@@ -5,12 +5,17 @@ export type Pattern = {
   title: string;
   category: Category;
   summary: string;
+  /** The release that added it. Missing means 0.1.0. */
+  since?: string;
   why: string;
   dos: string[];
   donts: string[];
   a11y: string[];
   props: { name: string; type: string; desc: string }[];
 };
+
+/** Patterns added in this release get a "New" badge. */
+export const LATEST_RELEASE = "0.2.0";
 
 export const categories: Category[] = ["Respond", "Trust", "Act", "Control", "Learn"];
 
@@ -176,6 +181,7 @@ export const patterns: Pattern[] = [
     title: "Error recovery",
     category: "Respond",
     summary: "Says what failed, what survived and what to do next, with a visible auto-retry and a way forward when retrying stops helping.",
+    since: "0.2.0",
     why: "Every agent fails: connections drop, services rate-limit, tools time out, requests get declined. A red banner that says \"Something went wrong\" leaves people guessing whether their work is gone. This pattern names the problem in plain words, lists what was kept, retries transient errors on its own with a countdown you can cancel, and after the last attempt puts the real alternative first, because a fourth retry rarely helps. Declined requests get no Retry at all.",
     dos: ["Say what happened and what was kept", "Retry transient errors automatically, with a visible countdown and a Cancel", "Lead with the alternative once retries run out", "Keep technical detail one click away"],
     donts: ["Show \"Something went wrong\" and nothing else", "Retry silently or forever", "Offer Retry on a refusal", "Throw away the partial answer"],
@@ -196,6 +202,7 @@ export const patterns: Pattern[] = [
     title: "Citations",
     category: "Trust",
     summary: "Inline numbered sources that open the exact quote, and a visible flag on any claim that has none.",
+    since: "0.2.0",
     why: "A list of links at the bottom of an answer proves little: nobody knows which claim each link backs. Numbering the claims lets a reader check the one they doubt. Opening the exact quote, not just the page, makes checking a two-second job. And a claim with no source is marked as such, so the answer never looks more certain than it is.",
     dos: ["Cite the claim, not the paragraph", "Show the exact quote the claim rests on", "Flag claims that have no source", "Keep the source list in step with the open marker"],
     donts: ["Pile links at the bottom with no link to claims", "Hide uncited claims", "Open a floating popover that clips or covers the text", "Cite a page that does not support the claim"],
@@ -211,6 +218,7 @@ export const patterns: Pattern[] = [
     title: "Agent memory",
     category: "Control",
     summary: "What the agent remembers about you, in plain sentences you can edit, forget, undo or switch off.",
+    since: "0.2.0",
     why: "An agent that quietly remembers feels like surveillance, and one that forgets feels broken. The answer is a memory the person can read and run: each fact is a sentence, says where it was learned, and can be fixed or forgotten, with a few seconds to undo a slip. New memories are offered with a clear yes, never saved silently, and one switch turns it all off.",
     dos: ["Write each memory as a plain sentence", "Say where each one came from", "Ask before saving something new", "Let a forget be undone for a few seconds"],
     donts: ["Save things without asking", "Hide the list in settings", "Make forgetting permanent on one click", "Remember sensitive details by default"],
@@ -229,6 +237,7 @@ export const patterns: Pattern[] = [
     title: "Human hand-off",
     category: "Control",
     summary: "Passes a chat to a person with the context attached, a real queue position, and a way out when no one is there.",
+    since: "0.2.0",
     why: "The moment an agent cannot help is the moment people are most annoyed, and making them repeat themselves doubles it. A good hand-off shows what the person will see before the user agrees, gives a real position and wait instead of an endless spinner, lets them leave or switch to email, and says up front when the team is offline. When someone joins, they already have the summary.",
     dos: ["Show what will be shared before connecting", "Give a position and a rough wait", "Offer email when the wait is long or the team is offline", "Say who joined and that they have the context"],
     donts: ["Make people repeat the problem", "Show a spinner with no wait time", "Queue people while the team is offline", "Trap them in the line with no way out"],

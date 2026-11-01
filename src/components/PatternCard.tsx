@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Preview } from "@/components/Previews";
-import type { Pattern } from "@/registry";
+import { LATEST_RELEASE, type Pattern } from "@/registry";
 
 /**
  * Hierarchy, in reading order: the live miniature, the name, then one line of what it does.
@@ -17,6 +17,9 @@ export function PatternCard({ pattern }: { pattern: Pattern }) {
         <span className="absolute left-3 top-3 z-10 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-medium text-zinc-600 shadow-sm ring-1 ring-zinc-200/80">
           {pattern.category}
         </span>
+        {pattern.since === LATEST_RELEASE && (
+          <span className="absolute right-3 top-3 z-10 rounded-full bg-zinc-900 px-2.5 py-1 text-[11px] font-medium text-white shadow-sm">New</span>
+        )}
         <div className="size-full transition-transform duration-300 ease-out group-hover:scale-[1.03]">
           <Preview slug={pattern.slug} />
         </div>
