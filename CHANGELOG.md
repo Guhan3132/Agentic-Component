@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.3.0 (2026-11-01)
+
 - New patterns: tool permissions, multi-agent status, voice input (17 in total)
 - `npm run new-pattern` scaffolds a pattern, and docs/adding-a-pattern.md is the contributor guide
 

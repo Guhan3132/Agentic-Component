@@ -1,0 +1,53 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "feedback-thumbs",
+  "type": "registry:ui",
+  "title": "Feedback thumbs",
+  "description": "One-tap rating that asks for a reason only after a thumbs-down.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "learn",
+    "agent"
+  ],
+  "dependencies": [
+    "lucide-react",
+    "motion"
+  ],
+  "registryDependencies": [],
+  "cssVars": {
+    "light": {
+      "background": "oklch(1 0 0)",
+      "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)",
+      "muted": "oklch(0.97 0 0)",
+      "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)",
+      "border": "oklch(0.922 0 0)",
+      "input": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "primary": "oklch(0.205 0 0)",
+      "primary-foreground": "oklch(0.985 0 0)"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)",
+      "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)",
+      "muted": "oklch(0.269 0 0)",
+      "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.269 0 0)",
+      "border": "oklch(1 0 0 / 10%)",
+      "input": "oklch(1 0 0 / 15%)",
+      "ring": "oklch(0.556 0 0)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-foreground": "oklch(0.205 0 0)"
+    }
+  },
+  "files": [
+    {
+      "path": "registry/agentic-ui/feedback-thumbs.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport { Check, ThumbsDown, ThumbsUp } from \"lucide-react\";\nimport { AnimatePresence, motion } from \"motion/react\";\nimport { useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\ntype Vote = \"up\" | \"down\" | null;\n\ntype Props = {\n  onSubmit?: (vote: \"up\" | \"down\", reasons: string[]) => void;\n  downReasons?: string[];\n  className?: string;\n};\n\nconst DEFAULT_REASONS = [\"Wrong or outdated\", \"Didn't answer my question\", \"Too long\", \"Unsafe or inappropriate\"];\n\n/** One tap to vote. Reason chips appear only after a thumbs-down, so the happy path stays frictionless. */\nexport function FeedbackThumbs({ onSubmit, downReasons = DEFAULT_REASONS, className }: Props) {\n  const [vote, setVote] = useState<Vote>(null);\n  const [reasons, setReasons] = useState<string[]>([]);\n  const [sent, setSent] = useState(false);\n\n  const pick = (v: \"up\" | \"down\") => {\n    const next = vote === v ? null : v;\n    setVote(next);\n    setReasons([]);\n    setSent(false);\n    if (next === \"up\") {\n      onSubmit?.(\"up\", []);\n      setSent(true);\n    }\n  };\n\n  const toggle = (r: string) => setReasons((cur) => (cur.includes(r) ? cur.filter((x) => x !== r) : [...cur, r]));\n\n  const submit = () => {\n    onSubmit?.(\"down\", reasons);\n    setSent(true);\n  };\n\n  return (\n    <div className={cn(\"space-y-3\", className)}>\n      <div className=\"flex items-center gap-1\" role=\"group\" aria-label=\"Rate this response\">\n        <IconBtn label=\"Good response\" tip=\"Good response\" pressed={vote === \"up\"} onClick={() => pick(\"up\")}>\n          <ThumbsUp size={16} className={vote === \"up\" ? \"fill-current\" : undefined} />\n        </IconBtn>\n        <IconBtn label=\"Bad response\" tip=\"Bad response\" pressed={vote === \"down\"} onClick={() => pick(\"down\")}>\n          <ThumbsDown size={16} className={vote === \"down\" ? \"fill-current\" : undefined} />\n        </IconBtn>\n        <span role=\"status\" aria-live=\"polite\" className=\"ml-2 flex items-center gap-1 text-sm text-emerald-700 dark:text-emerald-300\">\n          {sent && (\n            <>\n              <Check size={14} /> Thanks, this helps improve answers.\n            </>\n          )}\n        </span>\n      </div>\n\n      <AnimatePresence initial={false}>\n      {vote === \"down\" && !sent && (\n        <motion.div\n          initial={{ opacity: 0, y: -6, scale: 0.98 }}\n          animate={{ opacity: 1, y: 0, scale: 1 }}\n          exit={{ opacity: 0, y: -4, scale: 0.98, transition: { duration: 0.12 } }}\n          transition={{ type: \"spring\", bounce: 0, duration: 0.3 }}\n          className=\"space-y-2 rounded-xl border border-border bg-card p-3\"\n        >\n          <p className=\"text-sm text-muted-foreground\">What went wrong? (optional)</p>\n          <div className=\"flex flex-wrap gap-2\">\n            {downReasons.map((r) => (\n              <button\n                key={r}\n                aria-pressed={reasons.includes(r)}\n                onClick={() => toggle(r)}\n                className={cn(\n                  \"rounded-full border px-3 py-1 pointer-coarse:py-2 text-sm transition\",\n                  reasons.includes(r)\n                    ? \"border-primary bg-primary/5 text-emerald-700 dark:text-emerald-300\"\n                    : \"border-input text-foreground/80 hover:border-foreground/30\",\n                )}\n              >\n                {r}\n              </button>\n            ))}\n          </div>\n          <button onClick={submit} className=\"rounded-lg bg-primary px-3 py-1.5 pointer-coarse:py-2.5 text-sm text-primary-foreground hover:bg-primary/90\">\n            {reasons.length ? \"Send feedback\" : \"Skip and send\"}\n          </button>\n        </motion.div>\n      )}\n      </AnimatePresence>\n    </div>\n  );\n}\n\nfunction IconBtn({\n  children,\n  label,\n  tip,\n  pressed,\n  onClick,\n}: {\n  children: React.ReactNode;\n  label: string;\n  tip: string;\n  pressed: boolean;\n  onClick: () => void;\n}) {\n  const [tEl, setTEl] = useState<HTMLButtonElement | null>(null);\n  const t = useTip(tEl, tip);\n  return (\n    <button\n      ref={setTEl}\n      {...t.bind}\n      aria-label={label}\n      aria-pressed={pressed}\n      onClick={onClick}\n      className={cn(\n        \"rounded-lg p-2 pointer-coarse:p-3 transition focus-visible:outline-2 focus-visible:outline-ring\",\n        pressed ? \"text-foreground hover:bg-accent\" : \"text-muted-foreground hover:bg-accent hover:text-foreground\",\n      )}\n    >\n      {children}\n      {t.tip}\n    </button>\n  );\n}\n\n/** Hover and keyboard-focus label for icon-only buttons. It is fixed-position, so no scrolling or clipping parent can cut it off. */\nfunction useTip(el: HTMLElement | null, label: string) {\n  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);\n  const show = (viaFocus: boolean) => {\n    if (!el) return;\n    // Mouse tooltips only with a real pointer; keyboard tooltips only when focus is visible.\n    if (viaFocus ? !el.matches(\":focus-visible\") : !window.matchMedia(\"(pointer: fine)\").matches) return;\n    const r = el.getBoundingClientRect();\n    setPos({ x: Math.min(Math.max(r.left + r.width / 2, 72), window.innerWidth - 72), y: r.top });\n  };\n  const hide = () => setPos(null);\n  return {\n    bind: { onMouseEnter: () => show(false), onMouseLeave: hide, onFocus: () => show(true), onBlur: hide },\n    tip: pos ? (\n      <span\n        aria-hidden\n        className=\"pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background shadow-md\"\n        style={{ left: pos.x, top: pos.y - 6 }}\n      >\n        {label}\n      </span>\n    ) : null,\n  };\n}\n"
+    }
+  ],
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/feedback-thumbs\nUses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
+}

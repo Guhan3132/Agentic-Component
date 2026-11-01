@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "interrupt-steer",
+  "type": "registry:ui",
+  "title": "Interrupt and steer",
+  "description": "A composer that stays live while the agent works, so you redirect it mid-run.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "control",
+    "agent"
+  ],
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "cssVars": {
+    "light": {
+      "background": "oklch(1 0 0)",
+      "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)",
+      "muted": "oklch(0.97 0 0)",
+      "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)",
+      "border": "oklch(0.922 0 0)",
+      "input": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "primary": "oklch(0.205 0 0)",
+      "primary-foreground": "oklch(0.985 0 0)"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)",
+      "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)",
+      "muted": "oklch(0.269 0 0)",
+      "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.269 0 0)",
+      "border": "oklch(1 0 0 / 10%)",
+      "input": "oklch(1 0 0 / 15%)",
+      "ring": "oklch(0.556 0 0)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-foreground": "oklch(0.205 0 0)"
+    }
+  },
+  "files": [
+    {
+      "path": "registry/agentic-ui/interrupt-steer.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport { Send, Square } from \"lucide-react\";\nimport { useState, type ReactNode } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type Segment = { role: \"agent\" | \"user\"; text: string };\n\ntype Props = {\n  /** Replace the built-in input, for example with a PromptComposer. */\n  composer?: ReactNode;\n  segments: Segment[];\n  running: boolean;\n  onSteer: (message: string) => void;\n  onStop: () => void;\n  suggestions?: string[];\n  className?: string;\n};\n\n/** The composer stays live while the agent works, so users redirect it instead of waiting and restarting. */\nexport function InterruptSteer({ segments, running, onSteer, onStop, suggestions = [], composer, className }: Props) {\n  const [value, setValue] = useState(\"\");\n\n  const send = (text: string) => {\n    const t = text.trim();\n    if (!t) return;\n    onSteer(t);\n    setValue(\"\");\n  };\n\n  return (\n    <div className={cn(\"space-y-3\", className)}>\n      <div className=\"space-y-2\" aria-live=\"polite\">\n        {segments.map((s, i) => (\n          <p\n            key={i}\n            className={cn(\n              \"whitespace-pre-wrap rounded-xl px-3.5 py-2.5 text-sm leading-relaxed\",\n              s.role === \"user\" ? \"ml-auto w-fit max-w-[85%] bg-primary text-primary-foreground\" : \"border border-border bg-card text-foreground\",\n            )}\n          >\n            {s.text}\n            {running && i === segments.length - 1 && s.role === \"agent\" && (\n              <span aria-hidden className=\"ml-0.5 inline-block h-3.5 w-1.5 translate-y-0.5 animate-pulse bg-primary\" />\n            )}\n          </p>\n        ))}\n      </div>\n\n      {composer ?? (\n        <>\n      {running && suggestions.length > 0 && (\n        <div className=\"flex flex-wrap gap-2\">\n          {suggestions.map((s) => (\n            <button key={s} onClick={() => send(s)} className=\"rounded-full border border-border bg-card px-3 py-1 pointer-coarse:py-2 text-sm text-foreground/80 hover:border-foreground/30\">\n              {s}\n            </button>\n          ))}\n        </div>\n      )}\n\n      <form\n        onSubmit={(e) => {\n          e.preventDefault();\n          send(value);\n        }}\n        className=\"flex items-center gap-2 rounded-xl border border-border bg-card p-1.5 pl-3 focus-within:border-ring\"\n      >\n        <input\n          value={value}\n          onChange={(e) => setValue(e.target.value)}\n          aria-label=\"Message the agent\"\n          placeholder={running ? \"Steer the agent while it works\" : \"Message the agent\"}\n          className=\"min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60\"\n        />\n        {running && (\n          <button type=\"button\" onClick={onStop} className=\"inline-flex items-center gap-1 rounded-lg bg-muted px-2.5 py-1.5 pointer-coarse:py-2.5 text-sm text-foreground hover:bg-accent\">\n            <Square size={12} /> Stop\n          </button>\n        )}\n        <SendButton disabled={!value.trim()} />\n      </form>\n        </>\n      )}\n    </div>\n  );\n}\n\nfunction SendButton({ disabled }: { disabled: boolean }) {\n  const [tEl, setTEl] = useState<HTMLButtonElement | null>(null);\n  const t = useTip(tEl, \"Send\");\n  return (\n    <button\n      ref={setTEl}\n      {...t.bind}\n      type=\"submit\"\n      aria-label=\"Send\"\n      disabled={disabled}\n      className=\"rounded-lg bg-primary p-2 pointer-coarse:p-3 text-primary-foreground hover:bg-primary/90 disabled:opacity-30\"\n    >\n      <Send size={14} />\n      {t.tip}\n    </button>\n  );\n}\n\n/** Hover and keyboard-focus label for icon-only buttons. It is fixed-position, so no scrolling or clipping parent can cut it off. */\nfunction useTip(el: HTMLElement | null, label: string) {\n  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);\n  const show = (viaFocus: boolean) => {\n    if (!el) return;\n    // Mouse tooltips only with a real pointer; keyboard tooltips only when focus is visible.\n    if (viaFocus ? !el.matches(\":focus-visible\") : !window.matchMedia(\"(pointer: fine)\").matches) return;\n    const r = el.getBoundingClientRect();\n    setPos({ x: Math.min(Math.max(r.left + r.width / 2, 72), window.innerWidth - 72), y: r.top });\n  };\n  const hide = () => setPos(null);\n  return {\n    bind: { onMouseEnter: () => show(false), onMouseLeave: hide, onFocus: () => show(true), onBlur: hide },\n    tip: pos ? (\n      <span\n        aria-hidden\n        className=\"pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background shadow-md\"\n        style={{ left: pos.x, top: pos.y - 6 }}\n      >\n        {label}\n      </span>\n    ) : null,\n  };\n}\n"
+    }
+  ],
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/interrupt-steer\nUses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
+}

@@ -73,7 +73,21 @@ export default function GetStarted() {
           </p>
         </Step>
 
-        <Step n={3} title="Use it">
+        <Step n={3} title="Pin a version (optional)">
+          <p>
+            The URL above always serves the latest. To lock to a release, use its versioned path, which never changes once published:
+          </p>
+          <CodeBlock code={`npx shadcn@latest add "${origin}/r/v0.3.0/approval-step.json"`} file="terminal" />
+          <p>
+            Check any file against <a className="text-zinc-900 underline" href="/r/checksums.txt">the published checksums</a>. Releases are listed on{" "}
+            <a className="text-zinc-900 underline" href="https://github.com/Guhan3132/Agentic-Component/releases" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+            .
+          </p>
+        </Step>
+
+        <Step n={4} title="Use it">
           <p>
             Every pattern page has a usage snippet and a props table. The component takes plain props and callbacks, so you connect it to your
             own agent, whether that is a stream from an API or a mock.
@@ -84,7 +98,7 @@ export default function GetStarted() {
           </p>
         </Step>
 
-        <Step n={4} title="If it looks wrong">
+        <Step n={5} title="If it looks wrong">
           <p>The components read the standard shadcn tokens. If your project uses other names, add these to your global CSS (and a matching set under a `.dark` class):</p>
           <CodeBlock code={tokens} file="globals.css" />
           <p>

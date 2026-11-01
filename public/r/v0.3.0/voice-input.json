@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "voice-input",
+  "type": "registry:ui",
+  "title": "Voice input",
+  "description": "Talk to the agent: a clear listening state, an editable transcript, and failures that say what happened and what to do.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "control",
+    "agent"
+  ],
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "cssVars": {
+    "light": {
+      "background": "oklch(1 0 0)",
+      "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)",
+      "muted": "oklch(0.97 0 0)",
+      "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)",
+      "border": "oklch(0.922 0 0)",
+      "input": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "primary": "oklch(0.205 0 0)",
+      "primary-foreground": "oklch(0.985 0 0)"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)",
+      "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)",
+      "muted": "oklch(0.269 0 0)",
+      "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.269 0 0)",
+      "border": "oklch(1 0 0 / 10%)",
+      "input": "oklch(1 0 0 / 15%)",
+      "ring": "oklch(0.556 0 0)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-foreground": "oklch(0.205 0 0)"
+    }
+  },
+  "files": [
+    {
+      "path": "registry/agentic-ui/voice-input.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport { Check, Loader2, Mic, MicOff, RotateCcw, Square, X } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type VoiceState = \"idle\" | \"listening\" | \"transcribing\" | \"review\" | \"error\";\nexport type VoiceError = \"denied\" | \"no-speech\" | \"offline\";\n\ntype Props = {\n  state: VoiceState;\n  /** Whole seconds recorded so far. */\n  seconds?: number;\n  /** Loudness of the last moments, 0 to 1 each, oldest first. Drives the bars. */\n  levels?: number[];\n  transcript?: string;\n  onTranscriptChange?: (text: string) => void;\n  error?: VoiceError;\n  onStart: () => void;\n  /** Done speaking: moves on to transcribing. */\n  onStop: () => void;\n  onCancel: () => void;\n  onSend: (text: string) => void;\n  /** Leave voice and type instead. Offered whenever voice fails. */\n  onType?: () => void;\n  className?: string;\n};\n\nconst ERROR_COPY: Record<VoiceError, { title: string; body: string; retry: boolean }> = {\n  denied: { title: \"Microphone is blocked\", body: \"Allow microphone access for this site in your browser, or type instead. Nothing was recorded.\", retry: false },\n  \"no-speech\": { title: \"I didn't catch anything\", body: \"Try again a little closer to the microphone, or type instead.\", retry: true },\n  offline: { title: \"Can't reach the speech service\", body: \"Your connection dropped while I was listening. Try again, or type instead.\", retry: true },\n};\n\nconst mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, \"0\")}`;\n\n/**\n * Talking to an agent, with every state in view: ready, listening with a live level and a timer,\n * turning speech into text, an editable result, and failures that say what happened and what to do.\n * The text always lands in a box the person can fix before anything is sent, because speech\n * recognition gets names and numbers wrong.\n */\nexport function VoiceInput({ state, seconds = 0, levels = [], transcript = \"\", onTranscriptChange, error = \"no-speech\", onStart, onStop, onCancel, onSend, onType, className }: Props) {\n  const bars = levels.length ? levels : Array.from({ length: 24 }, () => 0.08);\n\n  return (\n    <section aria-label=\"Voice input\" className={cn(\"@container rounded-xl border border-border bg-card p-4\", className)}>\n      {/* One status line for every state, announced once per change. */}\n      <p role=\"status\" aria-live=\"polite\" className=\"sr-only\">\n        {state === \"idle\" && \"Ready to listen.\"}\n        {state === \"listening\" && \"Listening.\"}\n        {state === \"transcribing\" && \"Turning your voice into text.\"}\n        {state === \"review\" && \"Text is ready to check.\"}\n        {state === \"error\" && ERROR_COPY[error].title}\n      </p>\n\n      {state === \"idle\" && (\n        <div className=\"flex flex-col items-center gap-3 py-2 text-center\">\n          <button\n            onClick={onStart}\n            aria-label=\"Start speaking\"\n            className=\"grid size-14 place-items-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring\"\n          >\n            <Mic size={22} aria-hidden />\n          </button>\n          <p className=\"text-sm text-foreground\">Tap and talk</p>\n          <p className=\"max-w-xs text-xs text-muted-foreground\">You can edit the text before anything is sent.</p>\n        </div>\n      )}\n\n      {state === \"listening\" && (\n        <div className=\"space-y-4\">\n          <div className=\"flex items-center justify-between\">\n            <span className=\"flex items-center gap-2 text-sm text-foreground\">\n              <span aria-hidden className=\"size-2 rounded-full bg-rose-500 motion-safe:animate-pulse\" /> Listening\n            </span>\n            <span aria-hidden className=\"text-sm tabular-nums text-muted-foreground\">\n              {mmss(seconds)}\n            </span>\n          </div>\n          <div aria-hidden className=\"flex h-12 items-center justify-center gap-[3px]\">\n            {bars.map((v, i) => (\n              <span key={i} className=\"w-1 rounded-full bg-foreground/70 transition-[height] duration-100 motion-reduce:transition-none\" style={{ height: `${Math.max(8, Math.round(v * 100))}%` }} />\n            ))}\n          </div>\n          <div className=\"flex gap-2\">\n            <button\n              onClick={onStop}\n              className=\"inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 pointer-coarse:min-h-11\"\n            >\n              <Square size={13} aria-hidden /> Done\n            </button>\n            <button onClick={onCancel} className=\"inline-flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-sm text-foreground hover:bg-accent pointer-coarse:min-h-11\">\n              <X size={14} aria-hidden /> Cancel\n            </button>\n          </div>\n        </div>\n      )}\n\n      {state === \"transcribing\" && (\n        <div className=\"flex items-center justify-between gap-3 py-2\">\n          <p className=\"flex items-center gap-2 text-sm text-foreground\">\n            <Loader2 size={16} className=\"animate-spin motion-reduce:animate-none\" aria-hidden /> Turning your voice into text…\n          </p>\n          <button onClick={onCancel} className=\"rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground pointer-coarse:min-h-11\">\n            Cancel\n          </button>\n        </div>\n      )}\n\n      {state === \"review\" && (\n        <div className=\"space-y-3\">\n          <label className=\"block text-xs font-medium text-muted-foreground\" htmlFor=\"voice-transcript\">\n            What I heard. Fix anything that is off.\n          </label>\n          <textarea\n            id=\"voice-transcript\"\n            value={transcript}\n            onChange={(e) => onTranscriptChange?.(e.target.value)}\n            rows={3}\n            className=\"w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-base text-foreground focus-visible:outline-2 focus-visible:outline-ring sm:text-sm\"\n          />\n          <p className=\"text-xs text-muted-foreground\">Check names and numbers before sending.</p>\n          <div className=\"flex gap-2\">\n            <button\n              onClick={() => onSend(transcript)}\n              disabled={!transcript.trim()}\n              className=\"inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 pointer-coarse:min-h-11\"\n            >\n              <Check size={14} aria-hidden /> Send\n            </button>\n            <button onClick={onStart} className=\"inline-flex items-center gap-1.5 rounded-lg bg-muted px-3 py-2 text-sm text-foreground hover:bg-accent pointer-coarse:min-h-11\">\n              <RotateCcw size={14} aria-hidden /> Record again\n            </button>\n          </div>\n        </div>\n      )}\n\n      {state === \"error\" && (\n        <div className=\"flex items-start gap-3\">\n          <MicOff size={18} className=\"mt-0.5 shrink-0 text-amber-700 dark:text-amber-300\" aria-hidden />\n          <div className=\"min-w-0\">\n            <h3 className=\"font-medium text-foreground\">{ERROR_COPY[error].title}</h3>\n            <p className=\"mt-1 text-sm text-muted-foreground\">{ERROR_COPY[error].body}</p>\n            <div className=\"mt-3 flex flex-wrap gap-2\">\n              {ERROR_COPY[error].retry && (\n                <button onClick={onStart} className=\"inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 pointer-coarse:min-h-11\">\n                  <Mic size={14} aria-hidden /> Try again\n                </button>\n              )}\n              {onType && (\n                <button\n                  onClick={onType}\n                  className={cn(\n                    \"rounded-lg px-3 py-1.5 text-sm font-medium pointer-coarse:min-h-11\",\n                    ERROR_COPY[error].retry ? \"bg-muted text-foreground hover:bg-accent\" : \"bg-primary text-primary-foreground hover:bg-primary/90\",\n                  )}\n                >\n                  Type instead\n                </button>\n              )}\n            </div>\n          </div>\n        </div>\n      )}\n    </section>\n  );\n}\n"
+    }
+  ],
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/voice-input\nUses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
+}

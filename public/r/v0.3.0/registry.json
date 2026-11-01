@@ -1,0 +1,269 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "agentic-ui",
+  "homepage": "https://agentic-component.vercel.app",
+  "items": [
+    {
+      "name": "agent-memory",
+      "type": "registry:ui",
+      "title": "Agent memory",
+      "description": "What the agent remembers about you, in plain sentences you can edit, forget, undo or switch off.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/agent-memory.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "approval-step",
+      "type": "registry:ui",
+      "title": "Approval step",
+      "description": "A human-in-the-loop gate that scales friction with the risk of the action.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/approval-step.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chat-thread",
+      "type": "registry:ui",
+      "title": "Chat thread",
+      "description": "A flat, readable conversation between a person and an agent, with references, files, hand-offs and unread markers.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/chat-thread.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "citations",
+      "type": "registry:ui",
+      "title": "Citations",
+      "description": "Inline numbered sources that open the exact quote, and a visible flag on any claim that has none.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/citations.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "confidence-badge",
+      "type": "registry:ui",
+      "title": "Confidence badge",
+      "description": "A plain-language signal for how sure the agent is, with a reason and a next step.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/confidence-badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "error-recovery",
+      "type": "registry:ui",
+      "title": "Error recovery",
+      "description": "Says what failed, what survived and what to do next, with a visible auto-retry and a way forward when retrying stops helping.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/error-recovery.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "feedback-thumbs",
+      "type": "registry:ui",
+      "title": "Feedback thumbs",
+      "description": "One-tap rating that asks for a reason only after a thumbs-down.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/feedback-thumbs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "human-handoff",
+      "type": "registry:ui",
+      "title": "Human hand-off",
+      "description": "Passes a chat to a person with the context attached, a real queue position, and a way out when no one is there.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/human-handoff.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "interrupt-steer",
+      "type": "registry:ui",
+      "title": "Interrupt and steer",
+      "description": "A composer that stays live while the agent works, so you redirect it mid-run.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/interrupt-steer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "multi-agent-status",
+      "type": "registry:ui",
+      "title": "Multi-agent status",
+      "description": "Several agents at once, sorted by what needs you, with a one-line summary and a plain reason for every wait.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/multi-agent-status.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "plan-preview",
+      "type": "registry:ui",
+      "title": "Plan preview",
+      "description": "The agent proposes steps. You edit, reorder or remove them before it runs.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/plan-preview.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "prompt-composer",
+      "type": "registry:ui",
+      "title": "Prompt composer",
+      "description": "A chat-style message box for agents: / commands, @ context, image paste, voice, and mode and model in a row under the box. Built for phones as well as desktops.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/prompt-composer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "streaming-response",
+      "type": "registry:ui",
+      "title": "Streaming response",
+      "description": "Text that arrives as it is written, with stop, retry and a clear failure state.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/streaming-response.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tool-permissions",
+      "type": "registry:ui",
+      "title": "Tool permissions",
+      "description": "What the agent may do, one line per tool: allow, ask first or block, with plain-words risk and a clear way to answer a request.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/tool-permissions.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tool-timeline",
+      "type": "registry:ui",
+      "title": "Tool-call timeline",
+      "description": "A step-by-step record of what the agent did, with real outcomes, including failures.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/tool-timeline.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "voice-input",
+      "type": "registry:ui",
+      "title": "Voice input",
+      "description": "Talk to the agent: a clear listening state, an editable transcript, and failures that say what happened and what to do.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/voice-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "why-this-answer",
+      "type": "registry:ui",
+      "title": "Why this answer",
+      "description": "An expandable panel with reasoning steps and quotable sources.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/why-this-answer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 // Freezes the current registry as a pinned release: public/r/v<version>/<name>.json.
 //   npm run registry:release
-// Run it once per release, after bumping the version in package.json. It refuses to overwrite an
-// existing release, so a pinned URL never changes under anyone.
-import { cpSync, existsSync, readFileSync, readdirSync } from "node:fs";
+// Run it once per release, after bumping the version in package.json and running registry:build.
+// It refuses to overwrite an existing release, so a pinned URL never changes under anyone.
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const root = process.cwd();
@@ -15,5 +15,11 @@ if (existsSync(target)) {
   process.exit(1);
 }
 
-cpSync(latest, target, { recursive: true, filter: (src) => !/[\\/]v\d+\.\d+\.\d+([\\/]|$)/.test(src) });
-console.log(`Froze ${readdirSync(target).length} files into public/r/v${version}`);
+// Only the files at the top of public/r: the items, registry.json and checksums.txt, never other releases.
+const files = readdirSync(latest, { withFileTypes: true })
+  .filter((e) => e.isFile() && (e.name.endsWith(".json") || e.name === "checksums.txt"))
+  .map((e) => e.name);
+
+mkdirSync(target);
+for (const f of files) copyFileSync(join(latest, f), join(target, f));
+console.log(`Froze ${files.length} files into public/r/v${version}`);

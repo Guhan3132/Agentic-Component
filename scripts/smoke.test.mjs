@@ -85,3 +85,11 @@ test("search and sharing files exist and list every pattern", async () => {
 test("an unknown page is a 404, not a crash", async () => {
   assert.equal((await get("/components/does-not-exist")).status, 404);
 });
+
+test("the pinned release for this version is served and matches the latest", async () => {
+  const { version } = JSON.parse((await import("node:fs")).readFileSync(join(root, "package.json"), "utf8"));
+  const pinned = await get(`/r/v${version}/approval-step.json`);
+  const latest = await get("/r/approval-step.json");
+  assert.equal(pinned.status, 200, `/r/v${version}/approval-step.json`);
+  assert.equal(await pinned.text(), await latest.text());
+});

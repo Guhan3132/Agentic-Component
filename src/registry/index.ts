@@ -15,7 +15,7 @@ export type Pattern = {
 };
 
 /** Patterns added in this release get a "New" badge. */
-export const LATEST_RELEASE = "0.2.0";
+export const LATEST_RELEASE = "0.3.0";
 
 export const categories: Category[] = ["Respond", "Trust", "Act", "Control", "Learn"];
 
