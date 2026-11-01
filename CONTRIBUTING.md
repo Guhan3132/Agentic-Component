@@ -24,6 +24,7 @@ npm run build
 
 ## Adding a pattern
 
+Start with `npm run new-pattern -- <slug> "<Title>"` and follow [docs/adding-a-pattern.md](./docs/adding-a-pattern.md). 
 See "Add a pattern" in the [README](./README.md). A new pattern needs:
 
 - a single-file component in `src/registry/<slug>/<slug>.tsx` that depends only on React, `lucide-react`, `motion` and `cn`

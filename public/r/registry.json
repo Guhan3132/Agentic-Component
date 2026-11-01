@@ -142,6 +142,21 @@
       ]
     },
     {
+      "name": "multi-agent-status",
+      "type": "registry:ui",
+      "title": "Multi-agent status",
+      "description": "Several agents at once, sorted by what needs you, with a one-line summary and a plain reason for every wait.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/multi-agent-status.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "plan-preview",
       "type": "registry:ui",
       "title": "Plan preview",
@@ -189,6 +204,21 @@
       ]
     },
     {
+      "name": "tool-permissions",
+      "type": "registry:ui",
+      "title": "Tool permissions",
+      "description": "What the agent may do, one line per tool: allow, ask first or block, with plain-words risk and a clear way to answer a request.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/tool-permissions.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "tool-timeline",
       "type": "registry:ui",
       "title": "Tool-call timeline",
@@ -200,6 +230,21 @@
       "files": [
         {
           "path": "registry/agentic-ui/tool-timeline.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "voice-input",
+      "type": "registry:ui",
+      "title": "Voice input",
+      "description": "Talk to the agent: a clear listening state, an editable transcript, and failures that say what happened and what to do.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/voice-input.tsx",
           "type": "registry:ui"
         }
       ]

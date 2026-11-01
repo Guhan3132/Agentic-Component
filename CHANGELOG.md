@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- New patterns: tool permissions, multi-agent status, voice input (17 in total)
+- `npm run new-pattern` scaffolds a pattern, and docs/adding-a-pattern.md is the contributor guide
+
 - Tests: component behaviour (Testing Library), accessibility checks on every pattern (axe) and a production-build smoke test, all in CI
 - "New" badges and an "Added in" line, related patterns ranked by category and tags, a skip link, the `/` search shortcut, language labels on code blocks
 - Registry: theme tokens (`cssVars`), SHA-256 checksums, pinned releases (`npm run registry:release`), a PR install check, CodeQL

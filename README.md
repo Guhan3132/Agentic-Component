@@ -24,6 +24,9 @@ It is meant to show how a good agent interface behaves, not only how it looks. E
 | Citations | Trust | Inline numbered sources that open the exact quote, with a visible flag on uncited claims |
 | Agent memory | Control | What the agent remembers: editable, forgettable with undo, and switchable off |
 | Human hand-off | Control | Pass a chat to a person with context, a real queue position and an email fallback |
+| Tool permissions | Control | Allow, ask first or block per tool, with plain-words risk and a clear way to answer a request |
+| Multi-agent status | Act | Several agents at once, sorted by what needs you, with a one-line summary |
+| Voice input | Control | Listening, an editable transcript, and failures that say what to do |
 
 The **Playground** (`/playground`) puts them together in one full-screen chat: pick a starter and watch a plan, tool calls, an approval, confidence and sources arrive in the thread. It has dark mode, reset and a desktop/mobile switch.
 
@@ -53,6 +56,9 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run start` | Serve the production build |
 | `npm run lint` | Lint the project |
 | `npm run registry:build` | Write `public/r/*.json` for the shadcn CLI |
+| `npm run registry:release` | Freeze `public/r/v<version>/` so a release can be pinned |
+| `npm run test:smoke` | Start the production build and check pages, headers and the registry |
+| `npm run new-pattern` | Scaffold a new pattern |
 | `npm test` | Check that every pattern is wired up and installable |
 
 ## Use a pattern in your project
@@ -93,13 +99,15 @@ public/r/                 Generated registry files for the shadcn CLI
 
 ## Add a pattern
 
+Run `npm run new-pattern -- <slug> "<Title>"` to scaffold one, and see [docs/adding-a-pattern.md](./docs/adding-a-pattern.md) for the full guide and checklist. By hand:
+
 1. Create `src/registry/<slug>/<slug>.tsx` (the component) and `demo.tsx` (scenarios, using `DemoFrame` and the simulator).
 2. Add its entry to `src/registry/index.ts`, a usage snippet and tags to `src/registry/usage.ts`, the demo to `src/registry/demos.tsx`, and a miniature to `src/components/Previews.tsx`.
 3. Run `npm run registry:build` so the CLI file is generated.
 
 ## Tech stack
 
-[Next.js](https://nextjs.org) 15 (App Router) · React 19 · TypeScript · [Tailwind CSS](https://tailwindcss.com) v4 · [Motion](https://motion.dev) · [lucide-react](https://lucide.dev)
+[Next.js](https://nextjs.org) 16 (App Router) · React 19 · TypeScript · [Tailwind CSS](https://tailwindcss.com) v4 · [Motion](https://motion.dev) · [lucide-react](https://lucide.dev)
 
 ## License
 

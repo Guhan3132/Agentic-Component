@@ -8,6 +8,9 @@ import { AgentMemory } from "@/registry/agent-memory/agent-memory";
 import { Citations } from "@/registry/citations/citations";
 import { ErrorRecovery } from "@/registry/error-recovery/error-recovery";
 import { HumanHandoff } from "@/registry/human-handoff/human-handoff";
+import { MultiAgentStatus } from "@/registry/multi-agent-status/multi-agent-status";
+import { ToolPermissions } from "@/registry/tool-permissions/tool-permissions";
+import { VoiceInput } from "@/registry/voice-input/voice-input";
 import { FeedbackThumbs } from "@/registry/feedback-thumbs/feedback-thumbs";
 import { InterruptSteer } from "@/registry/interrupt-steer/interrupt-steer";
 import { PlanPreview } from "@/registry/plan-preview/plan-preview";
@@ -65,6 +68,37 @@ const previews: Record<string, ReactNode> = {
       etaMinutes={3}
       onCancel={() => {}}
       onFallback={() => {}}
+    />
+  ),
+  "tool-permissions": (
+    <ToolPermissions
+      tools={[
+        { id: "s", name: "search_web", description: "Looks things up online.", risk: "read", mode: "allow" },
+        { id: "e", name: "send_email", description: "Sends email from your account.", risk: "write", mode: "ask" },
+        { id: "d", name: "delete_files", description: "Permanently removes files.", risk: "destructive", mode: "block" },
+      ]}
+      onChange={() => {}}
+    />
+  ),
+  "multi-agent-status": (
+    <MultiAgentStatus
+      agents={[
+        { id: "b", name: "Budget", task: "Two venues are over budget", state: "blocked", waitingOn: "your decision" },
+        { id: "r", name: "Researcher", task: "Comparing venues", state: "working", progress: 0.6 },
+        { id: "w", name: "Writer", task: "Drafting the invitation", state: "waiting", waitingOn: "Researcher" },
+      ]}
+      onOpen={() => {}}
+    />
+  ),
+  "voice-input": (
+    <VoiceInput
+      state="listening"
+      seconds={7}
+      levels={[0.2, 0.4, 0.7, 0.5, 0.3, 0.6, 0.9, 0.5, 0.35, 0.55, 0.8, 0.4, 0.25, 0.5, 0.75, 0.45, 0.3, 0.6, 0.85, 0.5, 0.3, 0.45, 0.65, 0.35]}
+      onStart={() => {}}
+      onStop={() => {}}
+      onCancel={() => {}}
+      onSend={() => {}}
     />
   ),
   "error-recovery": (

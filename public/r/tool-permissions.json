@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tool-permissions",
+  "type": "registry:ui",
+  "title": "Tool permissions",
+  "description": "What the agent may do, one line per tool: allow, ask first or block, with plain-words risk and a clear way to answer a request.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "control",
+    "agent"
+  ],
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "cssVars": {
+    "light": {
+      "background": "oklch(1 0 0)",
+      "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)",
+      "muted": "oklch(0.97 0 0)",
+      "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)",
+      "border": "oklch(0.922 0 0)",
+      "input": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "primary": "oklch(0.205 0 0)",
+      "primary-foreground": "oklch(0.985 0 0)"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)",
+      "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)",
+      "muted": "oklch(0.269 0 0)",
+      "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.269 0 0)",
+      "border": "oklch(1 0 0 / 10%)",
+      "input": "oklch(1 0 0 / 15%)",
+      "ring": "oklch(0.556 0 0)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-foreground": "oklch(0.205 0 0)"
+    }
+  },
+  "files": [
+    {
+      "path": "registry/agentic-ui/tool-permissions.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport { Eye, PencilLine, RotateCcw, ShieldAlert, Trash2 } from \"lucide-react\";\nimport { useId } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type PermissionMode = \"allow\" | \"ask\" | \"block\";\nexport type ToolRisk = \"read\" | \"write\" | \"destructive\";\nexport type PermissionTool = { id: string; name: string; description: string; risk: ToolRisk; mode: PermissionMode };\n\n/** The agent asking for something it has not been given yet. */\nexport type PermissionRequest = { toolId: string; reason: string };\nexport type RequestDecision = \"once\" | \"always\" | \"deny\";\n\ntype Props = {\n  tools: PermissionTool[];\n  onChange: (id: string, mode: PermissionMode) => void;\n  request?: PermissionRequest;\n  onDecide?: (decision: RequestDecision) => void;\n  /** Puts every tool back to its default. Shown only when something has been changed. */\n  onReset?: () => void;\n  className?: string;\n};\n\nconst RISK = {\n  read: { label: \"Reads\", icon: Eye, tone: \"text-muted-foreground\" },\n  write: { label: \"Changes things\", icon: PencilLine, tone: \"text-amber-700 dark:text-amber-300\" },\n  destructive: { label: \"Hard to undo\", icon: Trash2, tone: \"text-rose-700 dark:text-rose-300\" },\n};\n\nconst MODES: { value: PermissionMode; label: string }[] = [\n  { value: \"allow\", label: \"Allow\" },\n  { value: \"ask\", label: \"Ask\" },\n  { value: \"block\", label: \"Block\" },\n];\n\n/**\n * What the agent may do, one line per tool, in words a person can judge. Each tool is a native radio\n * group (Allow, Ask, Block), so arrow keys and screen readers work with no extra code. When the agent\n * needs something it was not given, it asks in plain words with a one-time yes, an always, or a no.\n */\nexport function ToolPermissions({ tools, onChange, request, onDecide, onReset, className }: Props) {\n  const requested = request ? tools.find((t) => t.id === request.toolId) : undefined;\n  const counts = { allow: 0, ask: 0, block: 0 };\n  for (const t of tools) counts[t.mode]++;\n\n  return (\n    <section aria-label=\"Tool permissions\" className={cn(\"@container rounded-xl border border-border bg-card\", className)}>\n      <header className=\"flex items-start justify-between gap-3 border-b border-border px-4 py-3\">\n        <div>\n          <h3 className=\"flex items-center gap-2 font-medium text-foreground\">\n            <ShieldAlert size={16} aria-hidden /> What the agent can do\n          </h3>\n          <p className=\"mt-0.5 text-xs text-muted-foreground\">\n            {counts.allow} allowed, {counts.ask} ask first, {counts.block} blocked\n          </p>\n        </div>\n        {onReset && (\n          <button\n            onClick={onReset}\n            className=\"inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-sm text-muted-foreground hover:bg-muted hover:text-foreground pointer-coarse:min-h-11\"\n          >\n            <RotateCcw size={13} aria-hidden /> Reset\n          </button>\n        )}\n      </header>\n\n      {/* Announced once when the agent asks. */}\n      <div role=\"status\" aria-live=\"polite\">\n        {request && requested && (\n          <div className=\"border-b border-border bg-muted/40 px-4 py-3\">\n            <p className=\"text-sm text-foreground\">\n              The agent wants to use <strong className=\"font-medium\">{requested.name}</strong>.\n            </p>\n            <p className=\"mt-0.5 text-sm text-muted-foreground\">{request.reason}</p>\n            <div className=\"mt-3 flex flex-wrap gap-2\">\n              <Choice onClick={() => onDecide?.(\"once\")} primary>\n                Allow once\n              </Choice>\n              <Choice onClick={() => onDecide?.(\"always\")}>Always allow</Choice>\n              <Choice onClick={() => onDecide?.(\"deny\")}>Deny</Choice>\n            </div>\n          </div>\n        )}\n      </div>\n\n      <ul className=\"divide-y divide-border\">\n        {tools.map((t) => (\n          <Row key={t.id} tool={t} highlighted={request?.toolId === t.id} onChange={(m) => onChange(t.id, m)} />\n        ))}\n      </ul>\n    </section>\n  );\n}\n\nfunction Row({ tool, highlighted, onChange }: { tool: PermissionTool; highlighted: boolean; onChange: (m: PermissionMode) => void }) {\n  const name = useId();\n  const risk = RISK[tool.risk];\n  const Icon = risk.icon;\n  return (\n    <li className={cn(\"flex flex-col gap-2 px-4 py-3 @md:flex-row @md:items-center @md:justify-between\", highlighted && \"bg-muted/30\")}>\n      <div className=\"min-w-0\">\n        <p className=\"flex items-center gap-2 text-sm font-medium text-foreground\">\n          <span className=\"font-mono\">{tool.name}</span>\n          <span className={cn(\"inline-flex items-center gap-1 text-xs font-normal\", risk.tone)}>\n            <Icon size={12} aria-hidden /> {risk.label}\n          </span>\n        </p>\n        <p className=\"text-sm text-muted-foreground\">{tool.description}</p>\n      </div>\n      <fieldset className=\"shrink-0\">\n        <legend className=\"sr-only\">Permission for {tool.name}</legend>\n        <div className=\"inline-flex rounded-lg bg-muted p-0.5\">\n          {MODES.map((m) => (\n            <label\n              key={m.value}\n              className={cn(\n                \"relative cursor-pointer rounded-md px-3 py-1 text-sm font-medium has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ring pointer-coarse:grid pointer-coarse:min-h-11 pointer-coarse:place-items-center pointer-coarse:px-4\",\n                tool.mode === m.value ? \"bg-card text-foreground shadow-sm\" : \"text-muted-foreground hover:text-foreground\",\n                tool.mode === m.value && m.value === \"block\" && \"text-rose-700 dark:text-rose-300\",\n              )}\n            >\n              <input type=\"radio\" name={name} value={m.value} checked={tool.mode === m.value} onChange={() => onChange(m.value)} className=\"sr-only\" />\n              {m.label}\n            </label>\n          ))}\n        </div>\n      </fieldset>\n    </li>\n  );\n}\n\nfunction Choice({ children, onClick, primary }: { children: React.ReactNode; onClick: () => void; primary?: boolean }) {\n  return (\n    <button\n      onClick={onClick}\n      className={cn(\n        \"rounded-lg px-3 py-1.5 text-sm font-medium pointer-coarse:min-h-11 pointer-coarse:px-4\",\n        primary ? \"bg-primary text-primary-foreground hover:bg-primary/90\" : \"bg-muted text-foreground hover:bg-accent\",\n      )}\n    >\n      {children}\n    </button>\n  );\n}\n"
+    }
+  ],
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/tool-permissions\nUses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
+}

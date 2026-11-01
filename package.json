@@ -37,7 +37,8 @@
     "registry:release": "node scripts/release-registry.mjs",
     "test": "node --test scripts/registry.test.mjs && vitest run",
     "prebuild": "node scripts/build-registry.mjs",
-    "test:smoke": "node --test scripts/smoke.test.mjs"
+    "test:smoke": "node --test scripts/smoke.test.mjs",
+    "new-pattern": "node scripts/new-pattern.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

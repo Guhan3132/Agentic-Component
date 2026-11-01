@@ -5,6 +5,9 @@ import AgentMemoryDemo from "./agent-memory/demo";
 import CitationsDemo from "./citations/demo";
 import ErrorRecoveryDemo from "./error-recovery/demo";
 import HumanHandoffDemo from "./human-handoff/demo";
+import MultiAgentStatusDemo from "./multi-agent-status/demo";
+import ToolPermissionsDemo from "./tool-permissions/demo";
+import VoiceInputDemo from "./voice-input/demo";
 import FeedbackDemo from "./feedback-thumbs/demo";
 import StreamingDemo from "./streaming-response/demo";
 import InterruptDemo from "./interrupt-steer/demo";
@@ -29,4 +32,7 @@ export const demos: Record<string, ComponentType> = {
   citations: CitationsDemo,
   "agent-memory": AgentMemoryDemo,
   "human-handoff": HumanHandoffDemo,
+  "tool-permissions": ToolPermissionsDemo,
+  "multi-agent-status": MultiAgentStatusDemo,
+  "voice-input": VoiceInputDemo,
 };

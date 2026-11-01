@@ -1,0 +1,52 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "multi-agent-status",
+  "type": "registry:ui",
+  "title": "Multi-agent status",
+  "description": "Several agents at once, sorted by what needs you, with a one-line summary and a plain reason for every wait.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "act",
+    "agent"
+  ],
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "cssVars": {
+    "light": {
+      "background": "oklch(1 0 0)",
+      "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)",
+      "muted": "oklch(0.97 0 0)",
+      "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)",
+      "border": "oklch(0.922 0 0)",
+      "input": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "primary": "oklch(0.205 0 0)",
+      "primary-foreground": "oklch(0.985 0 0)"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)",
+      "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)",
+      "muted": "oklch(0.269 0 0)",
+      "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.269 0 0)",
+      "border": "oklch(1 0 0 / 10%)",
+      "input": "oklch(1 0 0 / 15%)",
+      "ring": "oklch(0.556 0 0)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-foreground": "oklch(0.205 0 0)"
+    }
+  },
+  "files": [
+    {
+      "path": "registry/agentic-ui/multi-agent-status.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport { CircleAlert, CircleCheck, CircleDashed, Hourglass, Loader2, RotateCw, Square } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type AgentState = \"working\" | \"waiting\" | \"blocked\" | \"done\" | \"failed\";\n\nexport type AgentRun = {\n  id: string;\n  name: string;\n  /** What it is doing right now, or what it finished or failed at. */\n  task: string;\n  state: AgentState;\n  /** 0 to 1. Leave out when the amount of work is unknown. */\n  progress?: number;\n  /** For waiting and blocked: what it is waiting on, in words. */\n  waitingOn?: string;\n};\n\ntype Props = {\n  agents: AgentRun[];\n  onStop?: (id: string) => void;\n  onRetry?: (id: string) => void;\n  /** For a blocked agent: opens whatever it needs from the person. */\n  onOpen?: (id: string) => void;\n  className?: string;\n};\n\nconst STATE = {\n  working: { label: \"Working\", icon: Loader2, tone: \"text-foreground\", spin: true },\n  waiting: { label: \"Waiting\", icon: Hourglass, tone: \"text-muted-foreground\", spin: false },\n  blocked: { label: \"Needs you\", icon: CircleAlert, tone: \"text-amber-700 dark:text-amber-300\", spin: false },\n  done: { label: \"Done\", icon: CircleCheck, tone: \"text-emerald-700 dark:text-emerald-300\", spin: false },\n  failed: { label: \"Failed\", icon: CircleAlert, tone: \"text-rose-700 dark:text-rose-300\", spin: false },\n};\n\n/** One sentence that answers \"how is it going?\", so nobody has to read every row to find out. */\nfunction summarise(agents: AgentRun[]) {\n  const n = (s: AgentState) => agents.filter((a) => a.state === s).length;\n  const parts = [\n    n(\"working\") && `${n(\"working\")} working`,\n    n(\"waiting\") && `${n(\"waiting\")} waiting`,\n    n(\"blocked\") && `${n(\"blocked\")} need${n(\"blocked\") === 1 ? \"s\" : \"\"} you`,\n    n(\"failed\") && `${n(\"failed\")} failed`,\n    n(\"done\") && `${n(\"done\")} done`,\n  ].filter(Boolean);\n  return agents.length ? parts.join(\", \") : \"No agents running\";\n}\n\n/**\n * Several agents at once, sorted by what needs attention. Anything blocked or failed floats to the top,\n * every row says what it is doing and what it is waiting on, and the summary line is the only part that\n * is announced, so a screen reader is not interrupted by every progress tick.\n */\nexport function MultiAgentStatus({ agents, onStop, onRetry, onOpen, className }: Props) {\n  const order: AgentState[] = [\"blocked\", \"failed\", \"working\", \"waiting\", \"done\"];\n  const sorted = [...agents].sort((a, b) => order.indexOf(a.state) - order.indexOf(b.state));\n  const summary = summarise(agents);\n\n  return (\n    <section aria-label=\"Agents\" className={cn(\"@container rounded-xl border border-border bg-card\", className)}>\n      <header className=\"border-b border-border px-4 py-3\">\n        <h3 className=\"font-medium text-foreground\">Agents</h3>\n        <p role=\"status\" aria-live=\"polite\" className=\"mt-0.5 text-xs text-muted-foreground\">\n          {summary}\n        </p>\n      </header>\n\n      {agents.length === 0 ? (\n        <p className=\"flex items-center gap-2 px-4 py-6 text-sm text-muted-foreground\">\n          <CircleDashed size={16} aria-hidden /> Nothing is running. Start a task and each agent appears here.\n        </p>\n      ) : (\n        <ul className=\"divide-y divide-border\">\n          {sorted.map((a) => {\n            const s = STATE[a.state];\n            const Icon = s.icon;\n            const pct = a.progress === undefined ? undefined : Math.round(Math.min(Math.max(a.progress, 0), 1) * 100);\n            return (\n              <li key={a.id} className=\"px-4 py-3\">\n                <div className=\"flex items-start gap-3\">\n                  <Icon size={16} aria-hidden className={cn(\"mt-0.5 shrink-0\", s.tone, s.spin && \"animate-spin motion-reduce:animate-none\")} />\n                  <div className=\"min-w-0 flex-1\">\n                    <p className=\"flex flex-wrap items-baseline gap-x-2 text-sm\">\n                      <span className=\"font-medium text-foreground\">{a.name}</span>\n                      <span className={cn(\"text-xs\", s.tone)}>{s.label}</span>\n                    </p>\n                    <p className=\"text-sm text-muted-foreground\">{a.task}</p>\n                    {a.waitingOn && (a.state === \"waiting\" || a.state === \"blocked\") && (\n                      <p className={cn(\"mt-0.5 text-xs\", a.state === \"blocked\" ? \"text-amber-700 dark:text-amber-300\" : \"text-muted-foreground\")}>Waiting on {a.waitingOn}</p>\n                    )}\n                    {pct !== undefined && a.state === \"working\" && (\n                      <div className=\"mt-2 flex items-center gap-2\">\n                        <div role=\"progressbar\" aria-label={`${a.name} progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} className=\"h-1.5 flex-1 overflow-hidden rounded-full bg-muted\">\n                          <div className=\"h-full rounded-full bg-primary transition-[width] duration-300 motion-reduce:transition-none\" style={{ width: `${pct}%` }} />\n                        </div>\n                        <span aria-hidden className=\"w-9 text-right text-xs tabular-nums text-muted-foreground\">\n                          {pct}%\n                        </span>\n                      </div>\n                    )}\n                  </div>\n                  <div className=\"flex shrink-0 gap-1\">\n                    {a.state === \"working\" && onStop && (\n                      <Action label={`Stop ${a.name}`} onClick={() => onStop(a.id)}>\n                        <Square size={13} />\n                      </Action>\n                    )}\n                    {a.state === \"blocked\" && onOpen && (\n                      <button\n                        onClick={() => onOpen(a.id)}\n                        className=\"rounded-lg bg-primary px-3 py-1 text-sm font-medium text-primary-foreground hover:bg-primary/90 pointer-coarse:min-h-11 pointer-coarse:px-4\"\n                      >\n                        Review\n                      </button>\n                    )}\n                    {a.state === \"failed\" && onRetry && (\n                      <Action label={`Retry ${a.name}`} onClick={() => onRetry(a.id)}>\n                        <RotateCw size={13} />\n                      </Action>\n                    )}\n                  </div>\n                </div>\n              </li>\n            );\n          })}\n        </ul>\n      )}\n    </section>\n  );\n}\n\nfunction Action({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {\n  return (\n    <button\n      onClick={onClick}\n      aria-label={label}\n      title={label}\n      className=\"grid place-items-center rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground pointer-coarse:size-11\"\n    >\n      {children}\n    </button>\n  );\n}\n"
+    }
+  ],
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/multi-agent-status\nUses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
+}

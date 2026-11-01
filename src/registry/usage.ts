@@ -220,6 +220,64 @@ export default function Demo() {
     />
   )
 }`,
+  "tool-permissions": `"use client"
+
+import { useState } from "react"
+import { ToolPermissions, type PermissionTool } from "@/components/ui/tool-permissions"
+
+export default function Demo() {
+  const [tools, setTools] = useState<PermissionTool[]>([
+    { id: "search", name: "search_web", description: "Looks things up online.", risk: "read", mode: "allow" },
+    { id: "email", name: "send_email", description: "Sends email from your account.", risk: "write", mode: "ask" },
+    { id: "delete", name: "delete_files", description: "Permanently removes files.", risk: "destructive", mode: "block" },
+  ])
+  return (
+    <ToolPermissions
+      tools={tools}
+      onChange={(id, mode) => setTools(tools.map((t) => (t.id === id ? { ...t, mode } : t)))}
+    />
+  )
+}`,
+  "multi-agent-status": `import { MultiAgentStatus } from "@/components/ui/multi-agent-status"
+
+export default function Demo() {
+  return (
+    <MultiAgentStatus
+      agents={[
+        { id: "r", name: "Researcher", task: "Comparing venues", state: "working", progress: 0.4 },
+        { id: "w", name: "Writer", task: "Drafting the invitation", state: "waiting", waitingOn: "Researcher" },
+        { id: "b", name: "Budget", task: "Two venues are over budget", state: "blocked", waitingOn: "your decision" },
+      ]}
+      onOpen={(id) => console.log("review", id)}
+    />
+  )
+}`,
+  "voice-input": `"use client"
+
+import { useState } from "react"
+import { VoiceInput, type VoiceState } from "@/components/ui/voice-input"
+
+export default function Demo() {
+  const [state, setState] = useState<VoiceState>("idle")
+  const [text, setText] = useState("")
+  return (
+    <VoiceInput
+      state={state}
+      transcript={text}
+      onTranscriptChange={setText}
+      onStart={() => setState("listening")}
+      onStop={() => {
+        setText("Book the house in Alfama for 8 people.")
+        setState("review")
+      }}
+      onCancel={() => setState("idle")}
+      onSend={(t) => {
+        console.log(t)
+        setState("idle")
+      }}
+    />
+  )
+}`,
 };
 
 export const tags: Record<string, string[]> = {
@@ -237,4 +295,7 @@ export const tags: Record<string, string[]> = {
   citations: ["Trust", "Sources", "Verification", "Disclosure"],
   "agent-memory": ["Memory", "Privacy", "Personalisation", "Undo"],
   "human-handoff": ["Support", "Escalation", "Queue", "Context"],
+  "tool-permissions": ["Permissions", "Safety", "Agents", "Settings"],
+  "multi-agent-status": ["Agents", "Status", "Progress", "Dashboard"],
+  "voice-input": ["Voice", "Input", "Mobile", "Accessibility"],
 };
