@@ -21,6 +21,8 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm test
+      - name: Smoke test the production build
+        run: npm run test:smoke
       - name: Registry is up to date
         run: git diff --exit-code -- public/r
       - name: Registry items are valid JSON with files

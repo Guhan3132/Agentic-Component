@@ -20,7 +20,7 @@ npm run lint
 npm run build
 ```
 
-Both must pass. `npm run build` also regenerates `public/r/*.json`; commit those files if they changed.
+`npm test` runs the registry checks and the component and accessibility tests, and `npm run test:smoke` (after a build) checks the production site. `npm run build` also regenerates `public/r/*.json`; commit those files if they changed.
 
 ## Adding a pattern
 

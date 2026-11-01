@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Tests: component behaviour (Testing Library), accessibility checks on every pattern (axe) and a production-build smoke test, all in CI
+- "New" badges and an "Added in" line, related patterns ranked by category and tags, a skip link, the `/` search shortcut, language labels on code blocks
+- Registry: theme tokens (`cssVars`), SHA-256 checksums, pinned releases (`npm run registry:release`), a PR install check, CodeQL
+
 ## 0.2.0 (2026-11-01)
 
 - New patterns: error recovery, citations, agent memory, human hand-off (14 in total)
