@@ -20,6 +20,37 @@ for (const m of indexSrc.matchAll(entry)) {
   meta[m[1]] = { title: m[2], category: m[3], summary: JSON.parse(`"${m[4]}"`) };
 }
 
+// The tokens every pattern reads. The shadcn CLI adds only the ones a project is missing and never
+// overwrites existing values, so a project that already ran `shadcn init` keeps its own theme.
+const cssVars = {
+  light: {
+    background: "oklch(1 0 0)",
+    foreground: "oklch(0.145 0 0)",
+    card: "oklch(1 0 0)",
+    muted: "oklch(0.97 0 0)",
+    "muted-foreground": "oklch(0.556 0 0)",
+    accent: "oklch(0.97 0 0)",
+    border: "oklch(0.922 0 0)",
+    input: "oklch(0.922 0 0)",
+    ring: "oklch(0.708 0 0)",
+    primary: "oklch(0.205 0 0)",
+    "primary-foreground": "oklch(0.985 0 0)",
+  },
+  dark: {
+    background: "oklch(0.145 0 0)",
+    foreground: "oklch(0.985 0 0)",
+    card: "oklch(0.205 0 0)",
+    muted: "oklch(0.269 0 0)",
+    "muted-foreground": "oklch(0.708 0 0)",
+    accent: "oklch(0.269 0 0)",
+    border: "oklch(1 0 0 / 10%)",
+    input: "oklch(1 0 0 / 15%)",
+    ring: "oklch(0.556 0 0)",
+    primary: "oklch(0.922 0 0)",
+    "primary-foreground": "oklch(0.205 0 0)",
+  },
+};
+
 const index = [];
 
 for (const slug of slugs) {
@@ -47,10 +78,11 @@ for (const slug of slugs) {
     categories: meta[slug] ? [meta[slug].category.toLowerCase(), "agent"] : ["agent"],
     dependencies,
     registryDependencies: [],
+    cssVars,
     files: [{ path: `registry/agentic-ui/${slug}.tsx`, type: "registry:ui", content }],
     docs: [
       `Preview and docs: https://agentic-component.vercel.app/components/${slug}`,
-      "Needs the shadcn theme tokens (background, foreground, card, muted, accent, border, primary) and cn in @/lib/utils.",
+      "Uses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.",
       'Run "npx shadcn@latest init" first if you have not.',
     ].join("\n"),
   };
@@ -61,7 +93,7 @@ for (const slug of slugs) {
 
 writeFileSync(
   join(outDir, "registry.json"),
-  JSON.stringify({ $schema: "https://ui.shadcn.com/schema/registry.json", name: "agentic-ui", homepage: "/", items: index }, null, 2),
+  JSON.stringify({ $schema: "https://ui.shadcn.com/schema/registry.json", name: "agentic-ui", homepage: "https://agentic-component.vercel.app", items: index }, null, 2),
 );
 
 console.log(`Built ${index.length} registry items into public/r`);

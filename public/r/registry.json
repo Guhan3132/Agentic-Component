@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "agentic-ui",
-  "homepage": "/",
+  "homepage": "https://agentic-component.vercel.app",
   "items": [
     {
       "name": "agent-memory",

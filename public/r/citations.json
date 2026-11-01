@@ -13,6 +13,34 @@
     "lucide-react"
   ],
   "registryDependencies": [],
+  "cssVars": {
+    "light": {
+      "background": "oklch(1 0 0)",
+      "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)",
+      "muted": "oklch(0.97 0 0)",
+      "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)",
+      "border": "oklch(0.922 0 0)",
+      "input": "oklch(0.922 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "primary": "oklch(0.205 0 0)",
+      "primary-foreground": "oklch(0.985 0 0)"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)",
+      "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)",
+      "muted": "oklch(0.269 0 0)",
+      "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.269 0 0)",
+      "border": "oklch(1 0 0 / 10%)",
+      "input": "oklch(1 0 0 / 15%)",
+      "ring": "oklch(0.556 0 0)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-foreground": "oklch(0.205 0 0)"
+    }
+  },
   "files": [
     {
       "path": "registry/agentic-ui/citations.tsx",
@@ -20,5 +48,5 @@
       "content": "\"use client\";\n\nimport { ExternalLink, TriangleAlert } from \"lucide-react\";\nimport { useId, useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type CitationSource = { id: number; title: string; url: string; quote: string; publisher?: string };\n\ntype Props = {\n  /** Plain text. Write [1] where source 1 backs a claim, and [?] where nothing does. */\n  text: string;\n  sources: CitationSource[];\n  className?: string;\n};\n\nconst MARK = /(\\[\\d+\\]|\\[\\?\\])/g;\n\n/**\n * Inline citations you can check. A marker opens the exact quote under the paragraph (not a floating\n * popover, so it never clips), a claim with no source is flagged instead of hidden, and the source list\n * below stays in step with whichever marker is open.\n */\nexport function Citations({ text, sources, className }: Props) {\n  const [active, setActive] = useState<number | null>(null);\n  const panelId = useId();\n  const byId = new Map(sources.map((s) => [s.id, s]));\n  const current = active ? byId.get(active) : undefined;\n  const unsourced = (text.match(/\\[\\?\\]/g) ?? []).length;\n\n  return (\n    <div\n      className={cn(\"space-y-4\", className)}\n      onKeyDown={(e) => {\n        if (e.key === \"Escape\") setActive(null);\n      }}\n    >\n      <p className=\"leading-relaxed text-foreground\">\n        {text.split(MARK).map((part, i) => {\n          const n = /^\\[(\\d+)\\]$/.exec(part)?.[1];\n          if (n) {\n            const id = Number(n);\n            const s = byId.get(id);\n            if (!s) return null;\n            const on = active === id;\n            return (\n              <button\n                key={i}\n                aria-label={`Source ${id}: ${s.title}`}\n                aria-expanded={on}\n                aria-controls={panelId}\n                onClick={() => setActive(on ? null : id)}\n                className={cn(\n                  // On touch the visible dot grows to 24px and an invisible ring takes the hit area to 44px.\n                  \"relative mx-0.5 inline-grid h-[1.15rem] min-w-[1.15rem] place-items-center rounded-full px-1 align-[0.15em] text-[0.68rem] font-medium leading-none pointer-coarse:h-6 pointer-coarse:min-w-6 pointer-coarse:before:absolute pointer-coarse:before:-inset-2.5 pointer-coarse:before:content-['']\",\n                  on ? \"bg-primary text-primary-foreground\" : \"bg-muted text-muted-foreground hover:bg-accent hover:text-foreground\",\n                )}\n              >\n                {id}\n              </button>\n            );\n          }\n          if (part === \"[?]\") {\n            return (\n              <span\n                key={i}\n                title=\"No source found for this claim\"\n                className=\"ml-0.5 inline-flex items-center gap-0.5 rounded-full border border-dashed border-amber-500/60 px-1.5 align-[0.1em] text-[0.68rem] leading-4 text-amber-700 dark:text-amber-300\"\n              >\n                <TriangleAlert size={10} aria-hidden /> no source\n              </span>\n            );\n          }\n          return part;\n        })}\n      </p>\n\n      <div id={panelId} aria-live=\"polite\">\n        {current && (\n          <blockquote className=\"rounded-xl border border-border bg-muted/40 p-3 text-sm\">\n            <p className=\"text-foreground/90\">“{current.quote}”</p>\n            <footer className=\"mt-2 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground\">\n              <span>{current.publisher ?? new URL(current.url).hostname}</span>\n              <a\n                href={current.url}\n                target=\"_blank\"\n                rel=\"noreferrer\"\n                className=\"inline-flex items-center gap-1 text-foreground underline-offset-2 hover:underline pointer-coarse:min-h-11\"\n              >\n                Open source <ExternalLink size={11} aria-hidden />\n              </a>\n            </footer>\n          </blockquote>\n        )}\n      </div>\n\n      {unsourced > 0 && (\n        <p className=\"text-xs text-amber-700 dark:text-amber-300\">\n          {unsourced === 1 ? \"1 claim has\" : `${unsourced} claims have`} no source. Treat {unsourced === 1 ? \"it\" : \"them\"} as the agent’s own estimate.\n        </p>\n      )}\n\n      <ol className=\"space-y-1 text-sm\">\n        {sources.map((s) => (\n          <li key={s.id}>\n            <button\n              onClick={() => setActive(active === s.id ? null : s.id)}\n              className={cn(\n                \"flex w-full items-baseline gap-2 rounded-lg px-2 py-1.5 text-left pointer-coarse:min-h-11 pointer-coarse:items-center hover:bg-muted\",\n                active === s.id && \"bg-muted\",\n              )}\n            >\n              <span className=\"w-4 shrink-0 text-xs text-muted-foreground\">{s.id}</span>\n              <span className=\"min-w-0 flex-1 truncate text-foreground\">{s.title}</span>\n              <span className=\"shrink-0 text-xs text-muted-foreground\">{s.publisher ?? new URL(s.url).hostname}</span>\n            </button>\n          </li>\n        ))}\n      </ol>\n    </div>\n  );\n}\n"
     }
   ],
-  "docs": "Preview and docs: https://agentic-component.vercel.app/components/citations\nNeeds the shadcn theme tokens (background, foreground, card, muted, accent, border, primary) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/citations\nUses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
 }

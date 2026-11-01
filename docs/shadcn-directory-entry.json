@@ -1,0 +1,6 @@
+{
+  "name": "@agentic-ui",
+  "homepage": "https://agentic-component.vercel.app",
+  "url": "https://agentic-component.vercel.app/r/{name}.json",
+  "description": "Live, copyable UX patterns for AI agents: streaming, trust, approval, planning, chat, memory and hand-off."
+}

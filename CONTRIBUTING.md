@@ -43,3 +43,11 @@ See "Add a pattern" in the [README](./README.md). A new pattern needs:
 Do not open a public issue. See [SECURITY.md](./SECURITY.md).
 
 By contributing you agree that your work is released under the [MIT License](./LICENSE).
+
+## Releasing
+
+1. Move the "Unreleased" changelog entries under a new dated version, and bump `version` in `package.json`.
+2. Run `npm run registry:build`, then `npm run registry:release`. It freezes `public/r/v<version>/`, so people can pin `https://agentic-component.vercel.app/r/v<version>/<name>.json`. It refuses to overwrite an existing release.
+3. Commit, push, tag `v<version>` and publish a GitHub release with the changelog notes.
+
+CI fails if a component changes after its version was frozen, which is the reminder to bump the version.

@@ -1,0 +1,45 @@
+name: Install check
+
+# On pull requests that touch a pattern or the registry build: build the registry from the PR,
+# serve it locally, install every pattern into a brand-new shadcn app and type-check it.
+on:
+  pull_request:
+    paths:
+      - "src/registry/**"
+      - "scripts/build-registry.mjs"
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run registry:build
+      - name: Serve the registry from this PR
+        run: |
+          cd public
+          python3 -m http.server 3130 >/dev/null 2>&1 &
+          sleep 2
+          curl -fsS http://localhost:3130/r/registry.json >/dev/null
+      - name: Create a fresh Next.js app
+        working-directory: ${{ runner.temp }}
+        run: npx --yes create-next-app@latest consumer --ts --tailwind --eslint --app --no-src-dir --import-alias "@/*" --use-npm --yes
+      - name: shadcn init
+        working-directory: ${{ runner.temp }}/consumer
+        run: npx --yes shadcn@latest init -d -y
+      - name: Add every pattern from this PR
+        working-directory: ${{ runner.temp }}/consumer
+        run: |
+          for s in $(curl -fsS http://localhost:3130/r/registry.json | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>console.log(JSON.parse(d).items.map(i=>i.name).join(" ")))'); do
+            npx --yes shadcn@latest add "http://localhost:3130/r/$s.json" -y -o
+          done
+      - name: Type-check
+        working-directory: ${{ runner.temp }}/consumer
+        run: npx tsc --noEmit

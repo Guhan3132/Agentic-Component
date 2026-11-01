@@ -34,6 +34,7 @@
     "start": "next start",
     "lint": "eslint",
     "registry:build": "node scripts/build-registry.mjs",
+    "registry:release": "node scripts/release-registry.mjs",
     "test": "node --test scripts/registry.test.mjs",
     "prebuild": "node scripts/build-registry.mjs"
   },

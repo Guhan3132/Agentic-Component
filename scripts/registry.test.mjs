@@ -62,3 +62,21 @@ test("metadata is filled in for every pattern", () => {
     for (const field of ["summary", "why", "dos", "donts", "a11y", "props"]) assert.ok(entry.includes(`${field}:`), `${slug} is missing ${field}`);
   }
 });
+
+test("a pinned release, if it exists for this version, matches the latest registry", () => {
+  const { version } = JSON.parse(read("package.json"));
+  const dir = join(root, `public/r/v${version}`);
+  if (!existsSync(dir)) return; // not released yet: nothing is pinned
+  for (const slug of slugs) {
+    const pinned = readFileSync(join(dir, `${slug}.json`), "utf8");
+    const latest = readFileSync(join(root, `public/r/${slug}.json`), "utf8");
+    assert.equal(pinned, latest, `${slug} changed since v${version} was frozen. Bump the version and run npm run registry:release`);
+  }
+});
+
+test("every cssVars token the patterns rely on is declared", () => {
+  const item = JSON.parse(read("public/r/citations.json"));
+  for (const t of ["background", "foreground", "card", "muted", "muted-foreground", "accent", "border", "input", "ring", "primary", "primary-foreground"]) {
+    assert.ok(item.cssVars.light[t] && item.cssVars.dark[t], `token ${t} in both themes`);
+  }
+});
