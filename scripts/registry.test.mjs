@@ -1,5 +1,6 @@
 // Consistency checks for the pattern registry. Run with `npm test` (after `npm run registry:build`).
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -78,5 +79,15 @@ test("every cssVars token the patterns rely on is declared", () => {
   const item = JSON.parse(read("public/r/citations.json"));
   for (const t of ["background", "foreground", "card", "muted", "muted-foreground", "accent", "border", "input", "ring", "primary", "primary-foreground"]) {
     assert.ok(item.cssVars.light[t] && item.cssVars.dark[t], `token ${t} in both themes`);
+  }
+});
+
+test("checksums.txt matches every registry file", () => {
+  const lines = read("public/r/checksums.txt").trim().split("\n");
+  assert.ok(lines.length >= slugs.length);
+  for (const line of lines) {
+    const [hash, name] = line.split(/\s+/);
+    const actual = createHash("sha256").update(readFileSync(join(root, "public/r", name))).digest("hex");
+    assert.equal(actual, hash, `${name} does not match checksums.txt (run npm run registry:build)`);
   }
 });

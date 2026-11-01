@@ -1,5 +1,6 @@
 // Builds public/r/<slug>.json in the shadcn registry-item format so each pattern is installable:
 //   npx shadcn add https://<your-domain>/r/approval-step.json
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -95,5 +96,13 @@ writeFileSync(
   join(outDir, "registry.json"),
   JSON.stringify({ $schema: "https://ui.shadcn.com/schema/registry.json", name: "agentic-ui", homepage: "https://agentic-component.vercel.app", items: index }, null, 2),
 );
+
+// SHA-256 of every registry file, so anyone can check that what they downloaded is what we published:
+//   curl -s <url>/r/<name>.json | sha256sum   (compare with /r/checksums.txt)
+const sums = readdirSync(outDir)
+  .filter((f) => f.endsWith(".json"))
+  .sort()
+  .map((f) => `${createHash("sha256").update(readFileSync(join(outDir, f))).digest("hex")}  ${f}`);
+writeFileSync(join(outDir, "checksums.txt"), `${sums.join("\n")}\n`);
 
 console.log(`Built ${index.length} registry items into public/r`);
