@@ -2,14 +2,16 @@
 
 ## Unreleased
 
-- Security headers (CSP, HSTS, Permissions-Policy) and a patched `sharp`
-- Anonymous page-view analytics, a Get started page, and richer registry metadata
+## 0.2.0 (2026-11-01)
+
+- New patterns: error recovery, citations, agent memory, human hand-off (14 in total)
+- Security headers (CSP, HSTS, Permissions-Policy), a patched `sharp`, `security.txt`, and Next 16 with React 19.3
+- Anonymous page-view analytics, a Get started page, and richer registry metadata (title, description, docs, installs into `components/ui`)
+- Footer and About page, syntax-highlighted code, autoplaying previews, solid popovers, a logo, and per-pattern social images
+- Gallery category counts and tag search; 44px touch targets on touch screens
 - Lint is clean (0 warnings): the tooltip hook no longer reads a ref while rendering, and latest-value refs update in effects
-- Registry consistency tests in CI, category counts and tag search in the gallery, 44px touch targets on the newest patterns
-- New patterns: error recovery, citations, agent memory, human hand-off
-- Footer and About page, syntax-highlighted code, autoplaying previews, 44px touch targets
-- Sitemap, robots, social image and per-page metadata
-- CI, issue and pull request templates, contributing and security docs
+- Registry consistency tests in CI, a weekly install test, Dependabot, and issue and pull request templates
+- Sitemap, robots and per-page metadata
 
 ## 0.1.0
 

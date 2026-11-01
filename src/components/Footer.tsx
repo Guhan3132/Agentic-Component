@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 import { usePathname } from "next/navigation";
 
 const repo = "https://github.com/Guhan3132/Agentic-Component";
@@ -42,7 +43,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
           <Link href="/" className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-zinc-900 text-xs text-white">A</span>
+            <Logo size={24} className="rounded-md" />
             Agentic UI
           </Link>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-zinc-500">
