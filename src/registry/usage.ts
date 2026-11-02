@@ -278,6 +278,39 @@ export default function Demo() {
     />
   )
 }`,
+  "task-checklist": `import { TaskChecklist } from "@/components/ui/task-checklist"
+
+export default function Demo() {
+  return (
+    <TaskChecklist
+      title="Planning the offsite"
+      tasks={[
+        { id: "1", label: "Read the brief", status: "done" },
+        { id: "2", label: "Shortlist venues", status: "active" },
+        { id: "3", label: "Draft the agenda", status: "pending" },
+      ]}
+      onRetry={(id) => console.log("retry", id)}
+    />
+  )
+}`,
+  "activity-indicator": `"use client"
+
+import { useState } from "react"
+import { ActivityIndicator } from "@/components/ui/activity-indicator"
+
+export default function Demo() {
+  const [startedAt] = useState(() => Date.now())
+  return (
+    <ActivityIndicator
+      label="Running page script"
+      doneLabel="Ran page script"
+      state="running"
+      startedAt={startedAt}
+      details={<pre>$ node scripts/collect-prices.mjs</pre>}
+      onStop={() => console.log("stop")}
+    />
+  )
+}`,
 };
 
 export const tags: Record<string, string[]> = {
@@ -298,4 +331,6 @@ export const tags: Record<string, string[]> = {
   "tool-permissions": ["Permissions", "Safety", "Agents", "Settings"],
   "multi-agent-status": ["Agents", "Status", "Progress", "Dashboard"],
   "voice-input": ["Voice", "Input", "Mobile", "Accessibility"],
+  "task-checklist": ["Agents", "Progress", "Planning", "Status"],
+  "activity-indicator": ["Loading state", "Status", "Agents", "Timer"],
 };

@@ -1,7 +1,9 @@
 import type { ComponentType } from "react";
 import ApprovalDemo from "./approval-step/demo";
 import ConfidenceDemo from "./confidence-badge/demo";
+import ActivityIndicatorDemo from "./activity-indicator/demo";
 import AgentMemoryDemo from "./agent-memory/demo";
+import TaskChecklistDemo from "./task-checklist/demo";
 import CitationsDemo from "./citations/demo";
 import ErrorRecoveryDemo from "./error-recovery/demo";
 import HumanHandoffDemo from "./human-handoff/demo";
@@ -35,4 +37,6 @@ export const demos: Record<string, ComponentType> = {
   "tool-permissions": ToolPermissionsDemo,
   "multi-agent-status": MultiAgentStatusDemo,
   "voice-input": VoiceInputDemo,
+  "task-checklist": TaskChecklistDemo,
+  "activity-indicator": ActivityIndicatorDemo,
 };

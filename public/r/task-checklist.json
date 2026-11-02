@@ -1,0 +1,58 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "task-checklist",
+  "type": "registry:ui",
+  "title": "Task checklist",
+  "description": "The agent's to-do list while it works: what is done, what it is doing now and what is next, with a count, a bar and Retry on a failed step.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "act",
+    "agent"
+  ],
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [],
+  "cssVars": {
+    "light": {
+      "background": "oklch(1 0 0)",
+      "foreground": "oklch(0.145 0 0)",
+      "card": "oklch(1 0 0)",
+      "muted": "oklch(0.97 0 0)",
+      "muted-foreground": "oklch(0.556 0 0)",
+      "accent": "oklch(0.97 0 0)",
+      "border": "oklch(0.922 0 0)",
+      "input": "oklch(0.922 0 0)",
+      "primary": "oklch(0.205 0 0)",
+      "primary-foreground": "oklch(0.985 0 0)",
+      "ring": "oklch(0.708 0 0)",
+      "success": "#047857",
+      "warning": "#b45309",
+      "danger": "#be123c"
+    },
+    "dark": {
+      "background": "oklch(0.145 0 0)",
+      "foreground": "oklch(0.985 0 0)",
+      "card": "oklch(0.205 0 0)",
+      "muted": "oklch(0.269 0 0)",
+      "muted-foreground": "oklch(0.708 0 0)",
+      "accent": "oklch(0.269 0 0)",
+      "border": "oklch(1 0 0 / 10%)",
+      "input": "oklch(1 0 0 / 15%)",
+      "primary": "oklch(0.922 0 0)",
+      "primary-foreground": "oklch(0.205 0 0)",
+      "ring": "oklch(0.556 0 0)",
+      "success": "#6ee7b7",
+      "warning": "#fcd34d",
+      "danger": "#fda4af"
+    }
+  },
+  "files": [
+    {
+      "path": "registry/agentic-ui/task-checklist.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport { ChevronDown, CircleCheck, CircleDashed, CircleMinus, CircleX, RotateCw } from \"lucide-react\";\nimport { useId, useState } from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nexport type TaskStatus = \"pending\" | \"active\" | \"done\" | \"failed\" | \"skipped\";\nexport type Task = { id: string; label: string; status: TaskStatus; /** One short line under the task, e.g. what it found or why it failed. */ detail?: string };\n\ntype Props = {\n  tasks: Task[];\n  title?: string;\n  /** Collapsed shows only the step in progress, which suits a chat. */\n  defaultOpen?: boolean;\n  onRetry?: (id: string) => void;\n  className?: string;\n};\n\nconst SR: Record<TaskStatus, string> = { pending: \"not started\", active: \"in progress\", done: \"done\", failed: \"failed\", skipped: \"skipped\" };\n\n/**\n * The agent's to-do list while it works: what is done, what it is doing now, and what is next.\n * Finished steps fade back, the current one stands out, and a failure stays on its line with Retry.\n * Collapsed, it shrinks to one line with the current step, so a long plan does not take over a chat.\n */\nexport function TaskChecklist({ tasks, title = \"Plan\", defaultOpen = true, onRetry, className }: Props) {\n  const [open, setOpen] = useState(defaultOpen);\n  const listId = useId();\n  const done = tasks.filter((t) => t.status === \"done\" || t.status === \"skipped\").length;\n  const active = tasks.find((t) => t.status === \"active\");\n  const failed = tasks.find((t) => t.status === \"failed\");\n  const total = tasks.length;\n  const pct = total ? Math.round((done / total) * 100) : 0;\n  const finished = total > 0 && done === total;\n\n  // One sentence for screen readers, updated only when the current step changes.\n  const announce = failed ? `Stopped: ${failed.label} failed.` : finished ? `All ${total} steps done.` : active ? `Working on: ${active.label}.` : \"\";\n  const current = failed ? failed.label : finished ? \"All steps done\" : (active?.label ?? \"Not started\");\n\n  return (\n    <section aria-label={title} className={cn(\"rounded-xl border border-border bg-card\", className)}>\n      <button\n        onClick={() => setOpen(!open)}\n        aria-expanded={open}\n        aria-controls={listId}\n        className=\"flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring pointer-coarse:min-h-11\"\n      >\n        <span className=\"min-w-0 flex-1\">\n          <span className=\"flex items-baseline gap-2\">\n            <span className=\"font-medium text-foreground\">{title}</span>\n            <span className=\"text-xs tabular-nums text-muted-foreground\">\n              {done} of {total}\n            </span>\n          </span>\n          {!open && <span className={cn(\"mt-0.5 block truncate text-sm\", failed ? \"text-danger\" : \"text-muted-foreground\")}>{current}</span>}\n        </span>\n        <ChevronDown size={16} aria-hidden className={cn(\"shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none\", open && \"rotate-180\")} />\n      </button>\n\n      <div className=\"px-4\">\n        <div role=\"progressbar\" aria-label={`${title} progress`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} className=\"h-1 overflow-hidden rounded-full bg-muted\">\n          <div className={cn(\"h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none\", failed ? \"bg-danger\" : \"bg-primary\")} style={{ width: `${pct}%` }} />\n        </div>\n      </div>\n\n      <p role=\"status\" aria-live=\"polite\" className=\"sr-only\">\n        {announce}\n      </p>\n\n      <ol id={listId} hidden={!open} className=\"space-y-0.5 px-2 py-2\">\n        {tasks.map((t) => (\n          <li key={t.id} aria-current={t.status === \"active\" ? \"step\" : undefined} className={cn(\"flex items-start gap-3 rounded-lg px-2 py-1.5\", t.status === \"active\" && \"bg-muted/60\")}>\n            <StatusIcon status={t.status} />\n            <div className=\"min-w-0 flex-1\">\n              <p\n                className={cn(\n                  \"text-sm\",\n                  t.status === \"active\" && \"font-medium text-foreground\",\n                  t.status === \"pending\" && \"text-foreground/80\",\n                  t.status === \"done\" && \"text-muted-foreground\",\n                  t.status === \"skipped\" && \"text-muted-foreground line-through\",\n                  t.status === \"failed\" && \"text-foreground\",\n                )}\n              >\n                {t.label}\n                <span className=\"sr-only\">, {SR[t.status]}</span>\n              </p>\n              {t.detail && <p className={cn(\"mt-0.5 text-xs\", t.status === \"failed\" ? \"text-danger\" : \"text-muted-foreground\")}>{t.detail}</p>}\n            </div>\n            {t.status === \"failed\" && onRetry && (\n              <button\n                onClick={() => onRetry(t.id)}\n                className=\"inline-flex shrink-0 items-center gap-1 rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground hover:bg-accent pointer-coarse:min-h-11 pointer-coarse:px-3\"\n              >\n                <RotateCw size={12} aria-hidden /> Retry\n              </button>\n            )}\n          </li>\n        ))}\n      </ol>\n    </section>\n  );\n}\n\nfunction StatusIcon({ status }: { status: TaskStatus }) {\n  const cls = \"mt-0.5 size-4 shrink-0\";\n  if (status === \"done\") return <CircleCheck aria-hidden className={cn(cls, \"text-muted-foreground\")} />;\n  if (status === \"failed\") return <CircleX aria-hidden className={cn(cls, \"text-danger\")} />;\n  if (status === \"skipped\") return <CircleMinus aria-hidden className={cn(cls, \"text-muted-foreground\")} />;\n  if (status === \"pending\") return <CircleDashed aria-hidden className={cn(cls, \"text-muted-foreground/60\")} />;\n  // In progress: a ring with a moving arc. Under reduced motion it holds still.\n  return (\n    <svg aria-hidden viewBox=\"0 0 16 16\" className={cn(cls, \"text-primary\")}>\n      <circle cx=\"8\" cy=\"8\" r=\"6.5\" fill=\"none\" stroke=\"currentColor\" strokeOpacity=\"0.25\" strokeWidth=\"1.5\" />\n      <path d=\"M8 1.5a6.5 6.5 0 0 1 6.5 6.5\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.5\" strokeLinecap=\"round\" className=\"origin-center animate-spin motion-reduce:animate-none\" />\n    </svg>\n  );\n}\n"
+    }
+  ],
+  "docs": "Preview and docs: https://agentic-component.vercel.app/components/task-checklist\nUses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.\nRun \"npx shadcn@latest init\" first if you have not."
+}

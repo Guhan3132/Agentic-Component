@@ -27,6 +27,8 @@ It is meant to show how a good agent interface behaves, not only how it looks. E
 | Tool permissions | Control | Allow, ask first or block per tool, with plain-words risk and a clear way to answer a request |
 | Multi-agent status | Act | Several agents at once, sorted by what needs you, with a one-line summary |
 | Voice input | Control | Listening, an editable transcript, and failures that say what to do |
+| Task checklist | Act | The agent's live to-do list: done, now, next, with a count, a bar and Retry |
+| Activity indicator | Respond | One line with what the agent is doing and for how long, opening to the detail |
 
 The **Playground** (`/playground`) puts them together in one full-screen chat: pick a starter and watch a plan, tool calls, an approval, confidence and sources arrive in the thread. It has dark mode, reset and a desktop/mobile switch.
 

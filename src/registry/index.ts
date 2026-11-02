@@ -302,6 +302,42 @@ export const patterns: Pattern[] = [
       { name: "onStart / onStop / onCancel / onSend / onType", type: "() => void", desc: "Start, finish, cancel, send the text, and switch to typing" },
     ],
   },
+  {
+    slug: "task-checklist",
+    title: "Task checklist",
+    category: "Act",
+    summary: "The agent's to-do list while it works: what is done, what it is doing now and what is next, with a count, a bar and Retry on a failed step.",
+    since: "0.4.0",
+    why: "A long agent run feels stuck when all you see is a spinner. A live checklist shows the shape of the work: how many steps, which one is running, which are done. Finished steps fade back so the current one stands out, and a failure stops on its own line with the reason and a Retry. Folded to one line, it fits in a chat without taking it over.",
+    dos: ["Show the count and the current step at a glance", "Let finished steps fade back", "Keep a failure on its line with the reason and Retry", "Fold it to one line when space is short"],
+    donts: ["Show only a spinner for a multi-step job", "Move or reorder steps while they run", "Hide which step failed", "Announce every tick to screen readers"],
+    a11y: ["It is an ordered list, and the current step has aria-current=step", "Each step says its status in words for screen readers, not only with an icon", "One polite status line says which step is running, and changes only when the step does", "The progress bar is a labelled progressbar, and the fold button uses aria-expanded"],
+    props: [
+      { name: "tasks", type: "{ id, label, status, detail? }[]", desc: "status is pending, active, done, failed or skipped" },
+      { name: "title", type: "string", desc: "Heading and the name of the progress bar. Default Plan" },
+      { name: "defaultOpen", type: "boolean", desc: "Start folded to one line with the current step" },
+      { name: "onRetry", type: "(id) => void", desc: "Shows Retry on a failed step" },
+    ],
+  },
+  {
+    slug: "activity-indicator",
+    title: "Activity indicator",
+    category: "Respond",
+    summary: "One line that says what the agent is doing and for how long, opens to show the detail, and turns into a short record when it ends.",
+    since: "0.4.0",
+    why: "Agents run tools that take seconds or minutes. Without a sign of life, a long wait looks like a freeze. A single line with what is happening, in plain words, and a running timer reassures without getting in the way. The detail (a log, a command, an error) is one click away, and when the work ends the same line says how it ended and how long it took, so the chat history stays readable.",
+    dos: ["Say what it is doing in the present tense", "Show elapsed time for anything that can take a while", "Keep the detail one click away", "Turn the line into a past-tense record when it ends"],
+    donts: ["Show a spinner with no words", "Count down to a time you cannot promise", "Pop the log open by default", "Remove the line when the work ends"],
+    a11y: ["A polite status line says when it starts and how it ended, and the ticking timer is hidden from screen readers", "The line is a button with aria-expanded and aria-controls when it has detail", "The moving dots are decorative and hold still under reduced motion", "Stop is a real button, 44px on touch screens"],
+    props: [
+      { name: "label / doneLabel", type: "string", desc: "Present tense while running, past tense when finished" },
+      { name: "state", type: "running | done | failed | stopped", desc: "How the work is going, or how it ended" },
+      { name: "startedAt", type: "number (Date.now())", desc: "The timer counts from here while running" },
+      { name: "elapsedSeconds", type: "number", desc: "A fixed time instead, for finished work or static previews" },
+      { name: "details", type: "ReactNode", desc: "Shown behind the chevron: a log, the command, the error" },
+      { name: "onStop", type: "() => void", desc: "Shows Stop while running" },
+    ],
+  },
 ];
 
 export const getPattern = (slug: string) => patterns.find((p) => p.slug === slug);

@@ -4,7 +4,9 @@ import type { ReactNode } from "react";
 import { ApprovalStep } from "@/registry/approval-step/approval-step";
 import { ChatThread } from "@/registry/chat-thread/chat-thread";
 import { ConfidenceBadge } from "@/registry/confidence-badge/confidence-badge";
+import { ActivityIndicator } from "@/registry/activity-indicator/activity-indicator";
 import { AgentMemory } from "@/registry/agent-memory/agent-memory";
+import { TaskChecklist } from "@/registry/task-checklist/task-checklist";
 import { Citations } from "@/registry/citations/citations";
 import { ErrorRecovery } from "@/registry/error-recovery/error-recovery";
 import { HumanHandoff } from "@/registry/human-handoff/human-handoff";
@@ -100,6 +102,24 @@ const previews: Record<string, ReactNode> = {
       onCancel={() => {}}
       onSend={() => {}}
     />
+  ),
+  "task-checklist": (
+    <TaskChecklist
+      title="Planning the offsite"
+      tasks={[
+        { id: "1", label: "Read the offsite brief", status: "done" },
+        { id: "2", label: "Shortlist venues under $3,000", status: "done" },
+        { id: "3", label: "Check availability", status: "active" },
+        { id: "4", label: "Price travel for 8 people", status: "pending" },
+        { id: "5", label: "Draft the agenda", status: "pending" },
+      ]}
+    />
+  ),
+  "activity-indicator": (
+    <div className="space-y-3 rounded-xl bg-card p-4">
+      <ActivityIndicator label="Running page script" state="running" elapsedSeconds={364} details="log" />
+      <ActivityIndicator label="Searching venues" doneLabel="Searched venues" state="done" elapsedSeconds={12} />
+    </div>
   ),
   "error-recovery": (
     <ErrorRecovery

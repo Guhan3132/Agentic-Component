@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- New patterns: task checklist and activity indicator (19 in total)
+
 - Brand theming: one hex colour restyles every component in light and dark, with contrast checked (`AgenticTheme`, `deriveTheme`, `themeCss`)
 - A Brand button on every page with 10 sample colours, a hex field, a contrast report, shareable `?brand=` links and Copy CSS
 - Installable `theme-brand` helper and 10 `theme-<name>` presets in the registry

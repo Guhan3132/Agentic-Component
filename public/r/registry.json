@@ -4,6 +4,21 @@
   "homepage": "https://agentic-component.vercel.app",
   "items": [
     {
+      "name": "activity-indicator",
+      "type": "registry:ui",
+      "title": "Activity indicator",
+      "description": "One line that says what the agent is doing and for how long, opens to show the detail, and turns into a short record when it ends.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/activity-indicator.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "agent-memory",
       "type": "registry:ui",
       "title": "Agent memory",
@@ -199,6 +214,21 @@
       "files": [
         {
           "path": "registry/agentic-ui/streaming-response.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "task-checklist",
+      "type": "registry:ui",
+      "title": "Task checklist",
+      "description": "The agent's to-do list while it works: what is done, what it is doing now and what is next, with a count, a bar and Retry on a failed step.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/agentic-ui/task-checklist.tsx",
           "type": "registry:ui"
         }
       ]
