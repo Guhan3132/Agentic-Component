@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-- New patterns: task checklist and activity indicator (19 in total)
+## 0.4.0 (2026-11-02)
 
+- New patterns: task checklist and activity indicator (19 in total)
 - Brand theming: one hex colour restyles every component in light and dark, with contrast checked (`AgenticTheme`, `deriveTheme`, `themeCss`)
 - A Brand button on every page with 10 sample colours, a hex field, a contrast report, shareable `?brand=` links and Copy CSS
 - Installable `theme-brand` helper and 10 `theme-<name>` presets in the registry
@@ -14,7 +15,6 @@
 
 - New patterns: tool permissions, multi-agent status, voice input (17 in total)
 - `npm run new-pattern` scaffolds a pattern, and docs/adding-a-pattern.md is the contributor guide
-
 - Tests: component behaviour (Testing Library), accessibility checks on every pattern (axe) and a production-build smoke test, all in CI
 - "New" badges and an "Added in" line, related patterns ranked by category and tags, a skip link, the `/` search shortcut, language labels on code blocks
 - Registry: theme tokens (`cssVars`), SHA-256 checksums, pinned releases (`npm run registry:release`), a PR install check, CodeQL

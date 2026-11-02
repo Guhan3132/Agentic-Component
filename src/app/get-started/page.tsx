@@ -77,7 +77,7 @@ export default function GetStarted() {
           <p>
             The URL above always serves the latest. To lock to a release, use its versioned path, which never changes once published:
           </p>
-          <CodeBlock code={`npx shadcn@latest add "${origin}/r/v0.3.0/approval-step.json"`} file="terminal" />
+          <CodeBlock code={`npx shadcn@latest add "${origin}/r/v0.4.0/approval-step.json"`} file="terminal" />
           <p>
             Check any file against <a className="text-zinc-900 underline" href="/r/checksums.txt">the published checksums</a>. Releases are listed on{" "}
             <a className="text-zinc-900 underline" href="https://github.com/Guhan3132/Agentic-Component/releases" target="_blank" rel="noreferrer">

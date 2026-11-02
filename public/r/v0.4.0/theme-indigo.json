@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-indigo",
+  "type": "registry:theme",
+  "title": "Indigo theme",
+  "description": "Sets the brand colour to Indigo (#4f46e5) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "#4f46e5",
+      "primary-foreground": "#ffffff",
+      "ring": "#4f46e5"
+    },
+    "dark": {
+      "primary": "#544dec",
+      "primary-foreground": "#ffffff",
+      "ring": "#544dec"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-graphite",
+  "type": "registry:theme",
+  "title": "Graphite theme",
+  "description": "Sets the brand colour to Graphite (#18181b) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "#18181b",
+      "primary-foreground": "#ffffff",
+      "ring": "#18181b"
+    },
+    "dark": {
+      "primary": "#e5e5e5",
+      "primary-foreground": "#18181b",
+      "ring": "#e5e5e5"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."
+}
