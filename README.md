@@ -77,6 +77,24 @@ npx shadcn@latest add "https://agentic-component.vercel.app/r/approval-step.json
 
 **Or by hand:** open a pattern page, use **Copy code** or **Copy prompt**, and paste it into `components/ui/`.
 
+## Brand colour and theming
+
+Every component reads shadcn-style colour tokens, so one brand colour restyles all of them in light and dark. Try it with the **Brand** button on the site, then:
+
+```bash
+# a preset (10 samples: graphite, violet, indigo, blue, teal, green, amber, orange, pink, navy)
+npx shadcn@latest add "https://agentic-component.vercel.app/r/theme-violet.json"
+
+# or your own hex, with a wrapper
+npx shadcn@latest add "https://agentic-component.vercel.app/r/theme-brand.json"
+```
+
+```tsx
+<AgenticTheme brand="#7c3aed">{children}</AgenticTheme>
+```
+
+Contrast is checked for you, and status colours (success, warning, danger) never follow the brand. See [Tokens and theming](https://agentic-component.vercel.app/tokens) and [Customising components](https://agentic-component.vercel.app/customize) for radius, fonts, spacing, icons and motion.
+
 ## Project structure
 
 ```

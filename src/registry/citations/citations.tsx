@@ -64,7 +64,7 @@ export function Citations({ text, sources, className }: Props) {
               <span
                 key={i}
                 title="No source found for this claim"
-                className="ml-0.5 inline-flex items-center gap-0.5 rounded-full border border-dashed border-amber-500/60 px-1.5 align-[0.1em] text-[0.68rem] leading-4 text-amber-700 dark:text-amber-300"
+                className="ml-0.5 inline-flex items-center gap-0.5 rounded-full border border-dashed border-warning/60 px-1.5 align-[0.1em] text-[0.68rem] leading-4 text-warning"
               >
                 <TriangleAlert size={10} aria-hidden /> no source
               </span>
@@ -94,7 +94,7 @@ export function Citations({ text, sources, className }: Props) {
       </div>
 
       {unsourced > 0 && (
-        <p className="text-xs text-amber-700 dark:text-amber-300">
+        <p className="text-xs text-warning">
           {unsourced === 1 ? "1 claim has" : `${unsourced} claims have`} no source. Treat {unsourced === 1 ? "it" : "them"} as the agent’s own estimate.
         </p>
       )}

@@ -22,9 +22,9 @@ type Props = {
 };
 
 const RISK = {
-  low: { label: "Low risk", style: "text-emerald-700 dark:text-emerald-300 bg-emerald-500/10" },
-  medium: { label: "Needs review", style: "text-amber-700 dark:text-amber-300 bg-amber-500/10" },
-  high: { label: "Hard to undo", style: "text-rose-700 dark:text-rose-300 bg-rose-500/10" },
+  low: { label: "Low risk", style: "text-success bg-success/10" },
+  medium: { label: "Needs review", style: "text-warning bg-warning/10" },
+  high: { label: "Hard to undo", style: "text-danger bg-danger/10" },
 };
 
 /**
@@ -50,14 +50,14 @@ export function ApprovalStep({ title, description, risk, details = [], state, on
       aria-labelledby="approval-title"
       className={cn(
         "rounded-xl border bg-card p-4",
-        state === "pending" ? "border-amber-400/50" : "border-border",
+        state === "pending" ? "border-warning/50" : "border-border",
         className,
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 id="approval-title" className="flex items-center gap-2 font-medium text-foreground">
-            <ShieldAlert size={16} className="text-amber-700 dark:text-amber-300" aria-hidden /> {title}
+            <ShieldAlert size={16} className="text-warning" aria-hidden /> {title}
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">{description}</p>
         </div>
@@ -99,7 +99,7 @@ export function ApprovalStep({ title, description, risk, details = [], state, on
           </div>
         </div>
       ) : (
-        <p role="status" className={cn("mt-4 text-sm", state === "approved" ? "text-emerald-700 dark:text-emerald-300" : "text-muted-foreground")}>
+        <p role="status" className={cn("mt-4 text-sm", state === "approved" ? "text-success" : "text-muted-foreground")}>
           {state === "approved" ? "Approved. The agent is continuing." : "Rejected. The agent stopped and changed nothing."}
         </p>
       )}

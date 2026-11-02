@@ -33,7 +33,8 @@ jobs:
           if (!files.length) throw new Error("no registry items");
           for (const f of files) {
             const j = JSON.parse(fs.readFileSync("public/r/" + f, "utf8"));
-            if (!j.name || !j.files?.length || !j.files[0].content) throw new Error(f + " is incomplete");
+            if (!j.name) throw new Error(f + " has no name");
+            if (j.type === "registry:theme" ? !j.cssVars?.light : !j.files?.length || !j.files[0].content) throw new Error(f + " is incomplete");
           }
           console.log(files.length + " registry items ok");
           '

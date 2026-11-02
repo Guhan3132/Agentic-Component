@@ -264,6 +264,83 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "theme-brand",
+      "type": "registry:ui",
+      "title": "Brand theme",
+      "description": "Give one hex colour and every Agentic UI component follows it, in light and dark, with contrast checked.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/agentic-ui/agentic-theme-derive.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/agentic-ui/agentic-theme.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "theme-graphite",
+      "type": "registry:theme",
+      "title": "Graphite theme",
+      "description": "Sets the brand colour to Graphite (#18181b) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-violet",
+      "type": "registry:theme",
+      "title": "Violet theme",
+      "description": "Sets the brand colour to Violet (#7c3aed) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-indigo",
+      "type": "registry:theme",
+      "title": "Indigo theme",
+      "description": "Sets the brand colour to Indigo (#4f46e5) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-blue",
+      "type": "registry:theme",
+      "title": "Blue theme",
+      "description": "Sets the brand colour to Blue (#2563eb) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-teal",
+      "type": "registry:theme",
+      "title": "Teal theme",
+      "description": "Sets the brand colour to Teal (#0d9488) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-green",
+      "type": "registry:theme",
+      "title": "Green theme",
+      "description": "Sets the brand colour to Green (#16a34a) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-amber",
+      "type": "registry:theme",
+      "title": "Amber theme",
+      "description": "Sets the brand colour to Amber (#d97706) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-orange",
+      "type": "registry:theme",
+      "title": "Orange theme",
+      "description": "Sets the brand colour to Orange (#ea580c) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-pink",
+      "type": "registry:theme",
+      "title": "Pink theme",
+      "description": "Sets the brand colour to Pink (#db2777) for light and dark, with contrast checked."
+    },
+    {
+      "name": "theme-navy",
+      "type": "registry:theme",
+      "title": "Navy theme",
+      "description": "Sets the brand colour to Navy (#1e3a8a) for light and dark, with contrast checked."
     }
   ]
 }

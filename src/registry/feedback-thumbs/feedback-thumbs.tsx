@@ -48,7 +48,7 @@ export function FeedbackThumbs({ onSubmit, downReasons = DEFAULT_REASONS, classN
         <IconBtn label="Bad response" tip="Bad response" pressed={vote === "down"} onClick={() => pick("down")}>
           <ThumbsDown size={16} className={vote === "down" ? "fill-current" : undefined} />
         </IconBtn>
-        <span role="status" aria-live="polite" className="ml-2 flex items-center gap-1 text-sm text-emerald-700 dark:text-emerald-300">
+        <span role="status" aria-live="polite" className="ml-2 flex items-center gap-1 text-sm text-success">
           {sent && (
             <>
               <Check size={14} /> Thanks, this helps improve answers.
@@ -76,7 +76,7 @@ export function FeedbackThumbs({ onSubmit, downReasons = DEFAULT_REASONS, classN
                 className={cn(
                   "rounded-full border px-3 py-1 pointer-coarse:py-2 text-sm transition",
                   reasons.includes(r)
-                    ? "border-primary bg-primary/5 text-emerald-700 dark:text-emerald-300"
+                    ? "border-primary bg-primary/5 text-success"
                     : "border-input text-foreground/80 hover:border-foreground/30",
                 )}
               >

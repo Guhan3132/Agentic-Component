@@ -24,8 +24,8 @@ type Props = {
 
 const RISK = {
   read: { label: "Reads", icon: Eye, tone: "text-muted-foreground" },
-  write: { label: "Changes things", icon: PencilLine, tone: "text-amber-700 dark:text-amber-300" },
-  destructive: { label: "Hard to undo", icon: Trash2, tone: "text-rose-700 dark:text-rose-300" },
+  write: { label: "Changes things", icon: PencilLine, tone: "text-warning" },
+  destructive: { label: "Hard to undo", icon: Trash2, tone: "text-danger" },
 };
 
 const MODES: { value: PermissionMode; label: string }[] = [
@@ -117,7 +117,7 @@ function Row({ tool, highlighted, onChange }: { tool: PermissionTool; highlighte
               className={cn(
                 "relative cursor-pointer rounded-md px-3 py-1 text-sm font-medium has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ring pointer-coarse:grid pointer-coarse:min-h-11 pointer-coarse:place-items-center pointer-coarse:px-4",
                 tool.mode === m.value ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
-                tool.mode === m.value && m.value === "block" && "text-rose-700 dark:text-rose-300",
+                tool.mode === m.value && m.value === "block" && "text-danger",
               )}
             >
               <input type="radio" name={name} value={m.value} checked={tool.mode === m.value} onChange={() => onChange(m.value)} className="sr-only" />

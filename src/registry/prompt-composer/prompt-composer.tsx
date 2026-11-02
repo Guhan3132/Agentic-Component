@@ -499,7 +499,7 @@ export function PromptComposer({
 
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
             {text.length > maxLength * 0.8 && (
-              <span role={over ? "alert" : undefined} className={cn("mr-1 text-xs tabular-nums", over ? "text-rose-600 dark:text-rose-400" : "text-muted-foreground")}>
+              <span role={over ? "alert" : undefined} className={cn("mr-1 text-xs tabular-nums", over ? "text-danger" : "text-muted-foreground")}>
                 {text.length.toLocaleString()} / {maxLength.toLocaleString()}
               </span>
             )}
@@ -513,12 +513,12 @@ export function PromptComposer({
                 onClick={toggleRecording}
                 className={cn(
                   "group relative grid h-11 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-40 @md:h-9",
-                  recording ? "w-11 bg-rose-500/10 text-rose-600 @md:w-auto @md:px-3 dark:text-rose-400" : "w-11 @md:w-9",
+                  recording ? "w-11 bg-danger/10 text-danger @md:w-auto @md:px-3" : "w-11 @md:w-9",
                 )}
               >
                 {recording ? (
                   <span className="flex items-center gap-2">
-                    <span className="size-2.5 animate-pulse rounded-full bg-rose-500" />
+                    <span className="size-2.5 animate-pulse rounded-full bg-danger" />
                     <span className="hidden text-sm tabular-nums @md:inline">{time}</span>
                   </span>
                 ) : (
@@ -758,7 +758,7 @@ export function PromptComposer({
       )}
 
       {over && (
-        <p className="mt-1 px-3 text-xs text-rose-600 dark:text-rose-400">
+        <p className="mt-1 px-3 text-xs text-danger">
           That is {(text.length - maxLength).toLocaleString()} characters over the limit. Shorten it to send.
         </p>
       )}

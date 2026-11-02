@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
+import { BrandSwitcher } from "@/components/BrandSwitcher";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import "./globals.css";
@@ -41,6 +42,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Applies a saved brand colour before the first paint, so there is no flash of the default. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var c=localStorage.getItem("agentic-ui:brand-css");if(c){var s=document.createElement("style");s.id="agentic-brand";s.textContent=c;document.head.appendChild(s)}}catch(e){}`,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -57,6 +66,7 @@ export default function RootLayout({
           </div>
           <Footer />
         </Providers>
+        <BrandSwitcher />
         <Analytics />
       </body>
     </html>

@@ -71,7 +71,7 @@ export function VoiceInput({ state, seconds = 0, levels = [], transcript = "", o
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-sm text-foreground">
-              <span aria-hidden className="size-2 rounded-full bg-rose-500 motion-safe:animate-pulse" /> Listening
+              <span aria-hidden className="size-2 rounded-full bg-danger motion-safe:animate-pulse" /> Listening
             </span>
             <span aria-hidden className="text-sm tabular-nums text-muted-foreground">
               {mmss(seconds)}
@@ -137,7 +137,7 @@ export function VoiceInput({ state, seconds = 0, levels = [], transcript = "", o
 
       {state === "error" && (
         <div className="flex items-start gap-3">
-          <MicOff size={18} className="mt-0.5 shrink-0 text-amber-700 dark:text-amber-300" aria-hidden />
+          <MicOff size={18} className="mt-0.5 shrink-0 text-warning" aria-hidden />
           <div className="min-w-0">
             <h3 className="font-medium text-foreground">{ERROR_COPY[error].title}</h3>
             <p className="mt-1 text-sm text-muted-foreground">{ERROR_COPY[error].body}</p>

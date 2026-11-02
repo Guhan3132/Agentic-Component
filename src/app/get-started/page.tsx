@@ -98,7 +98,21 @@ export default function GetStarted() {
           </p>
         </Step>
 
-        <Step n={5} title="If it looks wrong">
+        <Step n={5} title="Use your brand colour (optional)">
+          <p>
+            One hex colour restyles every pattern, in light and dark, with contrast checked. Try it with the <strong className="text-zinc-900">Brand</strong> button at the bottom left, then follow{" "}
+            <Link href="/tokens" className="text-zinc-900 underline">
+              Tokens and theming
+            </Link>
+            . To change radius, fonts or spacing, see{" "}
+            <Link href="/customize" className="text-zinc-900 underline">
+              Customising components
+            </Link>
+            .
+          </p>
+        </Step>
+
+        <Step n={6} title="If it looks wrong">
           <p>The components read the standard shadcn tokens. If your project uses other names, add these to your global CSS (and a matching set under a `.dark` class):</p>
           <CodeBlock code={tokens} file="globals.css" />
           <p>

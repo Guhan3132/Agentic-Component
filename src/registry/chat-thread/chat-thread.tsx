@@ -199,7 +199,7 @@ export function ChatThread({ messages, typing = false, busy, agentName = "AI Age
             >
               <ArrowDown size={18} />
               {unseen > 0 && (
-                <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[11px] font-semibold text-white">{unseen}</span>
+                <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-danger px-1 text-[11px] font-semibold text-white">{unseen}</span>
               )}
               {jumpTip.tip}
             </motion.button>
@@ -334,7 +334,7 @@ function UserTurn({ turn, onRetry, fresh }: { turn: Turn; onRetry?: (id: string)
           className="flex max-w-[88%] flex-col items-end gap-1"
         >
           {/* A bubble with a file keeps one width (18rem, less on narrow screens), so file bubbles line up whatever the text says */}
-          <div className={cn("rounded-2xl bg-muted px-4 py-3", m.attachments?.length && "w-72 max-w-full", m.status === "sending" && "opacity-60", m.status === "failed" && "ring-1 ring-rose-500/50")}>
+          <div className={cn("rounded-2xl bg-muted px-4 py-3", m.attachments?.length && "w-72 max-w-full", m.status === "sending" && "opacity-60", m.status === "failed" && "ring-1 ring-danger/50")}>
             {m.text && <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed text-foreground @md:text-sm">{m.text}</p>}
             {m.attachments && (
               <div className={cn("flex flex-col gap-2", m.text && "mt-2")}>
@@ -346,13 +346,13 @@ function UserTurn({ turn, onRetry, fresh }: { turn: Turn; onRetry?: (id: string)
           </div>
 
           {m.status === "failed" ? (
-            <p role="alert" className="flex items-center gap-2 px-1 text-xs text-rose-600 dark:text-rose-400">
+            <p role="alert" className="flex items-center gap-2 px-1 text-xs text-danger">
               <TriangleAlert size={13} aria-hidden /> Not sent.
               {onRetry && (
                 <button
                   type="button"
                   onClick={() => onRetry(m.id)}
-                  className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 font-medium underline underline-offset-2 hover:bg-rose-500/10 pointer-coarse:py-2"
+                  className="inline-flex items-center gap-1 rounded-md px-1.5 py-1 font-medium underline underline-offset-2 hover:bg-danger/10 pointer-coarse:py-2"
                 >
                   <RotateCw size={12} /> Retry
                 </button>
@@ -372,10 +372,10 @@ function Divider({ message: m }: { message: ChatMessage }) {
   if (m.variant === "date") return <p className="text-center text-xs text-muted-foreground">{m.text}</p>;
   const alert = m.variant === "unread";
   return (
-    <div role={alert ? "separator" : undefined} className={cn("flex items-center gap-3 text-xs", alert ? "text-rose-500" : "text-muted-foreground")}>
-      <span aria-hidden className={cn("h-px flex-1", alert ? "bg-rose-500/60" : "bg-border")} />
+    <div role={alert ? "separator" : undefined} className={cn("flex items-center gap-3 text-xs", alert ? "text-danger" : "text-muted-foreground")}>
+      <span aria-hidden className={cn("h-px flex-1", alert ? "bg-danger/60" : "bg-border")} />
       <span className="text-center">{m.text}</span>
-      <span aria-hidden className={cn("h-px flex-1", alert ? "bg-rose-500/60" : "bg-border")} />
+      <span aria-hidden className={cn("h-px flex-1", alert ? "bg-danger/60" : "bg-border")} />
     </div>
   );
 }

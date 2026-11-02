@@ -46,7 +46,7 @@ export function WhyThisAnswer({ sources, reasoning, className }: Props) {
             ))}
           </ol>
           {sources.length === 0 ? (
-            <p className="rounded-lg bg-amber-500/10 p-3 text-amber-700 dark:text-amber-300">
+            <p className="rounded-lg bg-warning/10 p-3 text-warning">
               This answer comes from the model&apos;s general knowledge, with nothing to cite. Treat it as a starting point.
             </p>
           ) : (

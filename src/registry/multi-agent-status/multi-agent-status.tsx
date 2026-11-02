@@ -29,9 +29,9 @@ type Props = {
 const STATE = {
   working: { label: "Working", icon: Loader2, tone: "text-foreground", spin: true },
   waiting: { label: "Waiting", icon: Hourglass, tone: "text-muted-foreground", spin: false },
-  blocked: { label: "Needs you", icon: CircleAlert, tone: "text-amber-700 dark:text-amber-300", spin: false },
-  done: { label: "Done", icon: CircleCheck, tone: "text-emerald-700 dark:text-emerald-300", spin: false },
-  failed: { label: "Failed", icon: CircleAlert, tone: "text-rose-700 dark:text-rose-300", spin: false },
+  blocked: { label: "Needs you", icon: CircleAlert, tone: "text-warning", spin: false },
+  done: { label: "Done", icon: CircleCheck, tone: "text-success", spin: false },
+  failed: { label: "Failed", icon: CircleAlert, tone: "text-danger", spin: false },
 };
 
 /** One sentence that answers "how is it going?", so nobody has to read every row to find out. */
@@ -87,7 +87,7 @@ export function MultiAgentStatus({ agents, onStop, onRetry, onOpen, className }:
                     </p>
                     <p className="text-sm text-muted-foreground">{a.task}</p>
                     {a.waitingOn && (a.state === "waiting" || a.state === "blocked") && (
-                      <p className={cn("mt-0.5 text-xs", a.state === "blocked" ? "text-amber-700 dark:text-amber-300" : "text-muted-foreground")}>Waiting on {a.waitingOn}</p>
+                      <p className={cn("mt-0.5 text-xs", a.state === "blocked" ? "text-warning" : "text-muted-foreground")}>Waiting on {a.waitingOn}</p>
                     )}
                     {pct !== undefined && a.state === "working" && (
                       <div className="mt-2 flex items-center gap-2">

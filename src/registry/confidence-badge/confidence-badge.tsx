@@ -9,9 +9,9 @@ type Props = {
 };
 
 const LEVELS = [
-  { min: 0.8, label: "High confidence", style: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30", Icon: CircleCheck },
-  { min: 0.5, label: "Medium confidence", style: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30", Icon: CircleHelp },
-  { min: 0, label: "Low confidence", style: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30", Icon: TriangleAlert },
+  { min: 0.8, label: "High confidence", style: "bg-success/10 text-success border-success/30", Icon: CircleCheck },
+  { min: 0.5, label: "Medium confidence", style: "bg-warning/10 text-warning border-warning/30", Icon: CircleHelp },
+  { min: 0, label: "Low confidence", style: "bg-danger/10 text-danger border-danger/30", Icon: TriangleAlert },
 ];
 
 /** Label plus icon plus text: never colour alone, so it works for colour-blind users. */
@@ -29,7 +29,7 @@ export function ConfidenceBadge({ value, reason, className }: Props) {
         <span className="tabular-nums opacity-70">{pct}%</span>
       </span>
       {reason && <span className="max-w-md text-sm text-muted-foreground">{reason}</span>}
-      {value < 0.5 && <span className="max-w-md text-sm text-rose-700 dark:text-rose-300">Please verify this before acting on it.</span>}
+      {value < 0.5 && <span className="max-w-md text-sm text-danger">Please verify this before acting on it.</span>}
     </div>
   );
 }

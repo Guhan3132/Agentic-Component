@@ -29,9 +29,9 @@ type Props = {
 };
 
 const KIND = {
-  network: { icon: WifiOff, tone: "text-amber-700 dark:text-amber-300", ring: "border-amber-400/50" },
-  "rate-limit": { icon: Clock, tone: "text-amber-700 dark:text-amber-300", ring: "border-amber-400/50" },
-  tool: { icon: TriangleAlert, tone: "text-rose-700 dark:text-rose-300", ring: "border-rose-400/50" },
+  network: { icon: WifiOff, tone: "text-warning", ring: "border-warning/50" },
+  "rate-limit": { icon: Clock, tone: "text-warning", ring: "border-warning/50" },
+  tool: { icon: TriangleAlert, tone: "text-danger", ring: "border-danger/50" },
   refusal: { icon: ShieldOff, tone: "text-muted-foreground", ring: "border-border" },
 };
 
@@ -101,7 +101,7 @@ export function ErrorRecovery({
             <ul className="mt-3 space-y-1 rounded-lg bg-muted/50 p-3 text-sm text-foreground/80">
               {kept.map((k) => (
                 <li key={k} className="flex gap-2">
-                  <span aria-hidden className="text-emerald-600 dark:text-emerald-300">✓</span>
+                  <span aria-hidden className="text-success">✓</span>
                   {k}
                 </li>
               ))}

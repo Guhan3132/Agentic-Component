@@ -228,7 +228,7 @@ function IconBtn({ children, label, run, off, tip, danger }: Action & { children
       disabled={off}
       className={cn(
         "rounded-md p-1.5 disabled:opacity-30",
-        danger ? "text-rose-600 hover:bg-rose-500/10 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300" : "text-muted-foreground hover:bg-accent hover:text-foreground",
+        danger ? "text-danger hover:bg-danger/10 hover:text-danger dark:hover:text-danger" : "text-muted-foreground hover:bg-accent hover:text-foreground",
       )}
     >
       {children}
@@ -247,7 +247,7 @@ function WideBtn({ children, label, run, off, text, danger }: Action & { childre
       disabled={off}
       className={cn(
         "inline-flex h-11 flex-1 items-center justify-center gap-1.5 rounded-lg text-sm font-medium disabled:opacity-30",
-        danger ? "bg-rose-500/10 text-rose-700 hover:bg-rose-500/15 dark:text-rose-300" : "bg-muted text-foreground hover:bg-accent",
+        danger ? "bg-danger/10 text-danger hover:bg-danger/15" : "bg-muted text-foreground hover:bg-accent",
       )}
     >
       {children}

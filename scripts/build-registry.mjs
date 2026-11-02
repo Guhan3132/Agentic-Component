@@ -1,6 +1,7 @@
 // Builds public/r/<slug>.json in the shadcn registry-item format so each pattern is installable:
 //   npx shadcn add https://<your-domain>/r/approval-step.json
 import { createHash } from "node:crypto";
+import { pathToFileURL } from "node:url";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -21,35 +22,13 @@ for (const m of indexSrc.matchAll(entry)) {
   meta[m[1]] = { title: m[2], category: m[3], summary: JSON.parse(`"${m[4]}"`) };
 }
 
-// The tokens every pattern reads. The shadcn CLI adds only the ones a project is missing and never
-// overwrites existing values, so a project that already ran `shadcn init` keeps its own theme.
+// The tokens every pattern reads, from src/lib/tokens.json (also the source of the /tokens page).
+// The shadcn CLI adds only the ones a project is missing and never overwrites existing values,
+// so a project that already ran `shadcn init` keeps its own theme.
+const tokenList = JSON.parse(readFileSync(join(root, "src/lib/tokens.json"), "utf8")).tokens;
 const cssVars = {
-  light: {
-    background: "oklch(1 0 0)",
-    foreground: "oklch(0.145 0 0)",
-    card: "oklch(1 0 0)",
-    muted: "oklch(0.97 0 0)",
-    "muted-foreground": "oklch(0.556 0 0)",
-    accent: "oklch(0.97 0 0)",
-    border: "oklch(0.922 0 0)",
-    input: "oklch(0.922 0 0)",
-    ring: "oklch(0.708 0 0)",
-    primary: "oklch(0.205 0 0)",
-    "primary-foreground": "oklch(0.985 0 0)",
-  },
-  dark: {
-    background: "oklch(0.145 0 0)",
-    foreground: "oklch(0.985 0 0)",
-    card: "oklch(0.205 0 0)",
-    muted: "oklch(0.269 0 0)",
-    "muted-foreground": "oklch(0.708 0 0)",
-    accent: "oklch(0.269 0 0)",
-    border: "oklch(1 0 0 / 10%)",
-    input: "oklch(1 0 0 / 15%)",
-    ring: "oklch(0.556 0 0)",
-    primary: "oklch(0.922 0 0)",
-    "primary-foreground": "oklch(0.205 0 0)",
-  },
+  light: Object.fromEntries(tokenList.map((t) => [t.name, t.light])),
+  dark: Object.fromEntries(tokenList.map((t) => [t.name, t.dark])),
 };
 
 const index = [];
@@ -90,6 +69,54 @@ for (const slug of slugs) {
 
   writeFileSync(join(outDir, `${slug}.json`), JSON.stringify(item, null, 2));
   index.push({ name: slug, type: item.type, title: item.title, description: item.description, dependencies, files: [{ path: item.files[0].path, type: item.files[0].type }] });
+}
+
+// ---- Theming: the brand helper, and one preset per sample colour ----
+// derive.ts is plain TypeScript with no JSX, so Node can load it directly.
+const { deriveTheme } = await import(pathToFileURL(join(root, "src/theme/derive.ts")).href);
+const { sampleThemes } = await import(pathToFileURL(join(root, "src/theme/samples.ts")).href);
+const norm = (t) => t.replaceAll("\r\n", "\n");
+
+const deriveSrc = norm(readFileSync(join(root, "src/theme/derive.ts"), "utf8"));
+const themeSrc = norm(readFileSync(join(root, "src/theme/agentic-theme.tsx"), "utf8")).replaceAll('"./derive"', '"@/lib/agentic-theme-derive"');
+const brandItem = {
+  $schema: "https://ui.shadcn.com/schema/registry-item.json",
+  name: "theme-brand",
+  type: "registry:ui",
+  title: "Brand theme",
+  description: "Give one hex colour and every Agentic UI component follows it, in light and dark, with contrast checked.",
+  author: "Agentic UI <https://agentic-component.vercel.app>",
+  categories: ["theme"],
+  dependencies: [],
+  registryDependencies: [],
+  files: [
+    { path: "registry/agentic-ui/agentic-theme-derive.ts", type: "registry:lib", content: deriveSrc },
+    { path: "registry/agentic-ui/agentic-theme.tsx", type: "registry:ui", content: themeSrc },
+  ],
+  docs: [
+    'Wrap your app or one section: <AgenticTheme brand="#7c3aed">...</AgenticTheme>',
+    "Or paste CSS into your stylesheet: console.log(themeCss(deriveTheme(\"#7c3aed\")))",
+    "Try colours at https://agentic-component.vercel.app (the Brand button, bottom left).",
+  ].join("\n"),
+};
+writeFileSync(join(outDir, "theme-brand.json"), JSON.stringify(brandItem, null, 2));
+index.push({ name: brandItem.name, type: brandItem.type, title: brandItem.title, description: brandItem.description, dependencies: [], files: brandItem.files.map((f) => ({ path: f.path, type: f.type })) });
+
+for (const sample of sampleThemes) {
+  const t = deriveTheme(sample.hex);
+  const item = {
+    $schema: "https://ui.shadcn.com/schema/registry-item.json",
+    name: `theme-${sample.id}`,
+    type: "registry:theme",
+    title: `${sample.name} theme`,
+    description: `Sets the brand colour to ${sample.name} (${sample.hex}) for light and dark, with contrast checked.`,
+    author: "Agentic UI <https://agentic-component.vercel.app>",
+    categories: ["theme"],
+    cssVars: { light: t.light, dark: t.dark },
+    docs: "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched.",
+  };
+  writeFileSync(join(outDir, `${item.name}.json`), JSON.stringify(item, null, 2));
+  index.push({ name: item.name, type: item.type, title: item.title, description: item.description });
 }
 
 writeFileSync(

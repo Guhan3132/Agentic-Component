@@ -33,7 +33,7 @@ after(() => server?.kill());
 const get = (path) => fetch(base + path);
 
 test("the main pages load with the site name in the title", async () => {
-  for (const path of ["/", "/about", "/get-started", "/playground"]) {
+  for (const path of ["/", "/about", "/get-started", "/playground", "/tokens", "/customize"]) {
     const res = await get(path);
     assert.equal(res.status, 200, path);
     assert.match(await res.text(), /<title>[^<]*Agentic UI/, `${path} title`);
@@ -64,8 +64,10 @@ test("security headers are sent", async () => {
 
 test("the registry is served with CORS and every item installs from its URL", async () => {
   const index = await (await get("/r/registry.json")).json();
-  assert.equal(index.items.length, slugs.length);
-  for (const item of index.items) {
+  const patterns = index.items.filter((i) => !i.name.startsWith("theme-"));
+  assert.equal(patterns.length, slugs.length);
+  assert.ok(index.items.some((i) => i.name === "theme-brand"), "theme-brand listed");
+  for (const item of patterns) {
     const res = await get(`/r/${item.name}.json`);
     assert.equal(res.status, 200, item.name);
     assert.equal(res.headers.get("access-control-allow-origin"), "*");
@@ -86,8 +88,11 @@ test("an unknown page is a 404, not a crash", async () => {
   assert.equal((await get("/components/does-not-exist")).status, 404);
 });
 
-test("the pinned release for this version is served and matches the latest", async () => {
-  const { version } = JSON.parse((await import("node:fs")).readFileSync(join(root, "package.json"), "utf8"));
+test("the pinned release for this version is served and matches the latest", async (t) => {
+  const { existsSync, readFileSync } = await import("node:fs");
+  const { version } = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+  // Between releases the version is bumped before it is frozen, so there is nothing pinned yet.
+  if (!existsSync(join(root, `public/r/v${version}`))) return t.skip(`v${version} is not frozen yet`);
   const pinned = await get(`/r/v${version}/approval-step.json`);
   const latest = await get("/r/approval-step.json");
   assert.equal(pinned.status, 200, `/r/v${version}/approval-step.json`);

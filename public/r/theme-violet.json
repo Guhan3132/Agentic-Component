@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-violet",
+  "type": "registry:theme",
+  "title": "Violet theme",
+  "description": "Sets the brand colour to Violet (#7c3aed) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "#7c3aed",
+      "primary-foreground": "#ffffff",
+      "ring": "#7c3aed"
+    },
+    "dark": {
+      "primary": "#7c3aed",
+      "primary-foreground": "#ffffff",
+      "ring": "#7c3aed"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."
+}

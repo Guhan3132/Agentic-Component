@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Brand theming: one hex colour restyles every component in light and dark, with contrast checked (`AgenticTheme`, `deriveTheme`, `themeCss`)
+- A Brand button on every page with 10 sample colours, a hex field, a contrast report, shareable `?brand=` links and Copy CSS
+- Installable `theme-brand` helper and 10 `theme-<name>` presets in the registry
+- Status colours are now tokens (`success`, `warning`, `danger`) instead of fixed Tailwind colours
+- New pages: Tokens and theming, and Customising components (radius, fonts, spacing, icons, motion, wording)
+
 ## 0.3.0 (2026-11-01)
 
 - New patterns: tool permissions, multi-agent status, voice input (17 in total)

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-green",
+  "type": "registry:theme",
+  "title": "Green theme",
+  "description": "Sets the brand colour to Green (#16a34a) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "#16a34a",
+      "primary-foreground": "#18181b",
+      "ring": "#16a34a"
+    },
+    "dark": {
+      "primary": "#16a34a",
+      "primary-foreground": "#18181b",
+      "ring": "#16a34a"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."
+}

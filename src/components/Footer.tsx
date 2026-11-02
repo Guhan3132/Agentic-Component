@@ -13,6 +13,8 @@ const columns = [
       { href: "/#patterns", label: "Patterns" },
       { href: "/playground", label: "Playground" },
       { href: "/get-started", label: "Get started" },
+      { href: "/tokens", label: "Tokens and theming" },
+      { href: "/customize", label: "Customising" },
     ],
   },
   {

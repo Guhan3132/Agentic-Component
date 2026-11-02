@@ -75,11 +75,23 @@ test("a pinned release, if it exists for this version, matches the latest regist
   }
 });
 
-test("every cssVars token the patterns rely on is declared", () => {
-  const item = JSON.parse(read("public/r/citations.json"));
-  for (const t of ["background", "foreground", "card", "muted", "muted-foreground", "accent", "border", "input", "ring", "primary", "primary-foreground"]) {
-    assert.ok(item.cssVars.light[t] && item.cssVars.dark[t], `token ${t} in both themes`);
+test("every token in tokens.json is declared for both themes in each registry item", () => {
+  const tokens = JSON.parse(read("src/lib/tokens.json")).tokens;
+  assert.ok(tokens.length >= 14);
+  for (const slug of slugs) {
+    const item = JSON.parse(read(`public/r/${slug}.json`));
+    for (const t of tokens) assert.ok(item.cssVars.light[t.name] && item.cssVars.dark[t.name], `${slug}: token ${t.name} in both themes`);
   }
+});
+
+test("the tokens the components use are all in tokens.json", () => {
+  const names = new Set(JSON.parse(read("src/lib/tokens.json")).tokens.map((t) => t.name));
+  const used = new Set();
+  for (const slug of slugs) {
+    const src = read(`src/registry/${slug}/${slug}.tsx`);
+    for (const m of src.matchAll(/(?:bg|text|border|ring|outline|fill|stroke|divide|from|to|via)-(background|foreground|card|muted-foreground|muted|accent|border|input|primary-foreground|primary|ring|success|warning|danger)/g)) used.add(m[1]);
+  }
+  for (const u of used) assert.ok(names.has(u), `component uses token "${u}" that is not in tokens.json`);
 });
 
 test("checksums.txt matches every registry file", () => {
@@ -89,5 +101,29 @@ test("checksums.txt matches every registry file", () => {
     const [hash, name] = line.split(/\s+/);
     const actual = createHash("sha256").update(readFileSync(join(root, "public/r", name))).digest("hex");
     assert.equal(actual, hash, `${name} does not match checksums.txt (run npm run registry:build)`);
+  }
+});
+
+test("theme-brand ships the wrapper and its maths, wired to each other", () => {
+  const item = JSON.parse(read("public/r/theme-brand.json"));
+  assert.deepEqual(item.files.map((f) => f.type), ["registry:lib", "registry:ui"]);
+  const [lib, ui] = item.files;
+  assert.match(lib.path, /agentic-theme-derive\.ts$/);
+  assert.ok(lib.content.includes("export function deriveTheme"), "derive maths");
+  assert.ok(ui.content.includes('from "@/lib/agentic-theme-derive"'), "wrapper imports the lib by its installed path");
+  assert.ok(!ui.content.includes('"./derive"'), "no relative import left behind");
+  assert.ok(!lib.content.includes("\r") && !ui.content.includes("\r"), "LF only");
+});
+
+test("every sample colour has a preset with light and dark brand tokens", () => {
+  const samples = [...read("src/theme/samples.ts").matchAll(/id: "([a-z]+)", name: "([^"]+)", hex: "(#[0-9a-f]{6})"/g)];
+  assert.equal(samples.length, 10);
+  const index = JSON.parse(read("public/r/registry.json")).items.map((i) => i.name);
+  for (const [, id, , hex] of samples) {
+    const item = JSON.parse(read(`public/r/theme-${id}.json`));
+    assert.equal(item.type, "registry:theme");
+    assert.equal(item.cssVars.light.primary, hex, `${id} light primary is the brand`);
+    for (const mode of ["light", "dark"]) for (const k of ["primary", "primary-foreground", "ring"]) assert.match(item.cssVars[mode][k], /^#[0-9a-f]{6}$/, `${id} ${mode} ${k}`);
+    assert.ok(index.includes(`theme-${id}`), `theme-${id} in registry.json`);
   }
 });

@@ -85,7 +85,7 @@ export function HumanHandoff({ state, summary = [], position, etaMinutes, person
           <ul className="mt-1.5 space-y-1 text-sm text-foreground/80">
             {summary.map((s) => (
               <li key={s} className="flex gap-2">
-                <Check size={14} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-300" aria-hidden />
+                <Check size={14} className="mt-0.5 shrink-0 text-success" aria-hidden />
                 {s}
               </li>
             ))}

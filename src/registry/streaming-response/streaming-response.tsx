@@ -37,7 +37,7 @@ export function StreamingResponse({ text, status, errorMessage, onStop, onRegene
         <p className="mt-3 text-sm text-muted-foreground">Stopped. The partial answer is kept so you do not lose it.</p>
       )}
       {status === "error" && (
-        <div role="alert" className="mt-3 flex items-start gap-2 rounded-lg bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
+        <div role="alert" className="mt-3 flex items-start gap-2 rounded-lg bg-warning/10 p-3 text-sm text-warning">
           <TriangleAlert size={16} className="mt-0.5 shrink-0" />
           <span>{errorMessage ?? "Something went wrong."} What was generated so far is shown above.</span>
         </div>

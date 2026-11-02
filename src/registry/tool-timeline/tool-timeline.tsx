@@ -34,8 +34,8 @@ export function ToolTimeline({ steps, className }: Props) {
           <span className="mt-0.5 shrink-0">
             {s.status === "pending" && <Circle size={20} className="text-muted-foreground/40" aria-label="Waiting" />}
             {s.status === "running" && <Loader2 size={20} className="animate-spin text-muted-foreground/60" aria-label="Running" />}
-            {s.status === "ok" && <CircleCheck size={20} className="text-emerald-600 dark:text-emerald-400" aria-label="Done" />}
-            {s.status === "failed" && <CircleX size={20} className="text-rose-600 dark:text-rose-400" aria-label="Failed" />}
+            {s.status === "ok" && <CircleCheck size={20} className="text-success" aria-label="Done" />}
+            {s.status === "failed" && <CircleX size={20} className="text-danger" aria-label="Failed" />}
           </span>
           <div className="min-w-0 text-sm">
             <p className="flex flex-wrap items-baseline gap-x-2">
@@ -43,7 +43,7 @@ export function ToolTimeline({ steps, className }: Props) {
               {s.args && <code className="truncate font-mono text-xs text-muted-foreground">{s.args}</code>}
             </p>
             {s.summary && (
-              <p className={cn("mt-0.5", s.status === "failed" ? "text-rose-700 dark:text-rose-300" : "text-muted-foreground")}>{s.summary}</p>
+              <p className={cn("mt-0.5", s.status === "failed" ? "text-danger" : "text-muted-foreground")}>{s.summary}</p>
             )}
           </div>
         </motion.li>
