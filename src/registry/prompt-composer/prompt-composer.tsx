@@ -114,7 +114,13 @@ const getRecognizer = (): (new () => Recognizer) | null => {
 function useObjectUrls(files: File[]) {
   const [urls, setUrls] = useState<(string | null)[]>([]);
   useEffect(() => {
-    const next = files.map((f) => (f.type.startsWith("image/") ? URL.createObjectURL(f) : null));
+    // createObjectURL always returns a browser-made blob: URL, never text from the file. Keeping only
+    // blob: URLs makes that explicit, so nothing but a local preview can ever reach the <img> below.
+    const next = files.map((f) => {
+      if (!f.type.startsWith("image/")) return null;
+      const url = URL.createObjectURL(f);
+      return url.startsWith("blob:") ? url : null;
+    });
     // Object URLs are an external resource that has to be created and released with the files.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrls(next);

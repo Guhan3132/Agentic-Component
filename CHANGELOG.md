@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Security: the prompt composer's image previews accept only browser-made `blob:` URLs (CodeQL alert js/xss-through-dom)
+
 ## 0.4.0 (2026-11-02)
 
 - New patterns: task checklist and activity indicator (19 in total)
