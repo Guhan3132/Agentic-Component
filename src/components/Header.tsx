@@ -14,7 +14,7 @@ export function Header() {
     <header className="sticky top-0 z-30 h-14 border-b border-border bg-background">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
+          <Link href="/" className="flex shrink-0 items-center gap-2 whitespace-nowrap text-[15px] font-semibold tracking-tight">
             <Logo size={24} className="rounded-md" />
             Agentic UI
           </Link>
@@ -27,11 +27,11 @@ export function Header() {
           </nav>
         </div>
         <div className="flex items-center gap-1.5">
-          <Link href="/playground" className="rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-foreground/5 sm:hidden">
+          <Link href="/playground" className="hidden items-center rounded-lg px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-foreground/5 min-[420px]:inline-flex pointer-coarse:min-h-11 sm:hidden">
             Playground
           </Link>
           <ThemeToggle />
-          <Link href="/get-started" className="rounded-lg bg-foreground px-3.5 py-2 text-sm font-medium text-background hover:bg-foreground/85">
+          <Link href="/get-started" className="inline-flex items-center whitespace-nowrap rounded-lg bg-foreground px-3.5 py-2 text-sm font-medium text-background hover:bg-foreground/85 pointer-coarse:min-h-11">
             Get started
           </Link>
         </div>
