@@ -7,10 +7,13 @@ import { ApprovalStep } from "@/registry/approval-step/approval-step";
 import { Citations } from "@/registry/citations/citations";
 import { ConfidenceBadge } from "@/registry/confidence-badge/confidence-badge";
 import { ErrorRecovery } from "@/registry/error-recovery/error-recovery";
-import { FeedbackThumbs } from "@/registry/feedback-thumbs/feedback-thumbs";
+import { ChatThread, FeedbackThumbs } from "@/registry/chat-thread/chat-thread";
+import { PromptComposer } from "@/registry/prompt-composer/prompt-composer";
+import { StreamingResponse } from "@/registry/streaming-response/streaming-response";
+import { ToolTimeline } from "@/registry/tool-timeline/tool-timeline";
 import { HumanHandoff } from "@/registry/human-handoff/human-handoff";
 import { PlanPreview } from "@/registry/plan-preview/plan-preview";
-import { WhyThisAnswer } from "@/registry/why-this-answer/why-this-answer";
+import { WhyThisAnswer } from "@/registry/citations/citations";
 
 /** Structure and ARIA checks. Colour contrast needs real layout, so it is checked in the browser instead. */
 async function violations(ui: ReactElement) {
@@ -36,6 +39,18 @@ const cases: [string, ReactElement][] = [
 
 describe("accessibility (axe, structure and ARIA)", () => {
   it.each(cases)("%s has no violations", async (_name, ui) => {
+    expect(await violations(ui)).toEqual([]);
+  });
+});
+
+describe("accessibility (axe) for the remaining patterns", () => {
+  const noop = () => {};
+  it.each<[string, ReactElement]>([
+    ["streaming response with an activity line", <StreamingResponse key="s" text="A two-day offsite fits under $3,000." status="streaming" onStop={noop} activity={{ label: "Searching venues", state: "running", elapsedSeconds: 4, details: "log" }} />],
+    ["tool timeline", <ToolTimeline key="t" steps={[{ id: "1", name: "search", args: "Lisbon", status: "failed", summary: "Timed out" }, { id: "2", name: "search", args: "backup", status: "ok", summary: "9 found" }]} />],
+    ["prompt composer", <PromptComposer key="p" onSubmit={noop} suggestions={["Plan an offsite"]} />],
+    ["chat thread", <ChatThread key="c" className="h-96" messages={[{ id: "1", role: "user", text: "Hi", time: "9:41" }, { id: "2", role: "agent", text: "Hello! How can I help?", time: "9:41" }]} onFeedback={noop} />],
+  ])("%s has no violations", async (_name, ui) => {
     expect(await violations(ui)).toEqual([]);
   });
 });

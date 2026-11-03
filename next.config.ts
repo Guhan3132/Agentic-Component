@@ -31,6 +31,22 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Patterns merged in 0.5.0: their pages move to the pattern that now holds them, and their
+  // install URLs keep serving the last version (0.4.0), so existing installs and links keep working.
+  async redirects() {
+    const merged: Record<string, string> = {
+      "activity-indicator": "streaming-response",
+      "why-this-answer": "citations",
+      "feedback-thumbs": "chat-thread",
+      "task-checklist": "plan-preview",
+      "interrupt-steer": "prompt-composer",
+      "voice-input": "prompt-composer",
+    };
+    return Object.entries(merged).flatMap(([from, to]) => [
+      { source: `/components/${from}`, destination: `/components/${to}`, permanent: true },
+      { source: `/r/${from}.json`, destination: `/r/v0.4.0/${from}.json`, permanent: false },
+    ]);
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

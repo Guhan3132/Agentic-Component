@@ -98,3 +98,12 @@ test("the pinned release for this version is served and matches the latest", asy
   assert.equal(pinned.status, 200, `/r/v${version}/approval-step.json`);
   assert.equal(await pinned.text(), await latest.text());
 });
+
+test("merged patterns redirect to their new home, and their install URLs keep working", async () => {
+  const page = await fetch(`${base}/components/voice-input`, { redirect: "manual" });
+  assert.ok([301, 308].includes(page.status), `page status ${page.status}`);
+  assert.match(page.headers.get("location") ?? "", /\/components\/prompt-composer$/);
+  const item = await fetch(`${base}/r/task-checklist.json`);
+  assert.equal(item.status, 200, "follows to the frozen v0.4.0 file");
+  assert.equal((await item.json()).name, "task-checklist");
+});

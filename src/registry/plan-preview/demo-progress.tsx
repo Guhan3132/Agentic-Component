@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { DemoFrame } from "@/components/DemoFrame";
 import type { Scenario } from "@/lib/simulator/types";
-import { TaskChecklist, type Task } from "./task-checklist";
+import { TaskChecklist, type Task } from "./plan-preview";
 
 const steps = [
   "Read the offsite brief",

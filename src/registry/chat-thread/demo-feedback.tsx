@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { DemoFrame } from "@/components/DemoFrame";
-import { FeedbackThumbs } from "./feedback-thumbs";
+import { FeedbackThumbs } from "./chat-thread";
 
 export default function Demo() {
   const [log, setLog] = useState<string>("");

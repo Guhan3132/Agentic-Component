@@ -53,7 +53,7 @@ export default function Demo() {
       }}
       onReplay={() => setRun((r) => r + 1)}
     >
-      <Citations key={id + run} text={s.text} sources={s.sources} />
+      <Citations key={id + run} text={s.text} sources={s.sources} reasoning={["Looked for 2026 offsite budgets", "Kept sources that state a price range", "Checked venue rules for November"]} />
     </DemoFrame>
   );
 }

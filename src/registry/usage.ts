@@ -24,20 +24,6 @@ export default function Demo() {
     />
   )
 }`,
-  "why-this-answer": `"use client"
-
-import { WhyThisAnswer } from "@/components/ui/why-this-answer"
-
-export default function Demo() {
-  return (
-    <WhyThisAnswer
-      reasoning={["Searched planning studies", "Kept two recent sources"]}
-      sources={[
-        { title: "State of Team Planning", url: "https://example.com", snippet: "61% plan on Mondays." },
-      ]}
-    />
-  )
-}`,
   "approval-step": `"use client"
 
 import { useState } from "react"
@@ -56,13 +42,6 @@ export default function Demo() {
       onReject={() => setState("rejected")}
     />
   )
-}`,
-  "feedback-thumbs": `"use client"
-
-import { FeedbackThumbs } from "@/components/ui/feedback-thumbs"
-
-export default function Demo() {
-  return <FeedbackThumbs onSubmit={(vote, reasons) => console.log(vote, reasons)} />
 }`,
   "tool-timeline": `import { ToolTimeline } from "@/components/ui/tool-timeline"
 
@@ -88,21 +67,6 @@ export default function Demo() {
     { id: "2", text: "Check availability" },
   ])
   return <PlanPreview steps={steps} onChange={setSteps} onConfirm={() => console.log(steps)} />
-}`,
-  "interrupt-steer": `"use client"
-
-import { InterruptSteer } from "@/components/ui/interrupt-steer"
-
-export default function Demo() {
-  return (
-    <InterruptSteer
-      running
-      segments={[{ role: "agent", text: "Day two is a walking tour." }]}
-      suggestions={["Keep it indoors"]}
-      onSteer={(message) => console.log(message)}
-      onStop={() => console.log("stop")}
-    />
-  )
 }`,
   "prompt-composer": `"use client"
 
@@ -252,76 +216,14 @@ export default function Demo() {
     />
   )
 }`,
-  "voice-input": `"use client"
-
-import { useState } from "react"
-import { VoiceInput, type VoiceState } from "@/components/ui/voice-input"
-
-export default function Demo() {
-  const [state, setState] = useState<VoiceState>("idle")
-  const [text, setText] = useState("")
-  return (
-    <VoiceInput
-      state={state}
-      transcript={text}
-      onTranscriptChange={setText}
-      onStart={() => setState("listening")}
-      onStop={() => {
-        setText("Book the house in Alfama for 8 people.")
-        setState("review")
-      }}
-      onCancel={() => setState("idle")}
-      onSend={(t) => {
-        console.log(t)
-        setState("idle")
-      }}
-    />
-  )
-}`,
-  "task-checklist": `import { TaskChecklist } from "@/components/ui/task-checklist"
-
-export default function Demo() {
-  return (
-    <TaskChecklist
-      title="Planning the offsite"
-      tasks={[
-        { id: "1", label: "Read the brief", status: "done" },
-        { id: "2", label: "Shortlist venues", status: "active" },
-        { id: "3", label: "Draft the agenda", status: "pending" },
-      ]}
-      onRetry={(id) => console.log("retry", id)}
-    />
-  )
-}`,
-  "activity-indicator": `"use client"
-
-import { useState } from "react"
-import { ActivityIndicator } from "@/components/ui/activity-indicator"
-
-export default function Demo() {
-  const [startedAt] = useState(() => Date.now())
-  return (
-    <ActivityIndicator
-      label="Running page script"
-      doneLabel="Ran page script"
-      state="running"
-      startedAt={startedAt}
-      details={<pre>$ node scripts/collect-prices.mjs</pre>}
-      onStop={() => console.log("stop")}
-    />
-  )
-}`,
 };
 
 export const tags: Record<string, string[]> = {
   "streaming-response": ["Streaming", "Chat", "Loading state", "Error handling"],
   "confidence-badge": ["Trust", "Badge", "Uncertainty", "Accessibility"],
-  "why-this-answer": ["Trust", "Citations", "Explainability", "Disclosure"],
   "approval-step": ["Human in the loop", "Safety", "Confirmation", "Risk"],
-  "feedback-thumbs": ["Feedback", "Rating", "Learning", "Micro-interaction"],
   "tool-timeline": ["Agents", "Tool calls", "Timeline", "Observability"],
   "plan-preview": ["Agents", "Planning", "Editable", "Reorder"],
-  "interrupt-steer": ["Agents", "Chat", "Steering", "Composer"],
   "prompt-composer": ["Input", "Chat", "Mobile", "Attachments"],
   "chat-thread": ["Chat", "Conversation", "Agents", "Streaming"],
   "error-recovery": ["Error handling", "Retry", "Resilience", "Accessibility"],
@@ -330,7 +232,4 @@ export const tags: Record<string, string[]> = {
   "human-handoff": ["Support", "Escalation", "Queue", "Context"],
   "tool-permissions": ["Permissions", "Safety", "Agents", "Settings"],
   "multi-agent-status": ["Agents", "Status", "Progress", "Dashboard"],
-  "voice-input": ["Voice", "Input", "Mobile", "Accessibility"],
-  "task-checklist": ["Agents", "Progress", "Planning", "Status"],
-  "activity-indicator": ["Loading state", "Status", "Agents", "Timer"],
 };

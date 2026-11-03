@@ -6,8 +6,8 @@ import { textOf } from "@/lib/simulator/derive";
 import { tokens } from "@/lib/simulator/helpers";
 import type { Scenario, Step } from "@/lib/simulator/types";
 import { useAgentSimulator } from "@/lib/simulator/useAgentSimulator";
-import { PromptComposer } from "../prompt-composer/prompt-composer";
-import { InterruptSteer, type Segment } from "./interrupt-steer";
+
+import { InterruptSteer, PromptComposer, type Segment } from "./prompt-composer";
 
 const LONG =
   "Here is a 3-day offsite plan. Day one is travel and a welcome dinner. Day two is a morning workshop, a long lunch and an afternoon walking tour. Day three is a retrospective and departures. Lodging is booked at a central hotel with a meeting room included.";

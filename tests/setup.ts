@@ -9,3 +9,6 @@ if (!window.matchMedia) {
   window.matchMedia = (query: string) =>
     ({ matches: false, media: query, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent: () => false }) as MediaQueryList;
 }
+
+// jsdom does not scroll; the chat thread calls scrollTo to follow new messages.
+if (!Element.prototype.scrollTo) Element.prototype.scrollTo = () => {};

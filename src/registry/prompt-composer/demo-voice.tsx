@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DemoFrame } from "@/components/DemoFrame";
 import type { Scenario } from "@/lib/simulator/types";
-import { VoiceInput, type VoiceError, type VoiceState } from "./voice-input";
+import { VoiceInput, type VoiceError, type VoiceState } from "./prompt-composer";
 
 const scenarios: Scenario[] = [
   { id: "dictate", label: "Dictate", hint: "Tap, talk, tap Done. The text lands in a box you can fix before sending.", script: [] },

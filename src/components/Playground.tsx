@@ -13,7 +13,7 @@ import { ConfidenceBadge } from "@/registry/confidence-badge/confidence-badge";
 import { PlanPreview, type PlanItem } from "@/registry/plan-preview/plan-preview";
 import { PromptComposer } from "@/registry/prompt-composer/prompt-composer";
 import { ToolTimeline } from "@/registry/tool-timeline/tool-timeline";
-import { WhyThisAnswer } from "@/registry/why-this-answer/why-this-answer";
+import { WhyThisAnswer } from "@/registry/citations/citations";
 
 /* ------------------------------------------------------------------ scripted agent flows */
 

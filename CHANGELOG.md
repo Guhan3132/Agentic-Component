@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- 19 patterns become 13: activity indicator joins streaming response, why this answer joins citations, feedback thumbs joins the chat thread, task checklist joins plan preview (now "Plan"), interrupt and steer and voice input join the prompt composer. Their components are still exported from the new files; old pages redirect and old install URLs serve the last version (0.4.0). The "Learn" category is gone
+- Site-wide dark mode that follows the system, a theme toggle, the site chrome on the same tokens as the components, a new header (logo, Tokens link, Get started goes to /get-started)
+- One token source (src/lib/tokens.json) for the site, the docs and the registry; contrast-safe defaults (ring, muted text, warning) checked by tests; status colours in OKLCH; danger follows --destructive
+- Brand panel: live light/dark preview, any CSS colour, EyeDropper, keep white text, keyboard-friendly swatches, Copy link, debounced saving, versioned saved theme
+- Tokens page follows the chosen brand, with copyable values, a contrast matrix, pinned install URLs and a DTCG export
+- 404 and error pages, SITE_URL, release-dated sitemap, "Simulated" labels, category descriptions, browser support, RTL guidance, axe checks on every pattern
 - Security: the prompt composer's image previews accept only browser-made `blob:` URLs (CodeQL alert js/xss-through-dom)
 
 ## 0.4.0 (2026-11-02)

@@ -1,4 +1,4 @@
-export type Category = "Respond" | "Trust" | "Act" | "Control" | "Learn";
+export type Category = "Respond" | "Trust" | "Act" | "Control";
 
 export type Pattern = {
   slug: string;
@@ -17,15 +17,14 @@ export type Pattern = {
 /** Patterns added in this release get a "New" badge. */
 export const LATEST_RELEASE = "0.4.0";
 
-export const categories: Category[] = ["Respond", "Trust", "Act", "Control", "Learn"];
+export const categories: Category[] = ["Respond", "Trust", "Act", "Control"];
 
 /** One line per category, shown on the gallery so the names make sense. */
 export const categoryInfo: Record<Category, string> = {
-  Respond: "How answers arrive: streaming, status, chat and recovery when something fails.",
+  Respond: "How answers arrive: streaming, status, chat with feedback, and recovery when something fails.",
   Trust: "Why to believe an answer: confidence, sources and reasoning.",
   Act: "What the agent does: plans, tool calls and several agents at once.",
   Control: "What the person decides: approvals, permissions, steering, memory and input.",
-  Learn: "How the agent gets better: feedback on answers.",
 };
 
 export const patterns: Pattern[] = [
@@ -33,15 +32,17 @@ export const patterns: Pattern[] = [
     slug: "streaming-response",
     title: "Streaming response",
     category: "Respond",
-    summary: "Text that arrives as it is written, with stop, retry and a clear failure state.",
-    why: "Waiting on a blank screen feels broken. Streaming shows progress, and a Stop button gives users control over a slow or wrong answer. Keeping partial text on failure means a dropped connection never costs them what already arrived.",
-    dos: ["Keep partial text when stopped or failed", "Show a thinking indicator before the first token", "Make Retry the primary action after an error"],
-    donts: ["Clear the answer when the stream breaks", "Announce every token to screen readers", "Leave Stop hidden until the end"],
-    a11y: ["Status changes are announced through a polite live region, not per token", "aria-busy is set while streaming", "Buttons are real buttons with visible focus"],
+    summary: "Text that arrives as it is written, with stop, retry and a clear failure state, and a one-line activity status with a timer for the work in between.",
+    why: "Waiting on a blank screen feels broken. Streaming shows progress, and a Stop button gives users control over a slow or wrong answer. Keeping partial text on failure means a dropped connection never costs them what already arrived. Before and between tokens, a single activity line says what the agent is doing and for how long, so a tool call that takes a minute never looks like a freeze, and it turns into a short record when it ends.",
+    dos: ["Keep partial text when stopped or failed", "Show a thinking indicator before the first token", "Make Retry the primary action after an error", "Say what the agent is doing, with elapsed time, during long steps"],
+    donts: ["Clear the answer when the stream breaks", "Announce every token to screen readers", "Leave Stop hidden until the end", "Show a spinner with no words for a long tool step"],
+    a11y: ["Status changes are announced through a polite live region, not per token", "aria-busy is set while streaming", "Buttons are real buttons with visible focus", "The activity line announces when work starts and how it ended, and its ticking timer is hidden from screen readers"],
     props: [
       { name: "text", type: "string", desc: "Accumulated text so far" },
       { name: "status", type: "idle | streaming | stopped | error | done", desc: "Drives which controls appear" },
       { name: "onStop / onRegenerate", type: "() => void", desc: "Control callbacks" },
+      { name: "activity", type: "ActivityIndicator props", desc: "Optional status line above the text: label, state, startedAt, details" },
+      { name: "ActivityIndicator", type: "component", desc: "Also exported on its own: one line with a timer, an expandable detail and Stop" },
     ],
   },
   {
@@ -56,20 +57,6 @@ export const patterns: Pattern[] = [
     props: [
       { name: "value", type: "number (0 to 1)", desc: "Model or retrieval confidence" },
       { name: "reason", type: "string", desc: "Why the score is what it is" },
-    ],
-  },
-  {
-    slug: "why-this-answer",
-    title: "Why this answer",
-    category: "Trust",
-    summary: "An expandable panel with reasoning steps and quotable sources.",
-    why: "People trust an answer they can check. Keeping the explanation one click away leaves the answer uncluttered while still making it verifiable. When there are no sources, saying so is more honest than hiding the panel.",
-    dos: ["Quote the exact snippet used", "Say plainly when nothing is cited", "Keep it collapsed by default"],
-    donts: ["Invent sources", "Bury it in a modal", "Show raw chain-of-thought dumps"],
-    a11y: ["Toggle uses aria-expanded", "Sources are real links that open in a new tab with rel=noreferrer"],
-    props: [
-      { name: "sources", type: "{ title, url, snippet }[]", desc: "Empty array shows the no-sources state" },
-      { name: "reasoning", type: "string[]", desc: "Short human-readable steps" },
     ],
   },
   {
@@ -88,20 +75,6 @@ export const patterns: Pattern[] = [
     ],
   },
   {
-    slug: "feedback-thumbs",
-    title: "Feedback thumbs",
-    category: "Learn",
-    summary: "One-tap rating that asks for a reason only after a thumbs-down.",
-    why: "Most people will not fill in a form, but a thumbs-up costs nothing. Asking why only after a thumbs-down gets useful signal where it matters, with optional chips so it takes one tap, not a paragraph.",
-    dos: ["Make a thumbs-up a single tap", "Offer reason chips, not a blank box", "Let people skip the reason"],
-    donts: ["Require a reason", "Ask for feedback before the answer is finished", "Show a long survey"],
-    a11y: ["Thumbs are toggle buttons with aria-pressed and labels", "Confirmation is announced politely"],
-    props: [
-      { name: "onSubmit", type: "(vote, reasons) => void", desc: "Called on thumbs-up or after sending reasons" },
-      { name: "downReasons", type: "string[]", desc: "Custom chips for the thumbs-down" },
-    ],
-  },
-  {
     slug: "tool-timeline",
     title: "Tool-call timeline",
     category: "Act",
@@ -116,42 +89,28 @@ export const patterns: Pattern[] = [
   },
   {
     slug: "plan-preview",
-    title: "Plan preview",
+    title: "Plan",
     category: "Act",
-    summary: "The agent proposes steps. You edit, reorder or remove them before it runs.",
-    why: "Reviewing a plan is cheaper than undoing an action. Letting people change the plan, not only accept or reject it, keeps them in charge and gives the agent better instructions than a vague prompt would.",
-    dos: ["Make every step editable", "Show the step count on the confirm button", "Provide move buttons, not drag only"],
-    donts: ["Offer only Accept and Reject", "Start running before confirmation", "Allow an empty plan to be confirmed"],
-    a11y: ["Every control has an accessible name that includes the step number", "Reordering works with the keyboard, no drag needed"],
+    summary: "Before the run, the agent proposes steps you can edit, reorder or remove. During it, a live checklist shows what is done, what is running and what is next.",
+    why: "Reviewing a plan is cheaper than undoing an action. Letting people change the plan, not only accept or reject it, keeps them in charge and gives the agent better instructions than a vague prompt would. Once it runs, the same plan becomes a checklist with a count and a bar: finished steps fade back, the current one stands out, and a failure stops on its own line with Retry. Folded to one line, it fits in a chat.",
+    dos: ["Make every step editable", "Show the step count on the confirm button", "Provide move buttons, not drag only", "Show the plan's progress with a count and the current step", "Keep a failed step on its line with Retry"],
+    donts: ["Offer only Accept and Reject", "Start running before confirmation", "Allow an empty plan to be confirmed", "Show only a spinner for a multi-step run"],
+    a11y: ["Every control has an accessible name that includes the step number", "Reordering works with the keyboard, no drag needed", "During the run, the current step has aria-current=step and one polite line says which step is running"],
     props: [
       { name: "steps", type: "{ id, text }[]", desc: "Controlled list of plan steps" },
       { name: "onChange", type: "(steps) => void", desc: "Called when the user edits the plan" },
       { name: "onConfirm / onCancel", type: "() => void", desc: "Decision callbacks" },
-    ],
-  },
-  {
-    slug: "interrupt-steer",
-    title: "Interrupt and steer",
-    category: "Control",
-    summary: "A composer that stays live while the agent works, so you redirect it mid-run.",
-    why: "Waiting for a wrong answer to finish before correcting it wastes time. Keeping the input active lets people steer early, and keeping what the agent already wrote shows the correction was heard.",
-    dos: ["Keep the input enabled while the agent runs", "Keep the partial answer visible", "Offer one-tap suggestions for common corrections"],
-    donts: ["Disable the input until the run finishes", "Throw away what was already generated", "Make Stop the only way to react"],
-    a11y: ["The transcript is a polite live region", "The input has a label and Enter submits"],
-    props: [
-      { name: "segments", type: "{ role, text }[]", desc: "Transcript so far" },
-      { name: "running", type: "boolean", desc: "Shows Stop and suggestions while true" },
-      { name: "onSteer / onStop", type: "callbacks", desc: "Send a correction or halt the run" },
+      { name: "TaskChecklist", type: "component", desc: "Also exported: the plan while it runs, with tasks (pending, active, done, failed, skipped), a fold and onRetry" },
     ],
   },
   {
     slug: "prompt-composer",
     title: "Prompt composer",
     category: "Control",
-    summary: "A chat-style message box for agents: / commands, @ context, image paste, voice, and mode and model in a row under the box. Built for phones as well as desktops.",
-    why: "The composer is where every agent conversation starts, so small frictions add up. This one keeps the common path to a single field and moves the rest to the keyboard: type / to switch mode, pick a model or attach a file, and @ to add context, with mode and model one tap away under the box. It grows with the text, takes @ mentions and voice, and turns Send into Stop while the agent works. It adapts to its own width: on a phone, touch targets are 44px and text stays at 16px, which stops iOS from zooming in.",
-    dos: ["Turn Send into Stop while generating", "Show the limit only when it gets close", "Offer suggestions while the box is empty"],
-    donts: ["Disable the whole box while the agent works", "Send on Enter during IME composition", "Use text smaller than 16px on touch screens"],
+    summary: "A chat-style message box for agents: / commands, @ context, image paste, mode and model under the box, steering a running agent, and a full voice mode. Built for phones as well as desktops.",
+    why: "The composer is where every agent conversation starts, so small frictions add up. This one keeps the common path to a single field and moves the rest to the keyboard: type / to switch mode, pick a model or attach a file, and @ to add context, with mode and model one tap away under the box. It grows with the text, takes @ mentions and voice, and turns Send into Stop while the agent works. It adapts to its own width: on a phone, touch targets are 44px and text stays at 16px, which stops iOS from zooming in. While the agent works, the box stays live so a person can steer it without stopping, and voice gets its own clear states: listening with a level and a timer, an editable transcript, and failures that say what to do.",
+    dos: ["Turn Send into Stop while generating", "Show the limit only when it gets close", "Offer suggestions while the box is empty", "Keep the box live so people can steer a running agent", "Land dictation in an editable box before sending"],
+    donts: ["Disable the whole box while the agent works", "Send on Enter during IME composition", "Use text smaller than 16px on touch screens", "Make people stop the agent to correct it", "Show one generic error for every voice failure"],
     a11y: ["The / and @ menus work from the keyboard: arrow keys, Enter or Tab to choose, Escape to dismiss", "Menus open above their own button, move with the arrow keys, close with Escape and return focus to that button", "Every menu row is a real button, so nothing depends on hover; the model menu also takes the number keys 1 to 5", "Recording and generating are announced through a polite live region", "The mic is hidden in browsers without speech recognition, so there is no dead button"],
     props: [
       { name: "onSubmit", type: "({ text, files, mode, modelId, modelName, effort, auto }) => void", desc: "Called on Enter or the Send button" },
@@ -164,16 +123,18 @@ export const patterns: Pattern[] = [
       { name: "contextOptions", type: "{ tag, hint }[]", desc: "Options for the @ mention menu" },
       { name: "suggestions", type: "string[]", desc: "Chips shown while the box is empty" },
       { name: "maxLength", type: "number", desc: "Character limit, default 4000" },
+      { name: "InterruptSteer", type: "component", desc: "Also exported: the running answer plus a live composer, for steering without stopping" },
+      { name: "VoiceInput", type: "component", desc: "Also exported: listening, transcribing, review and error states for voice" },
     ],
   },
   {
     slug: "chat-thread",
     title: "Chat thread",
     category: "Respond",
-    summary: "A flat, readable conversation between a person and an agent, with references, files, hand-offs and unread markers.",
+    summary: "A flat, readable conversation between a person and an agent, with references, files, hand-offs, unread markers, and one-tap feedback that asks why only after a thumbs-down.",
     why: "A chat is the most common agent surface, and most of its quality is in small details. The agent writes plain text under its name, so long answers with lists and references read like a document, while the person's messages sit in a soft bubble with the time under it. System lines mark the date, a hand-off to a human and where unread messages begin. A typing indicator and a streaming caret show the agent is working, a failed message offers Retry, and the thread follows new messages only while you are at the bottom, so reading earlier ones is never interrupted.",
-    dos: ["Show who is speaking once per run of messages", "Put sources and files in a card under the answer, not in the text", "Mark hand-offs and the first unread message with a line", "Keep the reader's place when they scroll up, and show a jump button with a count"],
-    donts: ["Wrap every agent answer in a bubble", "Scroll to the bottom on every message", "Announce every streamed token to screen readers", "Hide a failed send or leave it with no way to retry"],
+    dos: ["Show who is speaking once per run of messages", "Put sources and files in a card under the answer, not in the text", "Mark hand-offs and the first unread message with a line", "Keep the reader's place when they scroll up, and show a jump button with a count", "Ask for a reason only after a thumbs-down, and make it optional"],
+    donts: ["Wrap every agent answer in a bubble", "Scroll to the bottom on every message", "Announce every streamed token to screen readers", "Hide a failed send or leave it with no way to retry", "Make people fill in a form to rate an answer"],
     a11y: ["The thread is a log region that announces new messages, not every streamed character", "The typing indicator is a status with a label", "Rate and Copy are real buttons with pressed states and tooltips, and they are larger on touch screens", "The jump button says how many messages are new, and the thread can be focused to scroll with the arrow keys"],
     props: [
       { name: "messages", type: "ChatMessage[]", desc: "role is user, agent or system. Optional: time, status, feedback, sender, links, attachments, content, variant" },
@@ -183,6 +144,8 @@ export const patterns: Pattern[] = [
       { name: "onFeedback", type: "(id, value) => void", desc: "Called when someone rates an agent message (up or down), or takes the rating back (null)" },
       { name: "footer", type: "ReactNode", desc: "Rendered under the thread, usually a PromptComposer" },
       { name: "className", type: "string", desc: "Set a height such as h-[28rem]; the messages scroll inside it" },
+      { name: "feedbackReasons / onFeedbackReasons", type: "string[] / (id, reasons) => void", desc: "Reasons offered after a thumbs-down. Pass [] to skip asking" },
+      { name: "FeedbackThumbs", type: "component", desc: "Also exported: the same rating for any answer outside a chat" },
     ],
   },
   {
@@ -210,16 +173,18 @@ export const patterns: Pattern[] = [
     slug: "citations",
     title: "Citations",
     category: "Trust",
-    summary: "Inline numbered sources that open the exact quote, and a visible flag on any claim that has none.",
+    summary: "Inline numbered sources that open the exact quote, a visible flag on any claim that has none, and the reasoning steps one click away.",
     since: "0.2.0",
-    why: "A list of links at the bottom of an answer proves little: nobody knows which claim each link backs. Numbering the claims lets a reader check the one they doubt. Opening the exact quote, not just the page, makes checking a two-second job. And a claim with no source is marked as such, so the answer never looks more certain than it is.",
-    dos: ["Cite the claim, not the paragraph", "Show the exact quote the claim rests on", "Flag claims that have no source", "Keep the source list in step with the open marker"],
-    donts: ["Pile links at the bottom with no link to claims", "Hide uncited claims", "Open a floating popover that clips or covers the text", "Cite a page that does not support the claim"],
-    a11y: ["Each marker is a button named with its source title, with aria-expanded and aria-controls", "The quote opens in a polite live region under the paragraph, so it never clips", "Escape closes the open quote", "An uncited claim is marked with text and an icon, not colour alone, and counted in a sentence below"],
+    why: "A list of links at the bottom of an answer proves little: nobody knows which claim each link backs. Numbering the claims lets a reader check the one they doubt. Opening the exact quote, not just the page, makes checking a two-second job. And a claim with no source is marked as such, so the answer never looks more certain than it is. The steps that led to the answer sit folded under the sources, so the answer stays clean but the reasoning is there for anyone who wants to check it.",
+    dos: ["Cite the claim, not the paragraph", "Show the exact quote the claim rests on", "Flag claims that have no source", "Keep the source list in step with the open marker", "Keep the reasoning folded by default"],
+    donts: ["Pile links at the bottom with no link to claims", "Hide uncited claims", "Open a floating popover that clips or covers the text", "Cite a page that does not support the claim", "Show raw chain-of-thought dumps"],
+    a11y: ["Each marker is a button named with its source title, with aria-expanded and aria-controls", "The quote opens in a polite live region under the paragraph, so it never clips", "Escape closes the open quote", "An uncited claim is marked with text and an icon, not colour alone, and counted in a sentence below", "The reasoning toggle uses aria-expanded and aria-controls"],
     props: [
       { name: "text", type: "string", desc: "Plain text. Write [1] where source 1 backs a claim and [?] where nothing does" },
       { name: "sources", type: "{ id, title, url, quote, publisher? }[]", desc: "Matched to the numbers in the text. Empty is a valid, honest state" },
       { name: "className", type: "string", desc: "Extra classes for the wrapper" },
+      { name: "reasoning", type: "string[]", desc: "Short steps shown folded under the sources" },
+      { name: "WhyThisAnswer", type: "component", desc: "Also exported: an expandable panel of sources and reasoning, for answers without inline markers" },
     ],
   },
   {
@@ -291,60 +256,6 @@ export const patterns: Pattern[] = [
       { name: "agents", type: "{ id, name, task, state, progress?, waitingOn? }[]", desc: "state is working, waiting, blocked, done or failed" },
       { name: "onStop / onRetry", type: "(id) => void", desc: "Stop a working agent, retry a failed one" },
       { name: "onOpen", type: "(id) => void", desc: "Review button on a blocked agent" },
-    ],
-  },
-  {
-    slug: "voice-input",
-    title: "Voice input",
-    category: "Control",
-    summary: "Talk to the agent: a clear listening state, an editable transcript, and failures that say what happened and what to do.",
-    since: "0.3.0",
-    why: "Speech is fast on a phone, but recognition is imperfect and microphones fail for many reasons. A good voice input shows that it is listening with a live level and a timer, turns the result into text the person can fix before anything is sent, and treats a blocked microphone, silence and a dropped connection as different problems with different next steps. Typing is always one tap away.",
-    dos: ["Show a live level and a timer while listening", "Land the result in an editable box before sending", "Explain a blocked microphone and offer typing first", "Keep Cancel within reach in every state"],
-    donts: ["Send the transcript without a chance to edit", "Show one generic error for every failure", "Offer Retry when permission is blocked", "Record before the person taps"],
-    a11y: ["One polite status line announces each state, and the timer is hidden from screen readers", "The microphone button has a text label and is 44px on touch screens", "The transcript is a labelled textarea at 16px, so iOS does not zoom", "Level bars are decorative and stop animating under reduced motion"],
-    props: [
-      { name: "state", type: "idle | listening | transcribing | review | error", desc: "Which step to show" },
-      { name: "seconds / levels", type: "number / number[]", desc: "Timer and loudness bars (0 to 1) while listening" },
-      { name: "transcript / onTranscriptChange", type: "string / (text) => void", desc: "The editable result" },
-      { name: "error", type: "denied | no-speech | offline", desc: "Which failure to explain" },
-      { name: "onStart / onStop / onCancel / onSend / onType", type: "() => void", desc: "Start, finish, cancel, send the text, and switch to typing" },
-    ],
-  },
-  {
-    slug: "task-checklist",
-    title: "Task checklist",
-    category: "Act",
-    summary: "The agent's to-do list while it works: what is done, what it is doing now and what is next, with a count, a bar and Retry on a failed step.",
-    since: "0.4.0",
-    why: "A long agent run feels stuck when all you see is a spinner. A live checklist shows the shape of the work: how many steps, which one is running, which are done. Finished steps fade back so the current one stands out, and a failure stops on its own line with the reason and a Retry. Folded to one line, it fits in a chat without taking it over.",
-    dos: ["Show the count and the current step at a glance", "Let finished steps fade back", "Keep a failure on its line with the reason and Retry", "Fold it to one line when space is short"],
-    donts: ["Show only a spinner for a multi-step job", "Move or reorder steps while they run", "Hide which step failed", "Announce every tick to screen readers"],
-    a11y: ["It is an ordered list, and the current step has aria-current=step", "Each step says its status in words for screen readers, not only with an icon", "One polite status line says which step is running, and changes only when the step does", "The progress bar is a labelled progressbar, and the fold button uses aria-expanded"],
-    props: [
-      { name: "tasks", type: "{ id, label, status, detail? }[]", desc: "status is pending, active, done, failed or skipped" },
-      { name: "title", type: "string", desc: "Heading and the name of the progress bar. Default Plan" },
-      { name: "defaultOpen", type: "boolean", desc: "Start folded to one line with the current step" },
-      { name: "onRetry", type: "(id) => void", desc: "Shows Retry on a failed step" },
-    ],
-  },
-  {
-    slug: "activity-indicator",
-    title: "Activity indicator",
-    category: "Respond",
-    summary: "One line that says what the agent is doing and for how long, opens to show the detail, and turns into a short record when it ends.",
-    since: "0.4.0",
-    why: "Agents run tools that take seconds or minutes. Without a sign of life, a long wait looks like a freeze. A single line with what is happening, in plain words, and a running timer reassures without getting in the way. The detail (a log, a command, an error) is one click away, and when the work ends the same line says how it ended and how long it took, so the chat history stays readable.",
-    dos: ["Say what it is doing in the present tense", "Show elapsed time for anything that can take a while", "Keep the detail one click away", "Turn the line into a past-tense record when it ends"],
-    donts: ["Show a spinner with no words", "Count down to a time you cannot promise", "Pop the log open by default", "Remove the line when the work ends"],
-    a11y: ["A polite status line says when it starts and how it ended, and the ticking timer is hidden from screen readers", "The line is a button with aria-expanded and aria-controls when it has detail", "The moving dots are decorative and hold still under reduced motion", "Stop is a real button, 44px on touch screens"],
-    props: [
-      { name: "label / doneLabel", type: "string", desc: "Present tense while running, past tense when finished" },
-      { name: "state", type: "running | done | failed | stopped", desc: "How the work is going, or how it ended" },
-      { name: "startedAt", type: "number (Date.now())", desc: "The timer counts from here while running" },
-      { name: "elapsedSeconds", type: "number", desc: "A fixed time instead, for finished work or static previews" },
-      { name: "details", type: "ReactNode", desc: "Shown behind the chevron: a log, the command, the error" },
-      { name: "onStop", type: "() => void", desc: "Shows Stop while running" },
     ],
   },
 ];

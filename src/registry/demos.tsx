@@ -1,42 +1,58 @@
 import type { ComponentType } from "react";
-import ApprovalDemo from "./approval-step/demo";
-import ConfidenceDemo from "./confidence-badge/demo";
-import ActivityIndicatorDemo from "./activity-indicator/demo";
+import { MergedDemo, type DemoPart } from "@/components/MergedDemo";
 import AgentMemoryDemo from "./agent-memory/demo";
-import TaskChecklistDemo from "./task-checklist/demo";
+import ApprovalDemo from "./approval-step/demo";
+import ChatDemo from "./chat-thread/demo";
+import FeedbackDemo from "./chat-thread/demo-feedback";
 import CitationsDemo from "./citations/demo";
+import ReasoningDemo from "./citations/demo-reasoning";
+import ConfidenceDemo from "./confidence-badge/demo";
 import ErrorRecoveryDemo from "./error-recovery/demo";
 import HumanHandoffDemo from "./human-handoff/demo";
 import MultiAgentStatusDemo from "./multi-agent-status/demo";
-import ToolPermissionsDemo from "./tool-permissions/demo";
-import VoiceInputDemo from "./voice-input/demo";
-import FeedbackDemo from "./feedback-thumbs/demo";
-import StreamingDemo from "./streaming-response/demo";
-import InterruptDemo from "./interrupt-steer/demo";
 import PlanDemo from "./plan-preview/demo";
-import ChatDemo from "./chat-thread/demo";
+import ProgressDemo from "./plan-preview/demo-progress";
 import ComposerDemo from "./prompt-composer/demo";
+import SteerDemo from "./prompt-composer/demo-steer";
+import VoiceDemo from "./prompt-composer/demo-voice";
+import StreamingDemo from "./streaming-response/demo";
+import ActivityDemo from "./streaming-response/demo-activity";
+import ToolPermissionsDemo from "./tool-permissions/demo";
 import ToolDemo from "./tool-timeline/demo";
-import WhyDemo from "./why-this-answer/demo";
+
+const parts = (list: DemoPart[]): ComponentType =>
+  function Parts() {
+    return <MergedDemo parts={list} />;
+  };
 
 export const demos: Record<string, ComponentType> = {
-  "streaming-response": StreamingDemo,
+  "streaming-response": parts([
+    { id: "stream", label: "Streaming text", Demo: StreamingDemo },
+    { id: "activity", label: "Activity line", Demo: ActivityDemo },
+  ]),
   "confidence-badge": ConfidenceDemo,
-  "why-this-answer": WhyDemo,
+  citations: parts([
+    { id: "inline", label: "Inline sources", Demo: CitationsDemo },
+    { id: "reasoning", label: "Why this answer", Demo: ReasoningDemo },
+  ]),
   "approval-step": ApprovalDemo,
-  "feedback-thumbs": FeedbackDemo,
   "tool-timeline": ToolDemo,
-  "plan-preview": PlanDemo,
-  "interrupt-steer": InterruptDemo,
-  "prompt-composer": ComposerDemo,
-  "chat-thread": ChatDemo,
+  "plan-preview": parts([
+    { id: "review", label: "Before: review", Demo: PlanDemo },
+    { id: "progress", label: "During: progress", Demo: ProgressDemo },
+  ]),
+  "prompt-composer": parts([
+    { id: "compose", label: "Compose", Demo: ComposerDemo },
+    { id: "steer", label: "Steer while running", Demo: SteerDemo },
+    { id: "voice", label: "Voice", Demo: VoiceDemo },
+  ]),
+  "chat-thread": parts([
+    { id: "thread", label: "Thread", Demo: ChatDemo },
+    { id: "feedback", label: "Feedback", Demo: FeedbackDemo },
+  ]),
   "error-recovery": ErrorRecoveryDemo,
-  citations: CitationsDemo,
   "agent-memory": AgentMemoryDemo,
   "human-handoff": HumanHandoffDemo,
   "tool-permissions": ToolPermissionsDemo,
   "multi-agent-status": MultiAgentStatusDemo,
-  "voice-input": VoiceInputDemo,
-  "task-checklist": TaskChecklistDemo,
-  "activity-indicator": ActivityIndicatorDemo,
 };

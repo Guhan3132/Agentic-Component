@@ -10,25 +10,21 @@ It is meant to show how a good agent interface behaves, not only how it looks. E
 
 | Pattern | Category | What it shows |
 | --- | --- | --- |
-| Streaming response | Respond | Text as it is written, with stop, retry and a clear failure state |
-| Chat thread | Respond | A flat conversation: turns, references, files, hand-offs, unread marker, jump button |
-| Confidence badge | Trust | How sure the agent is, with a reason and a next step |
-| Why this answer | Trust | Reasoning steps and quotable sources, or an honest "no sources" |
-| Tool-call timeline | Act | What the agent did, with real outcomes, including failures |
-| Plan preview | Act | The agent proposes steps, you edit, reorder or remove them before anything runs |
-| Approval step | Control | A human-in-the-loop gate whose friction scales with risk |
-| Interrupt and steer | Control | A composer that stays live so you can redirect a running agent |
-| Prompt composer | Control | Modes, model and effort, `/` commands, `@` context, image paste, voice |
-| Feedback thumbs | Learn | One-tap rating that asks for a reason only after a thumbs-down |
+| Streaming response | Respond | Text as it is written, with stop, retry, a clear failure state, and a one-line activity status with a timer |
+| Chat thread | Respond | A flat conversation: turns, references, files, hand-offs, unread marker, jump button, and feedback that asks why after a thumbs-down |
 | Error recovery | Respond | What failed, what survived, auto-retry with a countdown, and a way forward when retrying stops helping |
-| Citations | Trust | Inline numbered sources that open the exact quote, with a visible flag on uncited claims |
+| Confidence badge | Trust | How sure the agent is, with a reason and a next step |
+| Citations | Trust | Inline numbered sources that open the exact quote, a flag on uncited claims, and the reasoning one click away |
+| Tool-call timeline | Act | What the agent did, with real outcomes, including failures |
+| Plan | Act | Before the run, steps you can edit and reorder; during it, a live checklist with done, now and next |
+| Multi-agent status | Act | Several agents at once, sorted by what needs you, with a one-line summary |
+| Approval step | Control | A human-in-the-loop gate whose friction scales with risk |
+| Tool permissions | Control | Allow, ask first or block per tool, with plain-words risk and a clear way to answer a request |
+| Prompt composer | Control | Modes, model and effort, `/` commands, `@` context, image paste, steering a running agent, and a full voice mode |
 | Agent memory | Control | What the agent remembers: editable, forgettable with undo, and switchable off |
 | Human hand-off | Control | Pass a chat to a person with context, a real queue position and an email fallback |
-| Tool permissions | Control | Allow, ask first or block per tool, with plain-words risk and a clear way to answer a request |
-| Multi-agent status | Act | Several agents at once, sorted by what needs you, with a one-line summary |
-| Voice input | Control | Listening, an editable transcript, and failures that say what to do |
-| Task checklist | Act | The agent's live to-do list: done, now, next, with a count, a bar and Retry |
-| Activity indicator | Respond | One line with what the agent is doing and for how long, opening to the detail |
+
+Some patterns hold more than one component: for example Plan exports `PlanPreview` and `TaskChecklist`, and Prompt composer also exports `InterruptSteer` and `VoiceInput`. Patterns merged in 0.5.0 (activity indicator, why this answer, feedback thumbs, task checklist, interrupt and steer, voice input) still install from their old URLs, which now serve their last version (0.4.0).
 
 The **Playground** (`/playground`) puts them together in one full-screen chat: pick a starter and watch a plan, tool calls, an approval, confidence and sources arrive in the thread. It has dark mode, reset and a desktop/mobile switch.
 

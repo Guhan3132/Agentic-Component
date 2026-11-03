@@ -4,21 +4,6 @@
   "homepage": "https://agentic-component.vercel.app",
   "items": [
     {
-      "name": "activity-indicator",
-      "type": "registry:ui",
-      "title": "Activity indicator",
-      "description": "One line that says what the agent is doing and for how long, opens to show the detail, and turns into a short record when it ends.",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "files": [
-        {
-          "path": "registry/agentic-ui/activity-indicator.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
       "name": "agent-memory",
       "type": "registry:ui",
       "title": "Agent memory",
@@ -53,7 +38,7 @@
       "name": "chat-thread",
       "type": "registry:ui",
       "title": "Chat thread",
-      "description": "A flat, readable conversation between a person and an agent, with references, files, hand-offs and unread markers.",
+      "description": "A flat, readable conversation between a person and an agent, with references, files, hand-offs, unread markers, and one-tap feedback that asks why only after a thumbs-down.",
       "dependencies": [
         "lucide-react",
         "motion"
@@ -69,9 +54,10 @@
       "name": "citations",
       "type": "registry:ui",
       "title": "Citations",
-      "description": "Inline numbered sources that open the exact quote, and a visible flag on any claim that has none.",
+      "description": "Inline numbered sources that open the exact quote, a visible flag on any claim that has none, and the reasoning steps one click away.",
       "dependencies": [
-        "lucide-react"
+        "lucide-react",
+        "motion"
       ],
       "files": [
         {
@@ -111,22 +97,6 @@
       ]
     },
     {
-      "name": "feedback-thumbs",
-      "type": "registry:ui",
-      "title": "Feedback thumbs",
-      "description": "One-tap rating that asks for a reason only after a thumbs-down.",
-      "dependencies": [
-        "lucide-react",
-        "motion"
-      ],
-      "files": [
-        {
-          "path": "registry/agentic-ui/feedback-thumbs.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
       "name": "human-handoff",
       "type": "registry:ui",
       "title": "Human hand-off",
@@ -137,21 +107,6 @@
       "files": [
         {
           "path": "registry/agentic-ui/human-handoff.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "interrupt-steer",
-      "type": "registry:ui",
-      "title": "Interrupt and steer",
-      "description": "A composer that stays live while the agent works, so you redirect it mid-run.",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "files": [
-        {
-          "path": "registry/agentic-ui/interrupt-steer.tsx",
           "type": "registry:ui"
         }
       ]
@@ -174,8 +129,8 @@
     {
       "name": "plan-preview",
       "type": "registry:ui",
-      "title": "Plan preview",
-      "description": "The agent proposes steps. You edit, reorder or remove them before it runs.",
+      "title": "Plan",
+      "description": "Before the run, the agent proposes steps you can edit, reorder or remove. During it, a live checklist shows what is done, what is running and what is next.",
       "dependencies": [
         "lucide-react",
         "motion"
@@ -191,7 +146,7 @@
       "name": "prompt-composer",
       "type": "registry:ui",
       "title": "Prompt composer",
-      "description": "A chat-style message box for agents: / commands, @ context, image paste, voice, and mode and model in a row under the box. Built for phones as well as desktops.",
+      "description": "A chat-style message box for agents: / commands, @ context, image paste, mode and model under the box, steering a running agent, and a full voice mode. Built for phones as well as desktops.",
       "dependencies": [
         "lucide-react",
         "motion"
@@ -207,28 +162,13 @@
       "name": "streaming-response",
       "type": "registry:ui",
       "title": "Streaming response",
-      "description": "Text that arrives as it is written, with stop, retry and a clear failure state.",
+      "description": "Text that arrives as it is written, with stop, retry and a clear failure state, and a one-line activity status with a timer for the work in between.",
       "dependencies": [
         "lucide-react"
       ],
       "files": [
         {
           "path": "registry/agentic-ui/streaming-response.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "task-checklist",
-      "type": "registry:ui",
-      "title": "Task checklist",
-      "description": "The agent's to-do list while it works: what is done, what it is doing now and what is next, with a count, a bar and Retry on a failed step.",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "files": [
-        {
-          "path": "registry/agentic-ui/task-checklist.tsx",
           "type": "registry:ui"
         }
       ]
@@ -260,37 +200,6 @@
       "files": [
         {
           "path": "registry/agentic-ui/tool-timeline.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "voice-input",
-      "type": "registry:ui",
-      "title": "Voice input",
-      "description": "Talk to the agent: a clear listening state, an editable transcript, and failures that say what happened and what to do.",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "files": [
-        {
-          "path": "registry/agentic-ui/voice-input.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "why-this-answer",
-      "type": "registry:ui",
-      "title": "Why this answer",
-      "description": "An expandable panel with reasoning steps and quotable sources.",
-      "dependencies": [
-        "lucide-react",
-        "motion"
-      ],
-      "files": [
-        {
-          "path": "registry/agentic-ui/why-this-answer.tsx",
           "type": "registry:ui"
         }
       ]

@@ -6,7 +6,7 @@ import { tokens } from "@/lib/simulator/helpers";
 import type { Scenario } from "@/lib/simulator/types";
 import { useAgentSimulator } from "@/lib/simulator/useAgentSimulator";
 import { StreamingResponse } from "../streaming-response/streaming-response";
-import { WhyThisAnswer } from "./why-this-answer";
+import { WhyThisAnswer } from "./citations";
 
 const ANSWER =
   "Most teams run their weekly planning on Mondays, because it sets priorities before meetings fill the calendar.";

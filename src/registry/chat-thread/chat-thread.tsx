@@ -1,23 +1,8 @@
 "use client";
 
-import {
-  ArrowDown,
-  BookOpen,
-  Check,
-  ChevronRight,
-  Copy,
-  Download,
-  ExternalLink,
-  FileText,
-  Globe,
-  Paperclip,
-  RotateCw,
-  ThumbsDown,
-  ThumbsUp,
-  TriangleAlert,
-} from "lucide-react";
+import { ArrowDown, BookOpen, Check, ChevronRight, Copy, Download, ExternalLink, FileText, Globe, Paperclip, RotateCw, ThumbsDown, ThumbsUp, TriangleAlert } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { type ReactNode, useId, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 
 export type ChatLink = {
@@ -61,6 +46,9 @@ type Props = {
   onRetry?: (id: string) => void;
   /** Called when the person rates an agent message, or takes the rating back (null). */
   onFeedback?: (id: string, value: "up" | "down" | null) => void;
+  /** After a thumbs-down, offer these reasons (optional for the person) and report them here. Pass [] to skip asking. */
+  feedbackReasons?: string[];
+  onFeedbackReasons?: (id: string, reasons: string[]) => void;
   /** Rendered under the thread, usually a PromptComposer. */
   footer?: ReactNode;
   /** Give the thread a height, for example "h-[28rem]": the messages scroll inside it. */
@@ -94,7 +82,7 @@ const NEAR_BOTTOM = 48;
  * bubble with its time under it, and system lines mark the date, hand-offs and unread messages. It follows new messages while you are at the bottom; when you have scrolled up
  * it keeps your place and shows a round jump button with a count instead.
  */
-export function ChatThread({ messages, typing = false, busy, agentName = "AI Agent", onRetry, onFeedback, footer, className }: Props) {
+export function ChatThread({ messages, typing = false, busy, agentName = "AI Agent", onRetry, onFeedback, feedbackReasons = DEFAULT_REASONS, onFeedbackReasons, footer, className }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
   const stick = useRef(true);
   const lastId = useRef<string | undefined>(undefined);
@@ -160,7 +148,7 @@ export function ChatThread({ messages, typing = false, busy, agentName = "AI Age
             t.kind === "system" ? (
               <Divider key={t.message.id} message={t.message} />
             ) : t.role === "agent" ? (
-              <AgentTurn key={t.items[0].id} turn={t} fresh={ti === turns.length - 1} showActions={ti !== turns.length - 1 || !working} onFeedback={onFeedback} />
+              <AgentTurn key={t.items[0].id} turn={t} fresh={ti === turns.length - 1} showActions={ti !== turns.length - 1 || !working} onFeedback={onFeedback} reasons={feedbackReasons} onReasons={onFeedbackReasons} />
             ) : (
               <UserTurn key={t.items[0].id} turn={t} onRetry={onRetry} fresh={ti === turns.length - 1} />
             ),
@@ -226,10 +214,28 @@ function Who({ name, sender }: { name: string; sender?: ChatMessage["sender"] })
  * One agent turn: the name, then every message in it, then a single row to rate or copy the whole
  * response, then its time. The row waits until the agent has finished.
  */
-function AgentTurn({ turn, fresh, showActions, onFeedback }: { turn: Turn; fresh: boolean; showActions: boolean; onFeedback?: Props["onFeedback"] }) {
+function AgentTurn({
+  turn,
+  fresh,
+  showActions,
+  onFeedback,
+  reasons,
+  onReasons,
+}: {
+  turn: Turn;
+  fresh: boolean;
+  showActions: boolean;
+  onFeedback?: Props["onFeedback"];
+  reasons: string[];
+  onReasons?: Props["onFeedbackReasons"];
+}) {
   const last = turn.items[turn.items.length - 1];
   const [copied, setCopied] = useState(false);
   const [vote, setVote] = useState<"up" | "down" | null>(last.feedback ?? null);
+  // After a thumbs-down: ask why, once, and say thanks when it is sent.
+  const [asking, setAsking] = useState(false);
+  const [picked, setPicked] = useState<string[]>([]);
+  const [thanked, setThanked] = useState(false);
   const answer = turn.items.map((m) => m.text).filter(Boolean).join("\n\n");
   const finished = showActions && !!answer && !turn.items.some((m) => m.status);
 
@@ -246,7 +252,16 @@ function AgentTurn({ turn, fresh, showActions, onFeedback }: { turn: Turn; fresh
   const rate = (v: "up" | "down") => {
     const next = vote === v ? null : v;
     setVote(next);
+    setPicked([]);
+    setThanked(next === "up");
+    setAsking(next === "down" && reasons.length > 0);
     onFeedback?.(last.id, next);
+  };
+
+  const sendReasons = () => {
+    onReasons?.(last.id, picked);
+    setAsking(false);
+    setThanked(true);
   };
 
   return (
@@ -269,6 +284,33 @@ function AgentTurn({ turn, fresh, showActions, onFeedback }: { turn: Turn; fresh
           <Action label={copied ? "Copied" : "Copy response"} tip={copied ? "Copied" : "Copy"} onClick={copy}>
             {copied ? <Check size={15} /> : <Copy size={15} />}
           </Action>
+          <span role="status" aria-live="polite" className="ml-1.5 text-xs text-muted-foreground">
+            {thanked ? "Thanks for the feedback" : ""}
+          </span>
+        </div>
+      )}
+
+      {finished && asking && (
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3">
+          <p className="text-sm text-muted-foreground">What went wrong? (optional)</p>
+          <div className="flex flex-wrap gap-2">
+            {reasons.map((r) => (
+              <button
+                key={r}
+                aria-pressed={picked.includes(r)}
+                onClick={() => setPicked((cur) => (cur.includes(r) ? cur.filter((x) => x !== r) : [...cur, r]))}
+                className={cn(
+                  "rounded-full border px-3 py-1 text-sm pointer-coarse:min-h-11",
+                  picked.includes(r) ? "border-foreground bg-muted text-foreground" : "border-input text-foreground/80 hover:border-foreground/30",
+                )}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+          <button onClick={sendReasons} className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 pointer-coarse:min-h-11">
+            {picked.length ? "Send feedback" : "Skip"}
+          </button>
         </div>
       )}
 
@@ -492,4 +534,129 @@ function useTip(el: HTMLElement | null, label: string) {
       </span>
     ) : null,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Feedback thumbs: part of this pattern (it used to be its own pattern, "feedback-thumbs").
+// ---------------------------------------------------------------------------
+type Vote = "up" | "down" | null;
+
+type FeedbackThumbsProps = {
+  onSubmit?: (vote: "up" | "down", reasons: string[]) => void;
+  downReasons?: string[];
+  className?: string;
+};
+
+const DEFAULT_REASONS = ["Wrong or outdated", "Didn't answer my question", "Too long", "Unsafe or inappropriate"];
+
+/** One tap to vote. Reason chips appear only after a thumbs-down, so the happy path stays frictionless. */
+export function FeedbackThumbs({ onSubmit, downReasons = DEFAULT_REASONS, className }: FeedbackThumbsProps) {
+  const [vote, setVote] = useState<Vote>(null);
+  const [reasons, setReasons] = useState<string[]>([]);
+  const [sent, setSent] = useState(false);
+
+  const pick = (v: "up" | "down") => {
+    const next = vote === v ? null : v;
+    setVote(next);
+    setReasons([]);
+    setSent(false);
+    if (next === "up") {
+      onSubmit?.("up", []);
+      setSent(true);
+    }
+  };
+
+  const toggle = (r: string) => setReasons((cur) => (cur.includes(r) ? cur.filter((x) => x !== r) : [...cur, r]));
+
+  const submit = () => {
+    onSubmit?.("down", reasons);
+    setSent(true);
+  };
+
+  return (
+    <div className={cn("space-y-3", className)}>
+      <div className="flex items-center gap-1" role="group" aria-label="Rate this response">
+        <IconBtn label="Good response" tip="Good response" pressed={vote === "up"} onClick={() => pick("up")}>
+          <ThumbsUp size={16} className={vote === "up" ? "fill-current" : undefined} />
+        </IconBtn>
+        <IconBtn label="Bad response" tip="Bad response" pressed={vote === "down"} onClick={() => pick("down")}>
+          <ThumbsDown size={16} className={vote === "down" ? "fill-current" : undefined} />
+        </IconBtn>
+        <span role="status" aria-live="polite" className="ml-2 flex items-center gap-1 text-sm text-success">
+          {sent && (
+            <>
+              <Check size={14} /> Thanks, this helps improve answers.
+            </>
+          )}
+        </span>
+      </div>
+
+      <AnimatePresence initial={false}>
+      {vote === "down" && !sent && (
+        <motion.div
+          initial={{ opacity: 0, y: -6, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -4, scale: 0.98, transition: { duration: 0.12 } }}
+          transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+          className="space-y-2 rounded-xl border border-border bg-card p-3"
+        >
+          <p className="text-sm text-muted-foreground">What went wrong? (optional)</p>
+          <div className="flex flex-wrap gap-2">
+            {downReasons.map((r) => (
+              <button
+                key={r}
+                aria-pressed={reasons.includes(r)}
+                onClick={() => toggle(r)}
+                className={cn(
+                  "rounded-full border px-3 py-1 pointer-coarse:py-2 text-sm transition",
+                  reasons.includes(r)
+                    ? "border-primary bg-primary/5 text-success"
+                    : "border-input text-foreground/80 hover:border-foreground/30",
+                )}
+              >
+                {r}
+              </button>
+            ))}
+          </div>
+          <button onClick={submit} className="rounded-lg bg-primary px-3 py-1.5 pointer-coarse:py-2.5 text-sm text-primary-foreground hover:bg-primary/90">
+            {reasons.length ? "Send feedback" : "Skip and send"}
+          </button>
+        </motion.div>
+      )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function IconBtn({
+  children,
+  label,
+  tip,
+  pressed,
+  onClick,
+}: {
+  children: React.ReactNode;
+  label: string;
+  tip: string;
+  pressed: boolean;
+  onClick: () => void;
+}) {
+  const [tEl, setTEl] = useState<HTMLButtonElement | null>(null);
+  const t = useTip(tEl, tip);
+  return (
+    <button
+      ref={setTEl}
+      {...t.bind}
+      aria-label={label}
+      aria-pressed={pressed}
+      onClick={onClick}
+      className={cn(
+        "rounded-lg p-2 pointer-coarse:p-3 transition focus-visible:outline-2 focus-visible:outline-ring",
+        pressed ? "text-foreground hover:bg-accent" : "text-muted-foreground hover:bg-accent hover:text-foreground",
+      )}
+    >
+      {children}
+      {t.tip}
+    </button>
+  );
 }

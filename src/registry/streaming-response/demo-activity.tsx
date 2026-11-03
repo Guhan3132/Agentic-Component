@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DemoFrame } from "@/components/DemoFrame";
 import type { Scenario } from "@/lib/simulator/types";
-import { ActivityIndicator, type ActivityState } from "./activity-indicator";
+import { ActivityIndicator, type ActivityState } from "./streaming-response";
 
 const scenarios: Scenario[] = [
   { id: "long", label: "Long task", hint: "A long job says what it is doing and for how long, so a wait never looks like a freeze. Open the detail, or stop it.", script: [] },

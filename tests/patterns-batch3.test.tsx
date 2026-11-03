@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { MultiAgentStatus, type AgentRun } from "@/registry/multi-agent-status/multi-agent-status";
 import { ToolPermissions, type PermissionTool } from "@/registry/tool-permissions/tool-permissions";
-import { VoiceInput } from "@/registry/voice-input/voice-input";
+import { VoiceInput } from "@/registry/prompt-composer/prompt-composer";
 
 const tools: PermissionTool[] = [
   { id: "s", name: "search_web", description: "Looks things up.", risk: "read", mode: "allow" },

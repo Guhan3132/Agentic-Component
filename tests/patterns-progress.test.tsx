@@ -3,8 +3,8 @@ import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ActivityIndicator, formatElapsed } from "@/registry/activity-indicator/activity-indicator";
-import { TaskChecklist, type Task } from "@/registry/task-checklist/task-checklist";
+import { ActivityIndicator, formatElapsed } from "@/registry/streaming-response/streaming-response";
+import { TaskChecklist, type Task } from "@/registry/plan-preview/plan-preview";
 
 afterEach(() => vi.useRealTimers());
 
