@@ -75,6 +75,10 @@ npx shadcn@latest add "https://agentic-component.vercel.app/r/approval-step.json
 
 **Or by hand:** open a pattern page, use **Copy code** or **Copy prompt**, and paste it into `components/ui/`.
 
+## Connect a real model
+
+The site's demos are scripted. [examples/ai-sdk](./examples/ai-sdk) wires Streaming response, Tool-call timeline and Approval step to a real model with the Vercel AI SDK (tools that run on their own, and one that waits for approval). It is type-checked in CI, and shown on the [Get started](https://agentic-component.vercel.app/get-started#real-model) page.
+
 ## Brand colour and theming
 
 Every component reads shadcn-style colour tokens, so one brand colour restyles all of them in light and dark. Try it with the **Brand** button on the site, then:

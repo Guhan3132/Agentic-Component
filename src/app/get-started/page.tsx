@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CodeBlock } from "@/components/CodeBlock";
@@ -37,6 +39,12 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
     </section>
   );
 }
+
+// The real-model example lives in examples/ai-sdk and is type-checked in CI against the installed AI SDK.
+const example = (file: string) =>
+  readFileSync(join(process.cwd(), "examples/ai-sdk", file), "utf8")
+    .replaceAll("\r\n", "\n")
+    .replace(/@\/registry\/[\w-]+\/([\w-]+)/g, "@/components/ui/$1");
 
 export default function GetStarted() {
   return (
@@ -119,6 +127,24 @@ export default function GetStarted() {
           </p>
           <CodeBlock code={cn} file="lib/utils.ts" />
         </Step>
+
+        <section id="real-model" className="mt-14 scroll-mt-20">
+          <h2 className="text-xl font-semibold tracking-tight">Connect a real model</h2>
+          <p className="mt-3 text-muted-foreground">
+            The demos on this site are scripted. With the{" "}
+            <a className="text-foreground underline" href="https://ai-sdk.dev" target="_blank" rel="noreferrer">
+              Vercel AI SDK
+            </a>
+            , the same components show a real agent: the text streams into <code>StreamingResponse</code>, tool calls fill the{" "}
+            <code>ToolTimeline</code>, and a tool marked <code>needsApproval</code> pauses on an <code>ApprovalStep</code> until the person answers. This
+            example is type-checked against AI SDK 7 in CI.
+          </p>
+          <div className="mt-4 space-y-4">
+            <CodeBlock code={"npm i ai @ai-sdk/react zod"} file="terminal" />
+            <CodeBlock code={example("route.ts")} file="app/api/chat/route.ts" />
+            <CodeBlock code={example("agent-chat.tsx")} file="components/agent-chat.tsx" />
+          </div>
+        </section>
 
         <section className="mt-14">
           <h2 className="text-xl font-semibold tracking-tight">Patterns</h2>

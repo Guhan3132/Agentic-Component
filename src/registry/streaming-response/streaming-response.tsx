@@ -27,7 +27,7 @@ export function StreamingResponse({ text, status, errorMessage, onStop, onRegene
       <p className="sr-only" role="status" aria-live="polite">
         {announce}
       </p>
-      {activity && <ActivityIndicator {...activity} className="mb-2" />}
+      {activity && <ActivityIndicator key={activity.label} {...activity} className="mb-2" />}
       <div aria-busy={streaming} className="min-h-24 whitespace-pre-wrap leading-relaxed text-foreground">
         {status === "idle" && <span className="text-muted-foreground/60">Press Replay to start the response.</span>}
         {streaming && !text && <ThinkingDots />}
@@ -111,7 +111,7 @@ type ActivityIndicatorProps = {
   /** What it did, in the past tense, once finished: "Ran page script". Defaults to the label. */
   doneLabel?: string;
   state: ActivityState;
-  /** When it started (Date.now()). The timer counts from here while running. */
+  /** When it started (Date.now()). The timer counts from here while running; without it, from when the line appears. */
   startedAt?: number;
   /** A fixed elapsed time in seconds. Use this instead of startedAt for finished work or static previews. */
   elapsedSeconds?: number;
@@ -150,8 +150,10 @@ function useNowSeconds(on: boolean) {
 export function ActivityIndicator({ label, doneLabel, state, startedAt, elapsedSeconds, details, onStop, className }: ActivityIndicatorProps) {
   const [open, setOpen] = useState(false);
   const detailsId = useId();
-  const now = useNowSeconds(state === "running" && elapsedSeconds === undefined && startedAt !== undefined);
-  const elapsed = elapsedSeconds ?? (startedAt !== undefined && now !== null ? now - Math.floor(startedAt / 1000) : undefined);
+  const [appearedAt] = useState(() => Date.now());
+  const origin = startedAt ?? appearedAt;
+  const now = useNowSeconds(state === "running" && elapsedSeconds === undefined);
+  const elapsed = elapsedSeconds ?? (now !== null ? now - Math.floor(origin / 1000) : undefined);
   const time = elapsed !== undefined ? formatElapsed(elapsed) : null;
 
   const text =

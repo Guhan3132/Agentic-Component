@@ -8,6 +8,7 @@
 - Brand panel: live light/dark preview, any CSS colour, EyeDropper, keep white text, keyboard-friendly swatches, Copy link, debounced saving, versioned saved theme
 - Tokens page follows the chosen brand, with copyable values, a contrast matrix, pinned install URLs and a DTCG export
 - 404 and error pages, SITE_URL, release-dated sitemap, "Simulated" labels, category descriptions, browser support, RTL guidance, axe checks on every pattern
+- A worked example with a real model (Vercel AI SDK 7): streaming text, tool calls on the timeline and a tool that waits on ApprovalStep; the activity line can now time itself
 - Security: the prompt composer's image previews accept only browser-made `blob:` URLs (CodeQL alert js/xss-through-dom)
 
 ## 0.4.0 (2026-11-02)
