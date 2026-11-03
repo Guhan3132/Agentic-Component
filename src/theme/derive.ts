@@ -1,26 +1,39 @@
 /**
  * Colour maths and the brand theme, with no dependencies and no React. It is used by AgenticTheme,
- * by the website, and by the build that writes the installable presets.
+ * by the website, and by the build that writes the installable presets. Output colours are OKLCH,
+ * like the shadcn and Tailwind v4 defaults.
  */
 
 export type ThemeTokens = { primary: string; "primary-foreground": string; ring: string } & Partial<Record<"muted" | "accent" | "border" | "input", string>>;
 
 export type ThemeReport = {
-  /** Contrast of the text on the primary button, per mode. WCAG AA for text is 4.5. */
+  /** Contrast of the text on the primary button, per mode. WCAG AA for text is 4.5, AAA is 7. */
   onPrimary: { light: number; dark: number };
   /** Contrast of the focus ring against the card, per mode. WCAG AA for UI is 3. */
   ring: { light: number; dark: number };
   /** True when the brand colour had to be darkened or lightened to reach those targets. */
   adjusted: { light: boolean; dark: boolean };
+  /** The status colour the brand could be mistaken for, if any. */
+  statusClash: "danger" | "warning" | "success" | null;
   /** Plain-language notes, for example when the brand is close to a status colour. */
   warnings: string[];
 };
 
 export type DerivedTheme = { brand: string; light: ThemeTokens; dark: ThemeTokens; report: ThemeReport };
 
+export type ThemeOptions = {
+  /** Add a trace of the brand hue to muted, accent, border and input. */
+  tintNeutrals?: boolean;
+  /**
+   * "auto" picks white or near-black text on buttons, whichever passes AA. "white" keeps white text
+   * and darkens the button colour until it passes, which is what most brands expect.
+   */
+  textColor?: "auto" | "white";
+};
+
 // ---------- colour maths (sRGB, OKLab) ----------
 
-type Rgb = [number, number, number];
+export type Rgb = [number, number, number];
 type Oklch = { l: number; c: number; h: number };
 
 const clamp = (n: number, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, n));
@@ -33,7 +46,44 @@ export function parseHex(input: string): Rgb | null {
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 }
 
+const num = (s: string, scale: number) => (s.endsWith("%") ? (parseFloat(s) / 100) * scale : parseFloat(s));
+
+/**
+ * Accepts hex, rgb(), hsl() and oklch(), with commas or spaces, and ignores alpha.
+ * Returns null when it is not a colour. Also used for var(--x, fallback): the fallback is read.
+ */
+export function parseColor(input: string): Rgb | null {
+  const s = input.trim().toLowerCase();
+  const fallback = /^var\(--[\w-]+,\s*(.+)\)$/.exec(s);
+  if (fallback) return parseColor(fallback[1]);
+  const hex = parseHex(s);
+  if (hex) return hex;
+  const fn = /^(rgba?|hsla?|oklch)\(([^)]*)\)$/.exec(s);
+  if (!fn) return null;
+  const parts = fn[2].split(/[\s,/]+/).filter(Boolean);
+  if (parts.length < 3 || parts.slice(0, 3).some((p) => Number.isNaN(parseFloat(p)))) return null;
+  const [a, b, c] = parts;
+  if (fn[1].startsWith("rgb")) return [num(a, 255), num(b, 255), num(c, 255)].map((v) => Math.round(clamp(v, 0, 255))) as Rgb;
+  if (fn[1].startsWith("hsl")) {
+    const h = ((parseFloat(a) % 360) + 360) % 360;
+    const sat = clamp(num(b, 1) > 1 ? num(b, 1) / 100 : num(b, 1));
+    const lig = clamp(num(c, 1) > 1 ? num(c, 1) / 100 : num(c, 1));
+    const k = (n: number) => (n + h / 30) % 12;
+    const f = (n: number) => lig - sat * Math.min(lig, 1 - lig) * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+    return [f(0), f(8), f(4)].map((v) => Math.round(v * 255)) as Rgb;
+  }
+  const l = a.endsWith("%") ? parseFloat(a) / 100 : parseFloat(a);
+  return fromOklch({ l: clamp(l), c: Math.max(0, num(b, 0.4)), h: parseFloat(c) }).map(Math.round) as Rgb;
+}
+
 export const toHex = ([r, g, b]: Rgb) => `#${[r, g, b].map((v) => Math.round(clamp(v, 0, 255)).toString(16).padStart(2, "0")).join("")}`;
+
+/** The colour as an OKLCH string, precise enough to round-trip to the same sRGB value. */
+export function oklchCss(rgb: Rgb) {
+  const { l, c, h } = toOklch(rgb);
+  const fix = (n: number, d: number) => Number(n.toFixed(d));
+  return c < 0.0005 ? `oklch(${fix(l, 4)} 0 0)` : `oklch(${fix(l, 4)} ${fix(c, 4)} ${fix(h, 2)})`;
+}
 
 const toLinear = (v: number) => {
   const c = v / 255;
@@ -50,6 +100,12 @@ export function luminance(rgb: Rgb) {
 export function contrast(a: Rgb, b: Rgb) {
   const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
   return (hi + 0.05) / (lo + 0.05);
+}
+
+/** "AAA", "AA" or "Fail" for text (4.5 and 7), or for UI parts like rings with `ui` (3). */
+export function wcagLevel(ratio: number, kind: "text" | "ui" = "text") {
+  if (kind === "ui") return ratio >= 3 ? "AA" : "Fail";
+  return ratio >= 7 ? "AAA" : ratio >= 4.5 ? "AA" : "Fail";
 }
 
 function toOklch(rgb: Rgb): Oklch {
@@ -73,18 +129,21 @@ function fromOklch({ l: L, c, h }: Oklch): Rgb {
   return lin.map((v) => fromLinear(clamp(v))) as Rgb;
 }
 
+// Targets carry a small margin, so a colour still passes after it is written out as OKLCH and read back.
+const MARGIN = 0.05;
+
 /** Moves a colour's lightness (keeping hue and chroma) until it reaches `min` contrast against `against`. */
 function reach(color: Rgb, against: Rgb, min: number, direction: "darker" | "lighter"): { rgb: Rgb; changed: boolean } {
-  if (contrast(color, against) >= min) return { rgb: color, changed: false };
+  if (contrast(color, against) >= min + MARGIN) return { rgb: color, changed: false };
   const base = toOklch(color);
-  const step = direction === "darker" ? -0.01 : 0.01;
+  const step = direction === "darker" ? -0.005 : 0.005;
   let l = base.l;
   let out = color;
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 200; i++) {
     l = clamp(l + step);
     // Rounded to whole channels, because that is the colour that is actually shown and measured.
     out = fromOklch({ ...base, l }).map(Math.round) as Rgb;
-    if (contrast(out, against) >= min) break;
+    if (contrast(out, against) >= min + MARGIN) break;
   }
   return { rgb: out, changed: true };
 }
@@ -94,6 +153,7 @@ function reach(color: Rgb, against: Rgb, min: number, direction: "darker" | "lig
 const WHITE: Rgb = [255, 255, 255];
 const INK: Rgb = [24, 24, 27];
 const BLACK: Rgb = [0, 0, 0];
+/** The default --card in each mode (oklch(1 0 0) and oklch(0.205 0 0)), which every contrast is checked against. */
 const LIGHT_CARD = WHITE;
 const DARK_CARD: Rgb = [23, 23, 23];
 
@@ -101,17 +161,17 @@ const DARK_CARD: Rgb = [23, 23, 23];
  * The text colour for a given background: white if it passes AA (4.5), else near-black if that does,
  * else whichever of pure black and white is stronger. One of them always reaches 4.5.
  */
-const onColour = (bg: Rgb): Rgb => {
-  if (contrast(WHITE, bg) >= 4.5) return WHITE;
-  if (contrast(INK, bg) >= 4.5) return INK;
+export function onColour(bg: Rgb): Rgb {
+  if (contrast(WHITE, bg) >= 4.5 + MARGIN) return WHITE;
+  if (contrast(INK, bg) >= 4.5 + MARGIN) return INK;
   return contrast(BLACK, bg) >= contrast(WHITE, bg) ? BLACK : WHITE;
-};
+}
 
 // Hues (OKLCH degrees) of the status colours, to warn when a brand would be mistaken for one.
-const STATUS_HUES: [string, number][] = [
-  ["danger red", 17],
-  ["warning amber", 49],
-  ["success green", 166],
+const STATUS_HUES: ["danger" | "warning" | "success", string, number][] = [
+  ["danger", "danger red", 17],
+  ["warning", "warning amber", 49],
+  ["success", "success green", 166],
 ];
 
 // Default neutral lightness, so "tint neutrals" keeps the layout and only adds a trace of the brand hue.
@@ -120,42 +180,60 @@ const NEUTRALS = {
   dark: { muted: 0.269, accent: 0.269, border: 0.3, input: 0.35 },
 };
 
-export function deriveTheme(hex: string, options: { tintNeutrals?: boolean } = {}): DerivedTheme | null {
-  const brand = parseHex(hex);
+export function deriveTheme(colour: string, options: ThemeOptions = {}): DerivedTheme | null {
+  const brand = parseColor(colour);
   if (!brand) return null;
   const h = toOklch(brand);
+  const white = options.textColor === "white";
 
-  // Light: the brand is the primary colour. The ring must stand out from the card (3:1), so it may be darkened.
-  const ringLight = reach(brand, LIGHT_CARD, 3, "darker");
+  // Light: the brand is the primary colour. With white text, it is darkened until white passes AA.
+  const primaryLight = white ? reach(brand, WHITE, 4.5, "darker") : { rgb: brand, changed: false };
+  // The ring must stand out from the card (3:1), so it may be darkened.
+  const ringLight = reach(primaryLight.rgb, LIGHT_CARD, 3, "darker");
+
   // Dark: a brand that sinks into a dark card is lightened until it is visible (3:1).
   const neutralBrand = h.c < 0.03;
   const lifted = reach(brand, DARK_CARD, 3, "lighter");
-  const primaryDark = lifted.changed && neutralBrand ? { rgb: [229, 229, 229] as Rgb, changed: false } : lifted;
+  let primaryDark = lifted.changed && neutralBrand ? { rgb: [229, 229, 229] as Rgb, changed: false } : lifted;
+  const warnings: string[] = [];
+  if (white && contrast(WHITE, primaryDark.rgb) < 4.5 + MARGIN) {
+    // White text in dark mode needs a colour dark enough for white yet light enough to see on a dark card.
+    const darker = reach(primaryDark.rgb, WHITE, 4.5, "darker");
+    if (contrast(darker.rgb, DARK_CARD) >= 3) primaryDark = { rgb: darker.rgb, changed: true };
+    else warnings.push("White text does not fit this colour in dark mode, so dark text is used there.");
+  }
 
   const tint = (mode: "light" | "dark") =>
-    options.tintNeutrals ? Object.fromEntries(Object.entries(NEUTRALS[mode]).map(([k, l]) => [k, toHex(fromOklch({ l, c: 0.012, h: h.h }))])) : {};
+    options.tintNeutrals ? Object.fromEntries(Object.entries(NEUTRALS[mode]).map(([k, l]) => [k, oklchCss(fromOklch({ l, c: 0.012, h: h.h }).map(Math.round) as Rgb)])) : {};
 
-  const light: ThemeTokens = { primary: toHex(brand), "primary-foreground": toHex(onColour(brand)), ring: toHex(ringLight.rgb), ...tint("light") };
-  const dark: ThemeTokens = { primary: toHex(primaryDark.rgb), "primary-foreground": toHex(onColour(primaryDark.rgb)), ring: toHex(primaryDark.rgb), ...tint("dark") };
+  const light: ThemeTokens = { primary: oklchCss(primaryLight.rgb), "primary-foreground": oklchCss(onColour(primaryLight.rgb)), ring: oklchCss(ringLight.rgb), ...tint("light") };
+  const dark: ThemeTokens = { primary: oklchCss(primaryDark.rgb), "primary-foreground": oklchCss(onColour(primaryDark.rgb)), ring: oklchCss(primaryDark.rgb), ...tint("dark") };
 
-  const warnings: string[] = [];
+  let statusClash: ThemeReport["statusClash"] = null;
   if (h.c > 0.08) {
-    for (const [name, hue] of STATUS_HUES) {
+    for (const [key, name, hue] of STATUS_HUES) {
       const diff = Math.min(Math.abs(h.h - hue), 360 - Math.abs(h.h - hue));
-      if (diff < 18) warnings.push(`This colour is close to the ${name} used for status. Messages and badges may look like branding, so check them.`);
+      if (diff < 18) {
+        statusClash = key;
+        warnings.push(`This colour is close to the ${name} used for status. Messages and badges may look like branding, so check them.`);
+      }
     }
   }
+  if (primaryLight.changed) warnings.push("The button colour is a little darker than your brand in light mode, so white text stays readable.");
   if (ringLight.changed) warnings.push("The focus ring is darker than your brand colour in light mode, so it stays visible on white.");
-  if (primaryDark.changed) warnings.push("In dark mode the brand colour is lightened, so it stays visible on dark surfaces.");
+  if (primaryDark.changed) warnings.push("In dark mode the brand colour is adjusted, so it stays visible on dark surfaces.");
 
+  // Measured on the written-out values, so the report describes exactly what ships.
+  const rgbOf = (s: string) => parseColor(s)!;
   return {
     brand: toHex(brand),
     light,
     dark,
     report: {
-      onPrimary: { light: round(contrast(parseHex(light.primary)!, parseHex(light["primary-foreground"])!)), dark: round(contrast(parseHex(dark.primary)!, parseHex(dark["primary-foreground"])!)) },
-      ring: { light: round(contrast(parseHex(light.ring)!, LIGHT_CARD)), dark: round(contrast(parseHex(dark.ring)!, DARK_CARD)) },
-      adjusted: { light: ringLight.changed, dark: primaryDark.changed },
+      onPrimary: { light: round(contrast(rgbOf(light.primary), rgbOf(light["primary-foreground"]))), dark: round(contrast(rgbOf(dark.primary), rgbOf(dark["primary-foreground"]))) },
+      ring: { light: round(contrast(rgbOf(light.ring), LIGHT_CARD)), dark: round(contrast(rgbOf(dark.ring), DARK_CARD)) },
+      adjusted: { light: primaryLight.changed || ringLight.changed, dark: primaryDark.changed },
+      statusClash,
       warnings,
     },
   };

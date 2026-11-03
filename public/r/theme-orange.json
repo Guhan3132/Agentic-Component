@@ -10,14 +10,14 @@
   ],
   "cssVars": {
     "light": {
-      "primary": "#ea580c",
-      "primary-foreground": "#18181b",
-      "ring": "#ea580c"
+      "primary": "oklch(0.6461 0.1943 41.12)",
+      "primary-foreground": "oklch(0.2103 0.0059 285.89)",
+      "ring": "oklch(0.6461 0.1943 41.12)"
     },
     "dark": {
-      "primary": "#ea580c",
-      "primary-foreground": "#18181b",
-      "ring": "#ea580c"
+      "primary": "oklch(0.6461 0.1943 41.12)",
+      "primary-foreground": "oklch(0.2103 0.0059 285.89)",
+      "ring": "oklch(0.6461 0.1943 41.12)"
     }
   },
   "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."

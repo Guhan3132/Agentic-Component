@@ -122,8 +122,8 @@ test("every sample colour has a preset with light and dark brand tokens", () => 
   for (const [, id, , hex] of samples) {
     const item = JSON.parse(read(`public/r/theme-${id}.json`));
     assert.equal(item.type, "registry:theme");
-    assert.equal(item.cssVars.light.primary, hex, `${id} light primary is the brand`);
-    for (const mode of ["light", "dark"]) for (const k of ["primary", "primary-foreground", "ring"]) assert.match(item.cssVars[mode][k], /^#[0-9a-f]{6}$/, `${id} ${mode} ${k}`);
+    assert.match(item.description, new RegExp(hex), `${id} names its brand colour`);
+    for (const mode of ["light", "dark"]) for (const k of ["primary", "primary-foreground", "ring"]) assert.ok(/^oklch\([0-9. ]+\)$/.test(item.cssVars[mode][k]), `${id} ${mode} ${k} is OKLCH`);
     assert.ok(index.includes(`theme-${id}`), `theme-${id} in registry.json`);
   }
 });

@@ -12,6 +12,7 @@ import { SectionTabs } from "@/components/SectionTabs";
 import { getPattern, patterns } from "@/registry";
 import { demos } from "@/registry/demos";
 import { tags, usage } from "@/registry/usage";
+import { SITE_URL } from "@/lib/site";
 
 export function generateStaticParams() {
   return patterns.map((p) => ({ slug: p.slug }));
@@ -137,7 +138,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
               and a <code className="text-zinc-800">cn</code> helper.
             </p>
             <div className="space-y-4">
-              <CodeBlock code={`npx shadcn@latest add "https://agentic-component.vercel.app/r/${slug}.json"`} file="terminal" />
+              <CodeBlock code={`npx shadcn@latest add "${SITE_URL}/r/${slug}.json"`} file="terminal" />
               <CodeBlock code={usage[slug]} file="Usage.tsx" />
               <CodeBlock code={code.replaceAll('"@/lib/cn"', '"@/lib/utils"')} file={file} />
             </div>

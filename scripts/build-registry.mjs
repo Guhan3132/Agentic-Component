@@ -6,6 +6,7 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = process.cwd();
+const { SITE_URL } = await import(pathToFileURL(join(root, "src/lib/site.ts")).href);
 const registryDir = join(root, "src/registry");
 const outDir = join(root, "public/r");
 mkdirSync(outDir, { recursive: true });
@@ -26,6 +27,18 @@ for (const m of indexSrc.matchAll(entry)) {
 // The shadcn CLI adds only the ones a project is missing and never overwrites existing values,
 // so a project that already ran `shadcn init` keeps its own theme.
 const tokenList = JSON.parse(readFileSync(join(root, "src/lib/tokens.json"), "utf8")).tokens;
+// The site's own stylesheet comes from the same list, so the previews show exactly what installs.
+const { tokenCss, themeInlineCss } = await import(pathToFileURL(join(root, "src/theme/token-css.ts")).href);
+writeFileSync(
+  join(root, "src/app/tokens.css"),
+  [
+    "/* Generated from src/lib/tokens.json by scripts/build-registry.mjs. Do not edit by hand. */",
+    tokenCss(tokenList, { light: ":root,\n.light", withScheme: true }),
+    themeInlineCss(tokenList),
+    "",
+  ].join("\n\n"),
+);
+
 const cssVars = {
   light: Object.fromEntries(tokenList.map((t) => [t.name, t.light])),
   dark: Object.fromEntries(tokenList.map((t) => [t.name, t.dark])),
@@ -54,14 +67,14 @@ for (const slug of slugs) {
     type: "registry:ui",
     title: meta[slug]?.title ?? slug,
     description: meta[slug]?.summary ?? "",
-    author: "Agentic UI <https://agentic-component.vercel.app>",
+    author: `Agentic UI <${SITE_URL}>`,
     categories: meta[slug] ? [meta[slug].category.toLowerCase(), "agent"] : ["agent"],
     dependencies,
     registryDependencies: [],
     cssVars,
     files: [{ path: `registry/agentic-ui/${slug}.tsx`, type: "registry:ui", content }],
     docs: [
-      `Preview and docs: https://agentic-component.vercel.app/components/${slug}`,
+      `Preview and docs: ${SITE_URL}/components/${slug}`,
       "Uses the shadcn theme tokens (missing ones are added, yours are never changed) and cn in @/lib/utils.",
       'Run "npx shadcn@latest init" first if you have not.',
     ].join("\n"),
@@ -85,7 +98,7 @@ const brandItem = {
   type: "registry:ui",
   title: "Brand theme",
   description: "Give one hex colour and every Agentic UI component follows it, in light and dark, with contrast checked.",
-  author: "Agentic UI <https://agentic-component.vercel.app>",
+  author: `Agentic UI <${SITE_URL}>`,
   categories: ["theme"],
   dependencies: [],
   registryDependencies: [],
@@ -96,7 +109,7 @@ const brandItem = {
   docs: [
     'Wrap your app or one section: <AgenticTheme brand="#7c3aed">...</AgenticTheme>',
     "Or paste CSS into your stylesheet: console.log(themeCss(deriveTheme(\"#7c3aed\")))",
-    "Try colours at https://agentic-component.vercel.app (the Brand button, bottom left).",
+    `Try colours at ${SITE_URL} (the Brand button, bottom left).`,
   ].join("\n"),
 };
 writeFileSync(join(outDir, "theme-brand.json"), JSON.stringify(brandItem, null, 2));
@@ -110,7 +123,7 @@ for (const sample of sampleThemes) {
     type: "registry:theme",
     title: `${sample.name} theme`,
     description: `Sets the brand colour to ${sample.name} (${sample.hex}) for light and dark, with contrast checked.`,
-    author: "Agentic UI <https://agentic-component.vercel.app>",
+    author: `Agentic UI <${SITE_URL}>`,
     categories: ["theme"],
     cssVars: { light: t.light, dark: t.dark },
     docs: "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched.",
@@ -121,7 +134,7 @@ for (const sample of sampleThemes) {
 
 writeFileSync(
   join(outDir, "registry.json"),
-  JSON.stringify({ $schema: "https://ui.shadcn.com/schema/registry.json", name: "agentic-ui", homepage: "https://agentic-component.vercel.app", items: index }, null, 2),
+  JSON.stringify({ $schema: "https://ui.shadcn.com/schema/registry.json", name: "agentic-ui", homepage: SITE_URL, items: index }, null, 2),
 );
 
 // SHA-256 of every registry file, so anyone can check that what they downloaded is what we published:

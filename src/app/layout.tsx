@@ -6,6 +6,7 @@ import { BrandSwitcher } from "@/components/BrandSwitcher";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,7 +21,7 @@ const geistMono = Geist_Mono({
 const description = "Live, copyable UX patterns for AI agents: streaming, trust, approval, planning, chat and input. React, Tailwind, shadcn-ready.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://agentic-component.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: { default: "Agentic UI: UX patterns for AI agents", template: "%s · Agentic UI" },
   description,
   keywords: ["AI agent UI", "chat UI components", "shadcn", "React", "Tailwind", "human in the loop", "streaming UI"],

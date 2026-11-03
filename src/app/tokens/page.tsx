@@ -4,6 +4,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import tokenData from "@/lib/tokens.json";
 import { deriveTheme } from "@/theme/derive";
 import { sampleThemes } from "@/theme/samples";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Tokens and theming",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/tokens" },
 };
 
-const origin = "https://agentic-component.vercel.app";
+const origin = SITE_URL;
 const groups = ["Brand", "Surface", "Status"] as const;
 
 function Swatch({ value }: { value: string }) {

@@ -1,11 +1,12 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { AgenticTheme, contrast, deriveTheme, parseHex, themeCss, toHex } from "@/theme/agentic-theme";
+import { AgenticTheme, contrast, deriveTheme, parseColor, parseHex, themeCss, toHex, wcagLevel } from "@/theme/agentic-theme";
 import { sampleThemes } from "@/theme/samples";
 
 const DARK_CARD = parseHex("#171717")!;
 const WHITE = parseHex("#ffffff")!;
-const rgb = (hex: string) => parseHex(hex)!;
+const rgb = (css: string) => parseColor(css)!;
+const hexOf = (css: string) => toHex(rgb(css));
 
 describe("parseHex", () => {
   it("accepts 3 and 6 digits, with or without #", () => {
@@ -19,6 +20,20 @@ describe("parseHex", () => {
   });
   it("round-trips through toHex", () => {
     expect(toHex(rgb("#7c3aed"))).toBe("#7c3aed");
+  });
+});
+
+describe("parseColor", () => {
+  it("reads hex, rgb(), hsl() and oklch(), and the fallback of var()", () => {
+    expect(parseColor("rgb(124, 58, 237)")).toEqual([124, 58, 237]);
+    expect(parseColor("rgb(124 58 237 / 50%)")).toEqual([124, 58, 237]);
+    expect(parseColor("hsl(262 83% 58%)")).toEqual([124, 59, 237]);
+    expect(parseColor("oklch(54.13% 0.2466 293.01)")).toEqual([124, 58, 237]);
+    expect(parseColor("var(--destructive, #be123c)")).toEqual([190, 18, 60]);
+    expect(parseColor("violet-600")).toBeNull();
+  });
+  it("round-trips the OKLCH it writes", () => {
+    for (const hex of ["#7c3aed", "#047857", "#facc15", "#18181b", "#ffffff"]) expect(hexOf(deriveTheme(hex)!.light.primary)).toBe(hex);
   });
 });
 
@@ -36,7 +51,8 @@ describe("deriveTheme", () => {
   });
 
   it("keeps the brand colour as primary in light mode", () => {
-    expect(deriveTheme("#7c3aed")!.light.primary).toBe("#7c3aed");
+    expect(hexOf(deriveTheme("#7c3aed")!.light.primary)).toBe("#7c3aed");
+    expect(deriveTheme("#7c3aed")!.light.primary.startsWith("oklch(")).toBe(true);
     expect(deriveTheme("7c3aed")!.brand).toBe("#7c3aed");
   });
 
@@ -78,13 +94,13 @@ describe("deriveTheme", () => {
 
   it("darkens a light brand for the focus ring and lightens a dark one in dark mode, and says so", () => {
     const yellow = deriveTheme("#facc15")!;
-    expect(yellow.light.primary).toBe("#facc15");
-    expect(yellow.light.ring).not.toBe("#facc15");
+    expect(hexOf(yellow.light.primary)).toBe("#facc15");
+    expect(hexOf(yellow.light.ring)).not.toBe("#facc15");
     expect(yellow.report.adjusted.light).toBe(true);
     expect(yellow.report.warnings.join(" ")).toMatch(/focus ring/);
 
     const navy = deriveTheme("#1e3a8a")!;
-    expect(navy.dark.primary).not.toBe("#1e3a8a");
+    expect(hexOf(navy.dark.primary)).not.toBe("#1e3a8a");
     expect(navy.report.warnings.join(" ")).toMatch(/dark mode/);
   });
 
@@ -98,11 +114,37 @@ describe("deriveTheme", () => {
   });
 });
 
+describe("options and report", () => {
+  it("keeps white text when asked, by darkening the button colour until white passes", () => {
+    for (const hex of ["#16a34a", "#0d9488", "#d97706", "#ea580c", "#facc15"]) {
+      const t = deriveTheme(hex, { textColor: "white" })!;
+      expect(hexOf(t.light["primary-foreground"])).toBe("#ffffff");
+      expect(contrast(rgb(t.light.primary), [255, 255, 255])).toBeGreaterThanOrEqual(4.5);
+      expect(t.report.onPrimary.light).toBeGreaterThanOrEqual(4.5);
+      expect(t.report.onPrimary.dark).toBeGreaterThanOrEqual(4.5);
+      expect(t.report.ring.dark).toBeGreaterThanOrEqual(3);
+    }
+  });
+  it("names the status colour a brand could be mistaken for", () => {
+    expect(deriveTheme("#16a34a")!.report.statusClash).toBe("success");
+    expect(deriveTheme("#d97706")!.report.statusClash).toBe("warning");
+    expect(deriveTheme("#db2777")!.report.statusClash).toBe("danger");
+    expect(deriveTheme("#7c3aed")!.report.statusClash).toBeNull();
+  });
+  it("grades contrast as AAA, AA or Fail", () => {
+    expect(wcagLevel(7.2)).toBe("AAA");
+    expect(wcagLevel(4.6)).toBe("AA");
+    expect(wcagLevel(4.4)).toBe("Fail");
+    expect(wcagLevel(3.1, "ui")).toBe("AA");
+    expect(wcagLevel(2.9, "ui")).toBe("Fail");
+  });
+});
+
 describe("themeCss and AgenticTheme", () => {
   it("writes a light and a dark block", () => {
     const css = themeCss(deriveTheme("#7c3aed")!);
-    expect(css).toMatch(/:root \{ --primary:#7c3aed;/);
-    expect(css).toMatch(/\.dark \{ --primary:#/);
+    expect(css).toContain(":root { --primary:oklch(");
+    expect(css).toContain(".dark { --primary:oklch(");
   });
 
   it("scopes the variables to its own subtree and follows .dark", () => {

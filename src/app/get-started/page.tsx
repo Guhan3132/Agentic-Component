@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CodeBlock } from "@/components/CodeBlock";
+import { SITE_URL } from "@/lib/site";
+import tokenData from "@/lib/tokens.json";
 import { patterns } from "@/registry";
+import { themeInlineCss, tokenCss } from "@/theme/token-css";
 
 export const metadata: Metadata = {
   title: "Get started",
@@ -9,21 +12,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/get-started" },
 };
 
-const origin = "https://agentic-component.vercel.app";
+const origin = SITE_URL;
 
-const tokens = `:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-}`;
+// Generated from the same token list as the registry and the site, so it is always complete and current.
+const tokens = `${tokenCss(tokenData.tokens)}
+
+${themeInlineCss(tokenData.tokens)}`;
 
 const cn = `import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -113,7 +107,11 @@ export default function GetStarted() {
         </Step>
 
         <Step n={6} title="If it looks wrong">
-          <p>The components read the standard shadcn tokens. If your project uses other names, add these to your global CSS (and a matching set under a `.dark` class):</p>
+          <p>
+            The components read shadcn&apos;s tokens plus three status colours (<code className="text-zinc-900">success</code>,{" "}
+            <code className="text-zinc-900">warning</code>, <code className="text-zinc-900">danger</code>). The CLI adds any you are missing. If you install by hand, add
+            this to your global CSS (light, dark, and the Tailwind mapping):
+          </p>
           <CodeBlock code={tokens} file="globals.css" />
           <p>
             If your project has no <code className="text-zinc-900">cn</code> helper yet, create <code className="text-zinc-900">lib/utils.ts</code>:

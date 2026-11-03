@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getPattern, patterns } from "@/registry";
+import { SITE_HOST } from "@/lib/site";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -34,7 +35,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
           <div style={{ fontSize: 88, fontWeight: 700, lineHeight: 1.05, letterSpacing: -2 }}>{title}</div>
           <div style={{ marginTop: 28, fontSize: 36, lineHeight: 1.3, color: "#52525b", maxWidth: 980 }}>{summary}</div>
         </div>
-        <div style={{ display: "flex", fontSize: 28, color: "#71717a" }}>agentic-component.vercel.app</div>
+        <div style={{ display: "flex", fontSize: 28, color: "#71717a" }}>{SITE_HOST}</div>
       </div>
     ),
     size,
