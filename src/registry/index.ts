@@ -19,6 +19,15 @@ export const LATEST_RELEASE = "0.4.0";
 
 export const categories: Category[] = ["Respond", "Trust", "Act", "Control", "Learn"];
 
+/** One line per category, shown on the gallery so the names make sense. */
+export const categoryInfo: Record<Category, string> = {
+  Respond: "How answers arrive: streaming, status, chat and recovery when something fails.",
+  Trust: "Why to believe an answer: confidence, sources and reasoning.",
+  Act: "What the agent does: plans, tool calls and several agents at once.",
+  Control: "What the person decides: approvals, permissions, steering, memory and input.",
+  Learn: "How the agent gets better: feedback on answers.",
+};
+
 export const patterns: Pattern[] = [
   {
     slug: "streaming-response",

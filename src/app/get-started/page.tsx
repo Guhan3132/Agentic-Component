@@ -51,6 +51,7 @@ export default function GetStarted() {
           <ul className="list-disc space-y-1 pl-5">
             <li>React 18 or 19 and TypeScript</li>
             <li>Tailwind CSS v4</li>
+            <li>Browsers from 2023 on: Chrome and Edge 111+, Safari 16.4+, Firefox 113+ (for OKLCH colours, color-mix() and container queries)</li>
             <li>
               A shadcn project (<code className="text-foreground">npx shadcn@latest init</code>), which gives you the theme tokens and{" "}
               <code className="text-foreground">cn</code> in <code className="text-foreground">@/lib/utils</code>

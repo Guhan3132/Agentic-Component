@@ -4,7 +4,7 @@ import { Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { PatternCard } from "@/components/PatternCard";
-import type { Category, Pattern } from "@/registry";
+import { categoryInfo, type Category, type Pattern } from "@/registry";
 import { tags } from "@/registry/usage";
 
 export function Gallery({ patterns, categories }: { patterns: Pattern[]; categories: Category[] }) {
@@ -37,6 +37,8 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
       <h2 className="text-lg font-semibold tracking-tight">
         {cat === "All" ? "All patterns" : cat} <span className="text-sm font-normal text-muted-foreground">({shown.length})</span>
       </h2>
+
+      <p className="mt-1 text-sm text-muted-foreground">{cat === "All" ? "Every demo is scripted, so you can try it with no API key. Pick a category to narrow it down." : categoryInfo[cat]}</p>
 
       {/* Filters on the left, search at the right end */}
       <div className="mb-8 mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

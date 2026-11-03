@@ -215,8 +215,11 @@ export function DemoFrame({ scenarios, scenarioId, onScenario, onReplay, fit = "
                 ))}
               </div>
             )}
+            <span title="Scripted: no model is called" className="ml-auto rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground">
+              Simulated
+            </span>
             {onReplay && (
-              <button onClick={onReplay} className="ml-auto flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-sm text-foreground hover:bg-accent pointer-coarse:min-h-11 pointer-coarse:px-4">
+              <button onClick={onReplay} className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-sm text-foreground hover:bg-accent pointer-coarse:min-h-11 pointer-coarse:px-4">
                 <RotateCw size={14} /> Replay
               </button>
             )}

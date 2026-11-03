@@ -26,6 +26,7 @@ const toc = [
   ["motion", "Motion"],
   ["wording", "Wording and language"],
   ["dark", "Dark mode"],
+  ["rtl", "Languages and right-to-left"],
   ["keep", "What to keep"],
 ] as const;
 
@@ -126,6 +127,19 @@ export default function Customize() {
             Components follow a <code>.dark</code> class on any ancestor, the shadcn convention. Put it on <code>&lt;html&gt;</code> for the whole app, or on
             one container to preview a single section. Dark values come from the same tokens, including a brand colour set with{" "}
             <code>AgenticTheme</code>.
+          </p>
+        </Section>
+
+        <Section id="rtl" title="Languages and right-to-left">
+          <p>
+            To translate, lift the strings into props or your i18n library&apos;s <code>t()</code> calls. Keep the screen-reader text too: the{" "}
+            <code>sr-only</code> spans and <code>aria-label</code> values are part of the wording.
+          </p>
+          <p>
+            For right-to-left languages, set <code>dir=&quot;rtl&quot;</code> on <code>&lt;html&gt;</code>. Layouts built with flex and gap mirror by
+            themselves. A few positioned parts (tooltips, menus, the jump-to-latest button) use <code>left-*</code> and <code>right-*</code>; swap them for
+            Tailwind&apos;s logical <code>start-*</code> and <code>end-*</code>, and <code>ml-*</code> for <code>ms-*</code>. Arrow icons that mean
+            &quot;forward&quot; need <code>rtl:rotate-180</code>.
           </p>
         </Section>
 

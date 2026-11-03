@@ -89,6 +89,9 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             <SaveButton slug={slug} />
             <RemixButton slug={slug} title={pattern.title} code={code} usage={usage[slug]} />
           </CopyMenu>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Needs {depsOf(code).join(", ")} and a <code className="text-foreground">cn</code> helper. Every pattern passes automated accessibility checks (axe) in CI.
+          </p>
         </div>
       </header>
 
