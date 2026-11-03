@@ -2,11 +2,9 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
+import { THEME_KEY } from "@/lib/head-scripts";
 
-const KEY = "agentic-ui:theme";
-
-/** Runs in <head> before the first paint: the saved choice, or the system setting when there is none. */
-export const THEME_SCRIPT = `try{var t=localStorage.getItem("${KEY}");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch(e){}`;
+const KEY = THEME_KEY;
 
 /** Whether the site is in dark mode right now, following the class on <html>. False on the server. */
 export function useSiteDark() {

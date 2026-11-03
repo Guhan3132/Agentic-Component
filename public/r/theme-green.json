@@ -20,5 +20,5 @@
       "ring": "oklch(0.6271 0.1699 149.21)"
     }
   },
-  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched.\nNote: this colour is close to the success status colour. Check that badges and errors still stand out."
 }

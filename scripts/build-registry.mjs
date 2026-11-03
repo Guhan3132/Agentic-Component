@@ -39,6 +39,26 @@ writeFileSync(
   ].join("\n\n"),
 );
 
+// The same tokens in the W3C Design Tokens format, for Figma plugins and Style Dictionary.
+// A var(--x, fallback) value is written as its fallback, since other tools have no --destructive.
+const plain = (v) => v.replace(/^var\(--[\w-]+,\s*(.+)\)$/, "$1");
+writeFileSync(
+  join(root, "public/tokens.dtcg.json"),
+  `${JSON.stringify(
+    {
+      $description: `Agentic UI colour tokens. Light values in $value, dark in $extensions["dev.agentic-ui"].dark. ${SITE_URL}/tokens`,
+      color: Object.fromEntries(
+        tokenList.map((t) => [
+          t.name,
+          { $type: "color", $value: plain(t.light), $description: `${t.group}: ${t.role}`, $extensions: { "dev.agentic-ui": { dark: plain(t.dark) } } },
+        ]),
+      ),
+    },
+    null,
+    2,
+  )}\n`,
+);
+
 const cssVars = {
   light: Object.fromEntries(tokenList.map((t) => [t.name, t.light])),
   dark: Object.fromEntries(tokenList.map((t) => [t.name, t.dark])),
@@ -126,7 +146,12 @@ for (const sample of sampleThemes) {
     author: `Agentic UI <${SITE_URL}>`,
     categories: ["theme"],
     cssVars: { light: t.light, dark: t.dark },
-    docs: "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched.",
+    docs: [
+      "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched.",
+      t.report.statusClash ? `Note: this colour is close to the ${t.report.statusClash} status colour. Check that badges and errors still stand out.` : "",
+    ]
+      .filter(Boolean)
+      .join("\n"),
   };
   writeFileSync(join(outDir, `${item.name}.json`), JSON.stringify(item, null, 2));
   index.push({ name: item.name, type: item.type, title: item.title, description: item.description });

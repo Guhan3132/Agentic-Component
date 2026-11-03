@@ -1,0 +1,145 @@
+{
+  "$description": "Agentic UI colour tokens. Light values in $value, dark in $extensions[\"dev.agentic-ui\"].dark. https://agentic-component.vercel.app/tokens",
+  "color": {
+    "background": {
+      "$type": "color",
+      "$value": "oklch(1 0 0)",
+      "$description": "Surface: Page and preview background",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.145 0 0)"
+        }
+      }
+    },
+    "foreground": {
+      "$type": "color",
+      "$value": "oklch(0.145 0 0)",
+      "$description": "Surface: Main text",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.985 0 0)"
+        }
+      }
+    },
+    "card": {
+      "$type": "color",
+      "$value": "oklch(1 0 0)",
+      "$description": "Surface: Cards, panels and popovers. Always opaque",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.205 0 0)"
+        }
+      }
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "oklch(0.97 0 0)",
+      "$description": "Surface: Quiet fills: inputs, chips, hover on lists",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.269 0 0)"
+        }
+      }
+    },
+    "muted-foreground": {
+      "$type": "color",
+      "$value": "oklch(0.53 0 0)",
+      "$description": "Surface: Secondary text and icons. Passes AA on card and muted",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.708 0 0)"
+        }
+      }
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "oklch(0.97 0 0)",
+      "$description": "Surface: Hover and selected fills",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.269 0 0)"
+        }
+      }
+    },
+    "border": {
+      "$type": "color",
+      "$value": "oklch(0.922 0 0)",
+      "$description": "Surface: Dividers and outlines",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(1 0 0 / 10%)"
+        }
+      }
+    },
+    "input": {
+      "$type": "color",
+      "$value": "oklch(0.922 0 0)",
+      "$description": "Surface: Form control borders",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(1 0 0 / 15%)"
+        }
+      }
+    },
+    "primary": {
+      "$type": "color",
+      "$value": "oklch(0.205 0 0)",
+      "$description": "Brand: Main buttons, the selected tab, progress bars",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.922 0 0)"
+        }
+      }
+    },
+    "primary-foreground": {
+      "$type": "color",
+      "$value": "oklch(0.985 0 0)",
+      "$description": "Brand: Text and icons on primary",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.205 0 0)"
+        }
+      }
+    },
+    "ring": {
+      "$type": "color",
+      "$value": "oklch(0.55 0 0)",
+      "$description": "Brand: Keyboard focus outline. Passes 3:1 on card",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.556 0 0)"
+        }
+      }
+    },
+    "success": {
+      "$type": "color",
+      "$value": "oklch(0.5081 0.1049 165.61)",
+      "$description": "Status: Done, approved, allowed. Never the brand colour",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.8452 0.1299 164.98)"
+        }
+      }
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "oklch(0.5305 0.145 47.78)",
+      "$description": "Status: Needs review, waiting, retrying. Never the brand colour",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.879 0.1534 91.61)"
+        }
+      }
+    },
+    "danger": {
+      "$type": "color",
+      "$value": "oklch(0.5143 0.1978 16.93)",
+      "$description": "Status: Failed, blocked, hard to undo. Follows shadcn's --destructive when your project has it",
+      "$extensions": {
+        "dev.agentic-ui": {
+          "dark": "oklch(0.8097 0.1061 11.64)"
+        }
+      }
+    }
+  }
+}

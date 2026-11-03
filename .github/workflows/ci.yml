@@ -24,7 +24,7 @@ jobs:
       - name: Smoke test the production build
         run: npm run test:smoke
       - name: Registry is up to date
-        run: git diff --exit-code -- public/r
+        run: git diff --exit-code -- public/r public/tokens.dtcg.json src/app/tokens.css
       - name: Registry items are valid JSON with files
         run: |
           node -e '
