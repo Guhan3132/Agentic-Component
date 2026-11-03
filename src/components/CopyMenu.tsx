@@ -112,7 +112,7 @@ export function CopyMenu({ slug, title, code, usage, children }: Props) {
         {done === "cli" ? "Copied" : "CLI"}
       </button>
 
-      {done === "error" && <span role="alert" className="text-sm text-rose-600">Clipboard is blocked in this browser.</span>}
+      {done === "error" && <span role="alert" className="text-sm text-danger">Clipboard is blocked in this browser.</span>}
 
       <AnimatePresence>
         {open && (

@@ -30,10 +30,10 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   return (
     <section className="mt-10">
       <h2 className="flex items-center gap-3 text-xl font-semibold tracking-tight">
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-zinc-900 text-sm text-white">{n}</span>
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-foreground text-sm text-background">{n}</span>
         {title}
       </h2>
-      <div className="mt-4 space-y-4 text-zinc-600">{children}</div>
+      <div className="mt-4 space-y-4 text-muted-foreground">{children}</div>
     </section>
   );
 }
@@ -43,7 +43,7 @@ export default function GetStarted() {
     <main className="pb-24 pt-10">
       <div className="mx-auto max-w-3xl px-5">
         <h1 className="text-4xl font-semibold sm:text-5xl">Get started</h1>
-        <p className="mt-3 text-lg leading-relaxed text-zinc-600">
+        <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
           Each pattern is one file that you own. Install it with the shadcn CLI, or copy the code. No package to keep up to date.
         </p>
 
@@ -52,8 +52,8 @@ export default function GetStarted() {
             <li>React 18 or 19 and TypeScript</li>
             <li>Tailwind CSS v4</li>
             <li>
-              A shadcn project (<code className="text-zinc-900">npx shadcn@latest init</code>), which gives you the theme tokens and{" "}
-              <code className="text-zinc-900">cn</code> in <code className="text-zinc-900">@/lib/utils</code>
+              A shadcn project (<code className="text-foreground">npx shadcn@latest init</code>), which gives you the theme tokens and{" "}
+              <code className="text-foreground">cn</code> in <code className="text-foreground">@/lib/utils</code>
             </li>
           </ul>
         </Step>
@@ -61,9 +61,9 @@ export default function GetStarted() {
         <Step n={2} title="Install a pattern">
           <CodeBlock code={`npx shadcn@latest add "${origin}/r/approval-step.json"`} file="terminal" />
           <p>
-            Swap <code className="text-zinc-900">approval-step</code> for any pattern name. The CLI adds the file to your{" "}
-            <code className="text-zinc-900">components/ui</code> folder and installs <code className="text-zinc-900">lucide-react</code> and{" "}
-            <code className="text-zinc-900">motion</code> if the pattern needs them.
+            Swap <code className="text-foreground">approval-step</code> for any pattern name. The CLI adds the file to your{" "}
+            <code className="text-foreground">components/ui</code> folder and installs <code className="text-foreground">lucide-react</code> and{" "}
+            <code className="text-foreground">motion</code> if the pattern needs them.
           </p>
         </Step>
 
@@ -73,8 +73,8 @@ export default function GetStarted() {
           </p>
           <CodeBlock code={`npx shadcn@latest add "${origin}/r/v0.4.0/approval-step.json"`} file="terminal" />
           <p>
-            Check any file against <a className="text-zinc-900 underline" href="/r/checksums.txt">the published checksums</a>. Releases are listed on{" "}
-            <a className="text-zinc-900 underline" href="https://github.com/Guhan3132/Agentic-Component/releases" target="_blank" rel="noreferrer">
+            Check any file against <a className="text-foreground underline" href="/r/checksums.txt">the published checksums</a>. Releases are listed on{" "}
+            <a className="text-foreground underline" href="https://github.com/Guhan3132/Agentic-Component/releases" target="_blank" rel="noreferrer">
               GitHub
             </a>
             .
@@ -87,19 +87,19 @@ export default function GetStarted() {
             own agent, whether that is a stream from an API or a mock.
           </p>
           <p>
-            Prefer an AI to wire it up? Use <strong className="text-zinc-900">Copy prompt</strong> on a pattern page for Claude Code, Cursor,
+            Prefer an AI to wire it up? Use <strong className="text-foreground">Copy prompt</strong> on a pattern page for Claude Code, Cursor,
             Codex, Lovable, Bolt.new, v0 or Replit.
           </p>
         </Step>
 
         <Step n={5} title="Use your brand colour (optional)">
           <p>
-            One hex colour restyles every pattern, in light and dark, with contrast checked. Try it with the <strong className="text-zinc-900">Brand</strong> button at the bottom left, then follow{" "}
-            <Link href="/tokens" className="text-zinc-900 underline">
+            One hex colour restyles every pattern, in light and dark, with contrast checked. Try it with the <strong className="text-foreground">Brand</strong> button at the bottom left, then follow{" "}
+            <Link href="/tokens" className="text-foreground underline">
               Tokens and theming
             </Link>
             . To change radius, fonts or spacing, see{" "}
-            <Link href="/customize" className="text-zinc-900 underline">
+            <Link href="/customize" className="text-foreground underline">
               Customising components
             </Link>
             .
@@ -108,13 +108,13 @@ export default function GetStarted() {
 
         <Step n={6} title="If it looks wrong">
           <p>
-            The components read shadcn&apos;s tokens plus three status colours (<code className="text-zinc-900">success</code>,{" "}
-            <code className="text-zinc-900">warning</code>, <code className="text-zinc-900">danger</code>). The CLI adds any you are missing. If you install by hand, add
+            The components read shadcn&apos;s tokens plus three status colours (<code className="text-foreground">success</code>,{" "}
+            <code className="text-foreground">warning</code>, <code className="text-foreground">danger</code>). The CLI adds any you are missing. If you install by hand, add
             this to your global CSS (light, dark, and the Tailwind mapping):
           </p>
           <CodeBlock code={tokens} file="globals.css" />
           <p>
-            If your project has no <code className="text-zinc-900">cn</code> helper yet, create <code className="text-zinc-900">lib/utils.ts</code>:
+            If your project has no <code className="text-foreground">cn</code> helper yet, create <code className="text-foreground">lib/utils.ts</code>:
           </p>
           <CodeBlock code={cn} file="lib/utils.ts" />
         </Step>
@@ -126,10 +126,10 @@ export default function GetStarted() {
               <li key={p.slug}>
                 <Link
                   href={`/components/${p.slug}`}
-                  className="block rounded-xl border border-zinc-200 bg-white p-3.5 hover:bg-zinc-50"
+                  className="block rounded-xl border border-border bg-card p-3.5 hover:bg-muted/60"
                 >
-                  <span className="font-medium text-zinc-900">{p.title}</span>
-                  <span className="mt-0.5 block text-sm text-zinc-500">{p.summary}</span>
+                  <span className="font-medium text-foreground">{p.title}</span>
+                  <span className="mt-0.5 block text-sm text-muted-foreground">{p.summary}</span>
                 </Link>
               </li>
             ))}

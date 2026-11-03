@@ -35,7 +35,7 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
   return (
     <section id="patterns" className="mx-auto max-w-6xl px-5 pb-24">
       <h2 className="text-lg font-semibold tracking-tight">
-        {cat === "All" ? "All patterns" : cat} <span className="text-sm font-normal text-zinc-400">({shown.length})</span>
+        {cat === "All" ? "All patterns" : cat} <span className="text-sm font-normal text-muted-foreground">({shown.length})</span>
       </h2>
 
       {/* Filters on the left, search at the right end */}
@@ -48,15 +48,15 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
               onClick={() => setCat(c)}
               className={cn(
                 "rounded-full border px-3 py-1 text-sm pointer-coarse:min-h-11 pointer-coarse:px-4",
-                cat === c ? "border-zinc-900 bg-zinc-900 text-white" : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-400",
+                cat === c ? "border-foreground bg-foreground text-background" : "border-border bg-card text-muted-foreground hover:border-foreground/30",
               )}
             >
-              {c} <span className={cn("text-xs", cat === c ? "text-white/70" : "text-zinc-400")}>{c === "All" ? patterns.length : patterns.filter((p) => p.category === c).length}</span>
+              {c} <span className={cn("text-xs", cat === c ? "text-background/70" : "text-muted-foreground")}>{c === "All" ? patterns.length : patterns.filter((p) => p.category === c).length}</span>
             </button>
           ))}
         </div>
 
-        <label className="relative flex w-full items-center rounded-lg border border-zinc-200 bg-white text-sm text-zinc-500 focus-within:border-zinc-400 sm:w-64">
+        <label className="relative flex w-full items-center rounded-lg border border-border bg-card text-sm text-muted-foreground focus-within:border-foreground/30 sm:w-64">
           <Search size={14} aria-hidden className="pointer-events-none absolute left-3" />
           <input
             ref={input}
@@ -72,10 +72,10 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
             aria-keyshortcuts="/"
             aria-label="Search patterns"
             autoComplete="off"
-            className="h-11 w-full bg-transparent pl-9 pr-10 text-base text-zinc-900 outline-none placeholder:text-zinc-400 sm:h-9 sm:text-sm"
+            className="h-11 w-full bg-transparent pl-9 pr-10 text-base text-foreground outline-none placeholder:text-muted-foreground sm:h-9 sm:text-sm"
           />
           {!q && (
-            <kbd aria-hidden className="pointer-events-none absolute right-3 hidden rounded border border-zinc-200 bg-zinc-50 px-1.5 text-xs text-zinc-400 pointer-fine:block">
+            <kbd aria-hidden className="pointer-events-none absolute right-3 hidden rounded border border-border bg-muted/60 px-1.5 text-xs text-muted-foreground pointer-fine:block">
               /
             </kbd>
           )}
@@ -84,7 +84,7 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
               type="button"
               onClick={clear}
               aria-label="Clear search"
-              className="absolute right-1 grid size-9 place-items-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 sm:size-7"
+              className="absolute right-1 grid size-9 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground/80 sm:size-7"
             >
               <X size={14} />
             </button>
@@ -93,10 +93,10 @@ export function Gallery({ patterns, categories }: { patterns: Pattern[]; categor
       </div>
 
       {shown.length === 0 ? (
-        <div className="py-16 text-center text-zinc-500">
+        <div className="py-16 text-center text-muted-foreground">
           <p>{q ? `No patterns match "${q.trim()}".` : "No patterns in this category."}</p>
           {q && (
-            <button onClick={clear} className="mt-2 text-sm font-medium text-zinc-900 underline underline-offset-4">
+            <button onClick={clear} className="mt-2 text-sm font-medium text-foreground underline underline-offset-4">
               Clear search
             </button>
           )}

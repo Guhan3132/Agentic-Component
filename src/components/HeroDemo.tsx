@@ -41,8 +41,8 @@ export function HeroDemo() {
               key={i}
               className={
                 m.role === "user"
-                  ? "ml-auto w-fit max-w-[85%] rounded-2xl bg-zinc-900 px-3.5 py-2 text-sm text-white shadow-lg"
-                  : "w-fit max-w-[90%] rounded-2xl border border-white/60 bg-white/90 px-3.5 py-2 text-sm text-zinc-800 shadow-lg backdrop-blur"
+                  ? "ml-auto w-fit max-w-[85%] rounded-2xl bg-foreground px-3.5 py-2 text-sm text-background shadow-lg"
+                  : "w-fit max-w-[90%] rounded-2xl border border-border/60 bg-card/90 px-3.5 py-2 text-sm text-foreground shadow-lg backdrop-blur"
               }
             >
               {m.text || "…"}

@@ -41,29 +41,29 @@ export function Footer() {
   if (pathname === "/playground") return null;
 
   return (
-    <footer className="border-t border-zinc-200 bg-white">
+    <footer className="border-t border-border bg-card">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
           <Link href="/" className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
             <Logo size={24} className="rounded-md" />
             Agentic UI
           </Link>
-          <p className="mt-3 max-w-xs text-sm leading-relaxed text-zinc-500">
+          <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
             Open-source UX patterns for AI agents. Click them, break them, copy them.
           </p>
         </div>
         {columns.map((c) => (
           <nav key={c.title} aria-label={c.title}>
-            <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">{c.title}</h2>
+            <h2 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{c.title}</h2>
             <ul className="mt-3 space-y-1">
               {c.links.map((l) => (
                 <li key={l.label}>
                   {"external" in l ? (
-                    <a href={l.href} target="_blank" rel="noreferrer" className="-mx-1 block rounded px-1 py-1.5 text-sm text-zinc-700 hover:text-zinc-900 hover:underline">
+                    <a href={l.href} target="_blank" rel="noreferrer" className="-mx-1 block rounded px-1 py-1.5 text-sm text-foreground/80 hover:text-foreground hover:underline">
                       {l.label}
                     </a>
                   ) : (
-                    <Link href={l.href} className="-mx-1 block rounded px-1 py-1.5 text-sm text-zinc-700 hover:text-zinc-900 hover:underline">
+                    <Link href={l.href} className="-mx-1 block rounded px-1 py-1.5 text-sm text-foreground/80 hover:text-foreground hover:underline">
                       {l.label}
                     </Link>
                   )}
@@ -73,8 +73,8 @@ export function Footer() {
           </nav>
         ))}
       </div>
-      <div className="border-t border-zinc-200">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-4 text-xs text-zinc-500">
+      <div className="border-t border-border">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-5 py-4 text-xs text-muted-foreground">
           <span>MIT licensed. Built by Guhan3132.</span>
           <span>Anonymous page-view analytics only. No cookies.</span>
         </div>

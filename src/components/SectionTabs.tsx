@@ -39,7 +39,7 @@ export function SectionTabs({ tabs, className }: { tabs: Tab[]; className?: stri
   }, [tabs]);
 
   return (
-    <nav aria-label="Page sections" className={cn("sticky top-14 z-20 border-b border-zinc-200 bg-white", className)}>
+    <nav aria-label="Page sections" className={cn("sticky top-14 z-20 border-b border-border bg-card", className)}>
       <div className="mx-auto flex max-w-6xl gap-6 overflow-x-auto overflow-y-hidden px-5 text-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {tabs.map((t) => (
           <a
@@ -48,7 +48,7 @@ export function SectionTabs({ tabs, className }: { tabs: Tab[]; className?: stri
             aria-current={active === t.id ? "true" : undefined}
             className={cn(
               "-mb-px shrink-0 border-b-2 py-3.5 transition-colors",
-              active === t.id ? "border-zinc-900 font-medium text-zinc-900" : "border-transparent text-zinc-500 hover:text-zinc-900",
+              active === t.id ? "border-foreground font-medium text-foreground" : "border-transparent text-muted-foreground hover:text-foreground",
             )}
           >
             {t.label}

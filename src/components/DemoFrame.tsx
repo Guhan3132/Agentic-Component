@@ -3,6 +3,7 @@
 import { Maximize2, Minimize2, Monitor, Moon, RotateCw, Smartphone, Sun } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSiteDark } from "@/components/ThemeToggle";
 import { cn } from "@/lib/cn";
 import type { Scenario } from "@/lib/simulator/types";
 
@@ -31,7 +32,10 @@ const FOCUSABLE = 'button:not(:disabled), [href], input:not(:disabled), select:n
  */
 export function DemoFrame({ scenarios, scenarioId, onScenario, onReplay, fit = "fixed", children }: Props) {
   const [viewport, setViewport] = useState<Viewport>("desktop");
-  const [dark, setDark] = useState(false);
+  // null follows the site; the sun and moon pick a theme for this preview only.
+  const [override, setOverride] = useState<"light" | "dark" | null>(null);
+  const siteDark = useSiteDark();
+  const dark = override ? override === "dark" : siteDark;
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [height, setHeight] = useState<number>();
@@ -116,7 +120,7 @@ export function DemoFrame({ scenarios, scenarioId, onScenario, onReplay, fit = "
 
   const toggleTheme = () => {
     setFading(true);
-    setDark(!dark);
+    setOverride(dark ? "light" : "dark");
     setTimeout(() => setFading(false), 360);
   };
 
@@ -131,7 +135,8 @@ export function DemoFrame({ scenarios, scenarioId, onScenario, onReplay, fit = "
         data-closing={closing || undefined}
         className={cn(
           "overflow-hidden rounded-2xl border border-border bg-card text-foreground shadow-sm",
-          dark && "dark",
+          override === "dark" && "dark",
+          override === "light" && "light",
           fading && "theme-anim",
           open && "demo-modal flex flex-col shadow-2xl",
         )}

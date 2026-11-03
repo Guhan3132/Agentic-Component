@@ -5,6 +5,7 @@ import { Providers } from "@/components/Providers";
 import { BrandSwitcher } from "@/components/BrandSwitcher";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { THEME_SCRIPT } from "@/components/ThemeToggle";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 
@@ -42,8 +43,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Light or dark, before the first paint, so there is no flash of the wrong theme. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         {/* Applies a saved brand colour before the first paint, so there is no flash of the default. */}
         <script
           dangerouslySetInnerHTML={{
@@ -56,7 +59,7 @@ export default function RootLayout({
       >
         <a
           href="#content"
-          className="fixed left-3 top-3 z-50 -translate-y-20 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-lg focus:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900"
+          className="fixed left-3 top-3 z-50 -translate-y-20 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background shadow-lg focus:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         >
           Skip to content
         </a>

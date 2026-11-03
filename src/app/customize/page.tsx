@@ -12,7 +12,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
   return (
     <section id={id} className="mt-12 scroll-mt-20">
       <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-      <div className="mt-3 space-y-3 leading-relaxed text-zinc-600">{children}</div>
+      <div className="mt-3 space-y-3 leading-relaxed text-muted-foreground">{children}</div>
     </section>
   );
 }
@@ -34,14 +34,14 @@ export default function Customize() {
     <main className="pb-24 pt-10">
       <div className="mx-auto max-w-3xl px-5">
         <h1 className="text-4xl font-semibold sm:text-5xl">Customising components</h1>
-        <p className="mt-4 text-lg leading-relaxed text-zinc-600">
+        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
           When you install a pattern, its file is copied into your project, so you own it. Colour is set through tokens and needs no edits. Everything
           else is plain Tailwind classes in that file: change them like any other code.
         </p>
 
         <nav aria-label="On this page" className="mt-6 flex flex-wrap gap-2 text-sm">
           {toc.map(([id, label]) => (
-            <a key={id} href={`#${id}`} className="rounded-full border border-zinc-200 bg-white px-3 py-1 text-zinc-700 hover:border-zinc-400">
+            <a key={id} href={`#${id}`} className="rounded-full border border-border bg-card px-3 py-1 text-foreground/80 hover:border-foreground/30">
               {label}
             </a>
           ))}
@@ -51,7 +51,7 @@ export default function Customize() {
           <p>
             Components read only tokens such as <code>bg-primary</code>, <code>bg-card</code> and <code>text-muted-foreground</code>, so a theme change
             reaches every pattern at once. To use your brand colour, see{" "}
-            <Link href="/tokens" className="text-zinc-900 underline">
+            <Link href="/tokens" className="text-foreground underline">
               Tokens and theming
             </Link>
             : a preset, a one-line wrapper, or pasted CSS.
@@ -99,7 +99,7 @@ export default function Customize() {
 
         <Section id="icons" title="Icons">
           <p>
-            Icons come from <a className="text-zinc-900 underline" href="https://lucide.dev" target="_blank" rel="noreferrer">lucide-react</a>. Swap the
+            Icons come from <a className="text-foreground underline" href="https://lucide.dev" target="_blank" rel="noreferrer">lucide-react</a>. Swap the
             import for another set, or for your own SVG components. Decorative icons have <code>aria-hidden</code>; icon-only buttons have an{" "}
             <code>aria-label</code>. Keep both when you swap.
           </p>
@@ -107,7 +107,7 @@ export default function Customize() {
 
         <Section id="motion" title="Motion">
           <p>
-            Entrances and layout changes use <a className="text-zinc-900 underline" href="https://motion.dev" target="_blank" rel="noreferrer">Motion</a>{" "}
+            Entrances and layout changes use <a className="text-foreground underline" href="https://motion.dev" target="_blank" rel="noreferrer">Motion</a>{" "}
             with short, critically damped springs. To turn motion off in a component, remove the <code>motion.</code> prefix from the element and its{" "}
             <code>initial</code>, <code>animate</code> and <code>transition</code> props. People who ask their system for reduced motion already get none:
             spinners and pulses use <code>motion-reduce:</code> classes.
@@ -138,7 +138,7 @@ export default function Customize() {
             <li>Contrast of at least 4.5:1 for text and 3:1 for focus rings and controls</li>
           </ul>
           <p>
-            Ran into something that is hard to change? <a className="text-zinc-900 underline" href="https://github.com/Guhan3132/Agentic-Component/issues/new/choose" target="_blank" rel="noreferrer">Open an issue</a>.
+            Ran into something that is hard to change? <a className="text-foreground underline" href="https://github.com/Guhan3132/Agentic-Component/issues/new/choose" target="_blank" rel="noreferrer">Open an issue</a>.
           </p>
         </Section>
       </div>

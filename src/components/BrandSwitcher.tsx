@@ -44,7 +44,7 @@ function setBrand(next: Brand) {
   const isDefault = next.hex === DEFAULT.hex && !next.tint;
   const theme = isDefault ? null : deriveTheme(next.hex, { tintNeutrals: next.tint });
   // Slightly more specific than the stylesheet's own :root and .dark, so this wins whatever the load order.
-  const css = theme ? themeCss(theme, { light: "html:root", dark: "html:root.dark, html:root .dark" }) : "";
+  const css = theme ? themeCss(theme, { light: "html:root, html:root .light", dark: "html:root.dark, html:root .dark" }) : "";
   try {
     let el = document.getElementById(STYLE_ID);
     if (css) {
@@ -142,9 +142,9 @@ export function BrandSwitcher() {
         aria-expanded={open}
         aria-haspopup="dialog"
         aria-label="Brand colour"
-        className="flex h-11 items-center gap-2 rounded-full border border-zinc-200 bg-white pl-2.5 pr-3.5 text-sm font-medium text-zinc-800 shadow-lg hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900"
+        className="flex h-11 items-center gap-2 rounded-full border border-border bg-card pl-2.5 pr-3.5 text-sm font-medium text-foreground shadow-lg hover:bg-muted/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
-        <span className="size-5 rounded-full ring-1 ring-black/10" style={{ background: brand.hex }} aria-hidden />
+        <span className="size-5 rounded-full ring-1 ring-foreground/10" style={{ background: brand.hex }} aria-hidden />
         <Palette size={15} aria-hidden /> <span className="hidden sm:inline">Brand</span>
       </button>
 
@@ -152,10 +152,10 @@ export function BrandSwitcher() {
         <div
           role="dialog"
           aria-label="Brand colour"
-          className={`material-pop absolute left-0 w-[19rem] max-w-[calc(100vw-2rem)] rounded-2xl border border-zinc-200 p-4 ${pathname === "/playground" ? "top-full mt-2" : "bottom-full mb-2"}`}
+          className={`material-pop absolute left-0 w-[19rem] max-w-[calc(100vw-2rem)] rounded-2xl border border-border p-4 ${pathname === "/playground" ? "top-full mt-2" : "bottom-full mb-2"}`}
         >
-          <p className="text-sm font-medium text-zinc-900">Try your brand colour</p>
-          <p className="mt-0.5 text-xs text-zinc-500">Changes the components and previews. Use the sun and moon on a preview to see dark.</p>
+          <p className="text-sm font-medium text-foreground">Try your brand colour</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Changes the components and previews. Use the sun and moon on a preview to see dark.</p>
 
           <div role="group" aria-label="Sample colours" className="mt-3 grid grid-cols-5 gap-2">
             {sampleThemes.map((s) => (
@@ -168,7 +168,7 @@ export function BrandSwitcher() {
                 aria-pressed={brand.hex === s.hex}
                 aria-label={`${s.name} ${s.hex}${s.note ? `. ${s.note}` : ""}`}
                 title={`${s.name} ${s.hex}`}
-                className="grid aspect-square place-items-center rounded-xl ring-1 ring-black/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 pointer-coarse:min-h-11"
+                className="grid aspect-square place-items-center rounded-xl ring-1 ring-foreground/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring pointer-coarse:min-h-11"
                 style={{ background: s.hex }}
               >
                 {brand.hex === s.hex && <Check size={16} color={parseHex(s.hex)![0] * 0.3 + parseHex(s.hex)![1] * 0.59 + parseHex(s.hex)![2] * 0.11 > 150 ? "#18181b" : "#fff"} aria-hidden />}
@@ -195,9 +195,9 @@ export function BrandSwitcher() {
               aria-invalid={invalid}
               aria-describedby={invalid ? "brand-hex-error" : undefined}
               placeholder="#7c3aed"
-              className="h-11 min-w-0 flex-1 rounded-lg border border-zinc-200 bg-white px-3 font-mono text-base text-zinc-900 outline-none focus:border-zinc-400 sm:h-9 sm:text-sm"
+              className="h-11 min-w-0 flex-1 rounded-lg border border-border bg-card px-3 font-mono text-base text-foreground outline-none focus:border-foreground/30 sm:h-9 sm:text-sm"
             />
-            <label className="relative size-11 shrink-0 cursor-pointer overflow-hidden rounded-lg ring-1 ring-black/10 sm:size-9" style={{ background: brand.hex }}>
+            <label className="relative size-11 shrink-0 cursor-pointer overflow-hidden rounded-lg ring-1 ring-foreground/10 sm:size-9" style={{ background: brand.hex }}>
               <span className="sr-only">Pick a colour</span>
               <input
                 type="color"
@@ -211,14 +211,14 @@ export function BrandSwitcher() {
             </label>
           </div>
           {invalid && (
-            <p id="brand-hex-error" role="alert" className="mt-1.5 text-xs text-rose-700">
+            <p id="brand-hex-error" role="alert" className="mt-1.5 text-xs text-danger">
               Use a hex code like #7c3aed or 7c3aed.
             </p>
           )}
 
           {theme && (
-            <dl className="mt-3 space-y-1 rounded-lg bg-zinc-50 p-2.5 text-xs">
-              <div aria-hidden className="grid grid-cols-[1fr_4.5rem_4.5rem] gap-2 text-[10px] uppercase tracking-wide text-zinc-400">
+            <dl className="mt-3 space-y-1 rounded-lg bg-muted/60 p-2.5 text-xs">
+              <div aria-hidden className="grid grid-cols-[1fr_4.5rem_4.5rem] gap-2 text-[10px] uppercase tracking-wide text-muted-foreground">
                 <span>Contrast</span>
                 <span>Light</span>
                 <span>Dark</span>
@@ -230,23 +230,23 @@ export function BrandSwitcher() {
           {theme && theme.report.warnings.length > 0 && (
             <ul className="mt-2 space-y-1">
               {theme.report.warnings.map((w) => (
-                <li key={w} className="flex gap-1.5 text-xs text-amber-800">
+                <li key={w} className="flex gap-1.5 text-xs text-warning">
                   <TriangleAlert size={13} className="mt-0.5 shrink-0" aria-hidden /> {w}
                 </li>
               ))}
             </ul>
           )}
 
-          <label className="mt-3 flex items-center justify-between gap-3 text-sm text-zinc-700">
+          <label className="mt-3 flex items-center justify-between gap-3 text-sm text-foreground/80">
             Tint neutrals with the brand
             <button
               role="switch"
               aria-checked={brand.tint}
               aria-label="Tint neutrals with the brand"
               onClick={() => setBrand({ ...brand, tint: !brand.tint })}
-              className={`relative h-5 w-9 shrink-0 rounded-full transition-colors pointer-coarse:h-7 pointer-coarse:w-12 pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-2 pointer-coarse:before:content-[''] ${brand.tint ? "bg-zinc-900" : "bg-zinc-300"}`}
+              className={`relative h-5 w-9 shrink-0 rounded-full transition-colors pointer-coarse:h-7 pointer-coarse:w-12 pointer-coarse:before:absolute pointer-coarse:before:inset-x-0 pointer-coarse:before:-inset-y-2 pointer-coarse:before:content-[''] ${brand.tint ? "bg-foreground" : "bg-accent"}`}
             >
-              <span className={`absolute left-0.5 top-0.5 size-4 rounded-full bg-white transition-transform pointer-coarse:size-6 ${brand.tint ? "translate-x-4 pointer-coarse:translate-x-5" : ""}`} />
+              <span className={`absolute left-0.5 top-0.5 size-4 rounded-full bg-card transition-transform pointer-coarse:size-6 ${brand.tint ? "translate-x-4 pointer-coarse:translate-x-5" : ""}`} />
             </button>
           </label>
 
@@ -263,7 +263,7 @@ export function BrandSwitcher() {
                   setDraft(null);
                   setBrand(DEFAULT);
                 }}
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100 pointer-coarse:min-h-11"
+                className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted pointer-coarse:min-h-11"
               >
                 <RotateCcw size={13} aria-hidden /> Reset
               </button>
@@ -277,13 +277,13 @@ export function BrandSwitcher() {
 
 function Row({ label, light, dark, min, pass }: { label: string; light: number; dark: number; min: number; pass: (n: number, min: number) => string }) {
   const cell = (n: number) => (
-    <span className={pass(n, min) === "Pass" ? "text-emerald-700" : "text-rose-700"}>
+    <span className={pass(n, min) === "Pass" ? "text-success" : "text-danger"}>
       {n.toFixed(1)} {pass(n, min) === "Pass" ? "✓" : "low"}
     </span>
   );
   return (
     <div className="grid grid-cols-[1fr_4.5rem_4.5rem] items-center gap-2">
-      <dt className="text-zinc-600">{label}</dt>
+      <dt className="text-muted-foreground">{label}</dt>
       <dd className="font-mono">
         {cell(light)}
         <span className="sr-only"> in light mode</span>
@@ -301,7 +301,7 @@ function Btn({ children, onClick, done, disabled }: { children: React.ReactNode;
     <button
       onClick={onClick}
       disabled={disabled}
-      className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-800 hover:bg-zinc-200 disabled:opacity-50 pointer-coarse:min-h-11"
+      className="inline-flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-sm font-medium text-foreground hover:bg-accent disabled:opacity-50 pointer-coarse:min-h-11"
     >
       {done ? <Check size={13} aria-hidden /> : <Copy size={13} aria-hidden />} {done ? "Copied" : children}
     </button>

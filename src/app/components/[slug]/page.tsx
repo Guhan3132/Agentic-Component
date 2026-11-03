@@ -50,36 +50,36 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   return (
     <main className="pb-24 pt-8">
       <div className="mx-auto max-w-6xl px-5">
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-zinc-500">
-        <Link href="/" className="hover:text-zinc-900">
+      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <Link href="/" className="hover:text-foreground">
           Patterns
         </Link>
         <ChevronRight size={14} aria-hidden />
         <span>{pattern.category}</span>
         <ChevronRight size={14} aria-hidden />
-        <span className="text-zinc-900">{pattern.title}</span>
+        <span className="text-foreground">{pattern.title}</span>
       </nav>
 
       {/* Header stack, then a full-width preview */}
       <header className="mt-8 max-w-3xl">
         <h1 className="flex items-center gap-3 text-4xl font-semibold sm:text-5xl">
           {pattern.title}
-          <a href="#about" aria-label="Why this pattern" title="Why this pattern" className="text-amber-500 hover:text-amber-600">
+          <a href="#about" aria-label="Why this pattern" title="Why this pattern" className="text-warning hover:text-warning/80">
             <Lightbulb size={22} />
           </a>
         </h1>
-        <p className="mt-3 max-w-2xl text-lg leading-relaxed text-zinc-600">{pattern.summary}</p>
+        <p className="mt-3 max-w-2xl text-lg leading-relaxed text-muted-foreground">{pattern.summary}</p>
 
         <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
-          <Link href="/#patterns" className="flex items-center gap-2 font-medium text-zinc-900 hover:text-zinc-600">
-            <span className="grid h-6 w-6 place-items-center rounded-md bg-zinc-900 text-[10px] font-semibold text-white">
+          <Link href="/#patterns" className="flex items-center gap-2 font-medium text-foreground hover:text-muted-foreground">
+            <span className="grid h-6 w-6 place-items-center rounded-md bg-foreground text-[10px] font-semibold text-background">
               {pattern.category.slice(0, 2).toUpperCase()}
             </span>
             {pattern.category}
           </Link>
-          <span className="text-zinc-500">by</span>
-          <span className="flex items-center gap-2 font-medium text-zinc-900">
-            <span className="grid h-6 w-6 place-items-center rounded-full bg-zinc-100 text-[10px] font-semibold text-zinc-700">A</span>
+          <span className="text-muted-foreground">by</span>
+          <span className="flex items-center gap-2 font-medium text-foreground">
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-muted text-[10px] font-semibold text-foreground/80">A</span>
             Agentic UI
           </span>
         </div>
@@ -114,28 +114,28 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <div className="min-w-0">
 
           <section id="about" className="scroll-mt-32 pt-8">
-            <p className="max-w-2xl leading-relaxed text-zinc-700">{pattern.why}</p>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-500">
+            <p className="max-w-2xl leading-relaxed text-foreground/80">{pattern.why}</p>
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
               Built with React and Tailwind. Copy the prompt and paste it into Claude Code, Cursor or Lovable: your agent adds{" "}
               {pattern.title} to your project and fits it to your theme.
             </p>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <List title="Do" items={pattern.dos} tone="text-emerald-700" mark="✓" />
-              <List title="Don't" items={pattern.donts} tone="text-rose-700" mark="✕" />
+              <List title="Do" items={pattern.dos} tone="text-success" mark="✓" />
+              <List title="Don't" items={pattern.donts} tone="text-danger" mark="✕" />
             </div>
           </section>
 
           <section id="code" className="scroll-mt-32 pt-12">
             <h2 className="mb-1 text-lg font-medium">Code</h2>
-            <p className="mb-4 text-sm text-zinc-500">
-              Install with the CLI, or copy the file into <code className="text-zinc-800">components/ui</code>. It needs{" "}
+            <p className="mb-4 text-sm text-muted-foreground">
+              Install with the CLI, or copy the file into <code className="text-foreground">components/ui</code>. It needs{" "}
               {depsOf(code).map((d, i) => (
                 <span key={d}>
                   {i > 0 && ", "}
-                  <code className="text-zinc-800">{d}</code>
+                  <code className="text-foreground">{d}</code>
                 </span>
               ))}{" "}
-              and a <code className="text-zinc-800">cn</code> helper.
+              and a <code className="text-foreground">cn</code> helper.
             </p>
             <div className="space-y-4">
               <CodeBlock code={`npx shadcn@latest add "${SITE_URL}/r/${slug}.json"`} file="terminal" />
@@ -148,16 +148,16 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
             <h2 className="mb-3 text-lg font-medium">Props</h2>
             <ul className="space-y-2 sm:hidden">
               {pattern.props.map((r) => (
-                <li key={r.name} className="rounded-xl border border-zinc-200 bg-white p-3.5">
-                  <p className="font-mono text-sm text-emerald-700">{r.name}</p>
-                  <p className="mt-1 break-words font-mono text-xs text-zinc-500">{r.type}</p>
-                  <p className="mt-1.5 text-sm text-zinc-700">{r.desc}</p>
+                <li key={r.name} className="rounded-xl border border-border bg-card p-3.5">
+                  <p className="font-mono text-sm text-success">{r.name}</p>
+                  <p className="mt-1 break-words font-mono text-xs text-muted-foreground">{r.type}</p>
+                  <p className="mt-1.5 text-sm text-foreground/80">{r.desc}</p>
                 </li>
               ))}
             </ul>
-            <div className="hidden overflow-x-auto rounded-xl border border-zinc-200 bg-white sm:block">
+            <div className="hidden overflow-x-auto rounded-xl border border-border bg-card sm:block">
               <table className="w-full text-left text-sm">
-                <thead className="bg-zinc-50 text-zinc-500">
+                <thead className="bg-muted/60 text-muted-foreground">
                   <tr>
                     <th className="px-4 py-2 font-medium">Prop</th>
                     <th className="px-4 py-2 font-medium">Type</th>
@@ -166,10 +166,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                 </thead>
                 <tbody>
                   {pattern.props.map((r) => (
-                    <tr key={r.name} className="border-t border-zinc-200">
-                      <td className="px-4 py-2 font-mono text-emerald-700">{r.name}</td>
-                      <td className="px-4 py-2 font-mono text-zinc-500">{r.type}</td>
-                      <td className="px-4 py-2 text-zinc-700">{r.desc}</td>
+                    <tr key={r.name} className="border-t border-border">
+                      <td className="px-4 py-2 font-mono text-success">{r.name}</td>
+                      <td className="px-4 py-2 font-mono text-muted-foreground">{r.type}</td>
+                      <td className="px-4 py-2 text-foreground/80">{r.desc}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -179,7 +179,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
           <section id="a11y" className="scroll-mt-32 pt-12">
             <h2 className="mb-3 text-lg font-medium">Accessibility</h2>
-            <ul className="list-disc space-y-1 pl-5 text-zinc-600">
+            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
               {pattern.a11y.map((a) => (
                 <li key={a}>{a}</li>
               ))}
@@ -191,7 +191,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           <Meta title="Tags">
             <div className="flex flex-wrap gap-2">
               {(tags[slug] ?? []).map((t) => (
-                <span key={t} className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-zinc-700">
+                <span key={t} className="rounded-lg border border-border bg-card px-3 py-1.5 text-foreground/80">
                   {t}
                 </span>
               ))}
@@ -220,17 +220,17 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 function Meta({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="mb-2 text-xs font-medium uppercase tracking-wider text-zinc-500">{title}</h3>
-      <div className="text-zinc-800">{children}</div>
+      <h3 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">{title}</h3>
+      <div className="text-foreground">{children}</div>
     </div>
   );
 }
 
 function List({ title, items, tone, mark }: { title: string; items: string[]; tone: string; mark: string }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4">
+    <div className="rounded-xl border border-border bg-card p-4">
       <h3 className={`mb-2 text-sm font-medium ${tone}`}>{title}</h3>
-      <ul className="space-y-1.5 text-sm text-zinc-700">
+      <ul className="space-y-1.5 text-sm text-foreground/80">
         {items.map((i) => (
           <li key={i} className="flex gap-2">
             <span className={tone} aria-hidden>
