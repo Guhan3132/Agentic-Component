@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-teal",
+  "type": "registry:theme",
+  "title": "Teal theme",
+  "description": "Sets the brand colour to Teal (#0d9488) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "oklch(0.6002 0.1038 184.7)",
+      "primary-foreground": "oklch(0.2103 0.0059 285.89)",
+      "ring": "oklch(0.6002 0.1038 184.7)"
+    },
+    "dark": {
+      "primary": "oklch(0.6002 0.1038 184.7)",
+      "primary-foreground": "oklch(0.2103 0.0059 285.89)",
+      "ring": "oklch(0.6002 0.1038 184.7)"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."
+}

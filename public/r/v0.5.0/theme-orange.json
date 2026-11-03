@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-orange",
+  "type": "registry:theme",
+  "title": "Orange theme",
+  "description": "Sets the brand colour to Orange (#ea580c) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "oklch(0.6461 0.1943 41.12)",
+      "primary-foreground": "oklch(0.2103 0.0059 285.89)",
+      "ring": "oklch(0.6461 0.1943 41.12)"
+    },
+    "dark": {
+      "primary": "oklch(0.6461 0.1943 41.12)",
+      "primary-foreground": "oklch(0.2103 0.0059 285.89)",
+      "ring": "oklch(0.6461 0.1943 41.12)"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched.\nNote: this colour is close to the warning status colour. Check that badges and errors still stand out."
+}

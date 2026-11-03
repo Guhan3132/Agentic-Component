@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-blue",
+  "type": "registry:theme",
+  "title": "Blue theme",
+  "description": "Sets the brand colour to Blue (#2563eb) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "oklch(0.5461 0.2152 262.88)",
+      "primary-foreground": "oklch(1 0 0)",
+      "ring": "oklch(0.5461 0.2152 262.88)"
+    },
+    "dark": {
+      "primary": "oklch(0.5461 0.2152 262.88)",
+      "primary-foreground": "oklch(1 0 0)",
+      "ring": "oklch(0.5461 0.2152 262.88)"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."
+}

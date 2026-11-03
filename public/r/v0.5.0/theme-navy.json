@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-navy",
+  "type": "registry:theme",
+  "title": "Navy theme",
+  "description": "Sets the brand colour to Navy (#1e3a8a) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "oklch(0.3791 0.1378 265.52)",
+      "primary-foreground": "oklch(1 0 0)",
+      "ring": "oklch(0.3791 0.1378 265.52)"
+    },
+    "dark": {
+      "primary": "oklch(0.515 0.138 265.66)",
+      "primary-foreground": "oklch(1 0 0)",
+      "ring": "oklch(0.515 0.138 265.66)"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched."
+}

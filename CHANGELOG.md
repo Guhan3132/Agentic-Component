@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 (2026-11-03)
 
 - 19 patterns become 13: activity indicator joins streaming response, why this answer joins citations, feedback thumbs joins the chat thread, task checklist joins plan preview (now "Plan"), interrupt and steer and voice input join the prompt composer. Their components are still exported from the new files; old pages redirect and old install URLs serve the last version (0.4.0). The "Learn" category is gone
 - Site-wide dark mode that follows the system, a theme toggle, the site chrome on the same tokens as the components, a new header (logo, Tokens link, Get started goes to /get-started)

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-pink",
+  "type": "registry:theme",
+  "title": "Pink theme",
+  "description": "Sets the brand colour to Pink (#db2777) for light and dark, with contrast checked.",
+  "author": "Agentic UI <https://agentic-component.vercel.app>",
+  "categories": [
+    "theme"
+  ],
+  "cssVars": {
+    "light": {
+      "primary": "oklch(0.5916 0.218 0.58)",
+      "primary-foreground": "oklch(1 0 0)",
+      "ring": "oklch(0.5916 0.218 0.58)"
+    },
+    "dark": {
+      "primary": "oklch(0.5916 0.218 0.58)",
+      "primary-foreground": "oklch(1 0 0)",
+      "ring": "oklch(0.5916 0.218 0.58)"
+    }
+  },
+  "docs": "Changes only the brand tokens (primary, primary-foreground, ring). Status colours and neutrals are not touched.\nNote: this colour is close to the danger status colour. Check that badges and errors still stand out."
+}
